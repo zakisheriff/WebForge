@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-color: #f7f5f0;        /* Anthropic warm cream background */
+  --bg-color: #f0eee6;        /* Anthropic warm cream background */
   --text-primary: #191919;    /* Clean dark grey text */
   --text-secondary: #595856;  /* Neutral muted body text */
   --card-bg: #ece8df;         /* Card background cream-beige */
@@ -53,7 +53,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgb(247, 245, 240);
+  background: var(--bg-color);
   border-bottom: 1px solid var(--border-color);
   width: 100%;
 }

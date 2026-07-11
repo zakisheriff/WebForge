@@ -102,31 +102,11 @@ export default function Home() {
       {/* Main Banner Container */}
       <section className="banner-container">
         <div className="dark-banner">
-          {/* Network Graph Background Mock replicating Anthropic 1:1 */}
-          <div className="network-graph">
-            <svg className="graph-lines" xmlns="http://www.w3.org/2000/svg">
-              <line x1="12%" y1="15%" x2="25%" y2="25%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="25%" y1="25%" x2="15%" y2="80%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="15%" y1="80%" x2="80%" y2="82%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="25%" y1="25%" x2="92%" y2="55%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="80%" y1="82%" x2="92%" y2="55%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="12%" y1="15%" x2="8%" y2="60%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-              <line x1="8%" y1="60%" x2="15%" y2="80%" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-            </svg>
-            <div className="graph-node node-1">JSON Metadata</div>
-            <div className="graph-node node-2">Stitched Chunks</div>
-            <div className="graph-node node-3">Crawl Queue</div>
-            <div className="graph-node node-4">CSS Variables</div>
-            <div className="graph-node node-5">Font Families</div>
-            <div className="graph-node node-6">Viewport Map</div>
-          </div>
+          
 
           <h2 className="banner-title">WebForge is built on clear structure.</h2>
-          <p className="banner-subtext">
-            Explore the architecture behind visual screenshot stitching, responsive device emulation, and automated domain tree mapping.
-          </p>
           <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-banner">
-            Get Chrome Extension <span>&rarr;</span>
+            Get Chrome Extension
           </a>
         </div>
       </section>
