@@ -17,8 +17,19 @@ async function dataUrlToImageBitmap(dataUrl: string): Promise<ImageBitmap> {
 
 // Stitch screenshots into one PNG data URL
 async function captureFullPage(tabId: number, windowId: number): Promise<string> {
-  // 1. Prepare page
-  const metrics: CaptureMetrics = await chrome.tabs.sendMessage(tabId, { action: 'PREPARE_CAPTURE' });
+  // 1. Prepare page with dynamic script injection fallback
+  let metrics: CaptureMetrics;
+  try {
+    metrics = await chrome.tabs.sendMessage(tabId, { action: 'PREPARE_CAPTURE' });
+  } catch (err) {
+    // Inject content script on demand if tab doesn't have it running
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ['content.js']
+    });
+    await new Promise(r => setTimeout(r, 200));
+    metrics = await chrome.tabs.sendMessage(tabId, { action: 'PREPARE_CAPTURE' });
+  }
   const { totalWidth, totalHeight, viewportHeight, devicePixelRatio } = metrics;
 
   // 2. Setup canvas
