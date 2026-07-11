@@ -9,6 +9,12 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'dashboard') {
       setMode('dashboard');
+      document.body.classList.add('dashboard-mode');
+      document.body.classList.remove('popup-mode');
+    } else {
+      setMode('popup');
+      document.body.classList.add('popup-mode');
+      document.body.classList.remove('dashboard-mode');
     }
   }, []);
 
