@@ -57,6 +57,7 @@ async function captureFullPage(tabId: number, windowId: number): Promise<string>
 
       // Hide overlay in target page so it is excluded from the screenshot
       await chrome.tabs.sendMessage(tabId, { action: 'HIDE_OVERLAY' }).catch(() => {});
+      await new Promise(r => setTimeout(r, 60)); // Repaint buffer to guarantee browser hides the warning element
 
       // Capture visible viewport
       const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
