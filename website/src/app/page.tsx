@@ -1,18 +1,67 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <>
-      {/* Navigation */}
-      <nav className="navbar">
-        <div className="nav-brand">WebForge</div>
-        <ul className="nav-links">
-          <li><a href="#features">How It Works</a></li>
-          <li><a href="#structure">Blueprint Structure</a></li>
-          <li><a href="#releases">Releases</a></li>
-          <li><a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-nav-primary">Get Extension</a></li>
-        </ul>
-      </nav>
+      {/* Navigation Header */}
+      <div className="navbar-container">
+        <nav className="navbar">
+          {/* Logo styled similar to A\ */}
+          <div className="nav-brand">W\</div>
+          
+          {/* Desktop Menu */}
+          <ul className="nav-menu-desktop">
+            <li><a href="#features">How It Works</a></li>
+            <li><a href="#structure">Blueprint Structure</a></li>
+            <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer">Releases</a></li>
+            <li>
+              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-nav-split">
+                Install WebForge <span>&or;</span>
+              </a>
+            </li>
+          </ul>
+
+          {/* Mobile Menu Toggle Button */}
+          <button className="hamburger-btn" onClick={() => setIsMenuOpen(true)} aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </nav>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {isMenuOpen && (
+        <>
+          <div className="drawer-overlay" onClick={() => setIsMenuOpen(false)}></div>
+          <div className="drawer-content">
+            <div>
+              <div className="drawer-header">
+                <div className="nav-brand">W\</div>
+                <button className="drawer-close-btn" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">&times;</button>
+              </div>
+              <ul className="drawer-links">
+                <li><a href="#features" onClick={() => setIsMenuOpen(false)}>How It Works</a></li>
+                <li><a href="#structure" onClick={() => setIsMenuOpen(false)}>Blueprint Structure</a></li>
+                <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)}>Releases</a></li>
+              </ul>
+            </div>
+            
+            <div className="drawer-footer">
+              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-drawer-primary">
+                Install WebForge
+              </a>
+              <a href="https://github.com/zakisheriff" target="_blank" rel="noreferrer" className="btn-drawer-secondary">
+                Developer Profile
+              </a>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Hero Section */}
       <header className="hero">
@@ -49,82 +98,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Latest Releases Section */}
-      <section id="releases" className="releases-section">
-        <div className="section-label">Latest releases</div>
-        <div className="cards-grid">
-          {/* Card 1 */}
-          <div className="card">
-            <div>
-              <h3 className="card-title">Introducing WebForge 1.0</h3>
-              <p className="card-body">
-                The complete visual capture and blueprint generation extension is now live. Build high-fidelity PNG packages, design tokens, and sitemaps instantly.
-              </p>
-            </div>
-            <div>
-              <div className="card-metadata">
-                <div className="card-meta-item">
-                  Date
-                  <span>July 11, 2026</span>
-                </div>
-                <div className="card-meta-item">
-                  Category
-                  <span>Announcements</span>
-                </div>
-              </div>
-              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">Get WebForge &rarr;</a>
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className="card">
-            <div>
-              <h3 className="card-title">Visual Layout Stitcher</h3>
-              <p className="card-body">
-                Stitch multiple screenshot viewports into a single clean blueprint. Handles lazy loaded elements and removes duplication from fixed positioning.
-              </p>
-            </div>
-            <div>
-              <div className="card-metadata">
-                <div className="card-meta-item">
-                  Date
-                  <span>July 08, 2026</span>
-                </div>
-                <div className="card-meta-item">
-                  Category
-                  <span>Core Engine</span>
-                </div>
-              </div>
-              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">Explore Code &rarr;</a>
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="card">
-            <div>
-              <h3 className="card-title">Design Token Extraction</h3>
-              <p className="card-body">
-                Extract active fonts and color palettes dynamically. Feed them straight to coding agents to ensure high-fidelity layouts without CSS drift.
-              </p>
-            </div>
-            <div>
-              <div className="card-metadata">
-                <div className="card-meta-item">
-                  Date
-                  <span>July 05, 2026</span>
-                </div>
-                <div className="card-meta-item">
-                  Category
-                  <span>AI Blueprints</span>
-                </div>
-              </div>
-              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">View guide &rarr;</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Differentiated Structure: Blueprint Output Explorer */}
+      {/* Output Package Structure Visualizer */}
       <section id="structure" className="list-section" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '60px' }}>
         <div className="list-section-left">
           <h3>Generated Output Package Structure</h3>
@@ -140,7 +114,8 @@ export default function Home() {
           fontSize: '13px',
           lineHeight: '1.7',
           color: 'var(--text-primary)',
-          border: '1px solid var(--border-color)'
+          border: '1px solid var(--border-color)',
+          overflowX: 'auto'
         }}>
           <div style={{ color: 'var(--accent-color)', fontWeight: 600, marginBottom: '10px' }}>WebForge_Project/</div>
           <div style={{ paddingLeft: '20px' }}>├── pages/</div>
@@ -153,6 +128,31 @@ export default function Home() {
           <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>└── metadata.json</div>
           <div style={{ paddingLeft: '20px' }}>├── sitemap.json <span style={{ opacity: 0.5 }}>(Discovered domain tree)</span></div>
           <div style={{ paddingLeft: '20px' }}>└── metadata.json <span style={{ opacity: 0.5 }}>(Global colors, fonts & timestamps)</span></div>
+        </div>
+      </section>
+
+      {/* How It Works List Section */}
+      <section id="features" className="list-section" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '60px' }}>
+        <div className="list-section-left">
+          <h3>At WebForge, we build tools to serve AI-driven development.</h3>
+        </div>
+        <div className="list-container" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border-color)', borderTop: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: '15px', fontWeight: 500 }}>Core Views on AI Contexts</span>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)' }}>Workflow</span>
+          </div>
+          <div className="list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: '15px', fontWeight: 500 }}>Structure and Sitemap Indexing</span>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)' }}>Technical Specs</span>
+          </div>
+          <div className="list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: '15px', fontWeight: 500 }}>Window Dimension Resizing Policy</span>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)' }}>Documentation</span>
+          </div>
+          <div className="list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid var(--border-color)' }}>
+            <span style={{ fontSize: '15px', fontWeight: 500 }}>JSON Metadata Schemas</span>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)' }}>AI Input Specs</span>
+          </div>
         </div>
       </section>
 
