@@ -95,7 +95,7 @@ a:hover {
   display: inline-flex;
   align-items: center;
   background-color: var(--text-primary);
-  color: var(--bg-color);
+  color: var(--bg-color) !important;
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 14px;
