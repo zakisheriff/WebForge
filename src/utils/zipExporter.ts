@@ -36,8 +36,9 @@ export async function generateProjectZip(
   sitemap: string[]
 ): Promise<Blob> {
   const zip = new JSZip();
-  const root = zip.folder("WebForge_Project");
-  if (!root) throw new Error("Could not create WebForge_Project folder");
+  const rootFolderName = `WebForge_${domain.replace(/[^a-zA-Z0-9-_]/g, '_')}`;
+  const root = zip.folder(rootFolderName);
+  if (!root) throw new Error(`Could not create ${rootFolderName} folder`);
 
   const isSinglePage = pages.length === 1;
 
