@@ -36,6 +36,38 @@ function HoverButton({
   );
 }
 
+// Hover-aware coffee link
+function CoffeeLink() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href="https://buymeacoffee.com/theoneatom"
+      target="_blank"
+      rel="noreferrer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
+        padding: "10px 12px",
+        borderRadius: "12px",
+        background: hovered ? "rgba(217,107,67,0.22)" : "rgba(217, 107, 67, 0.12)",
+        color: "var(--accent-color)",
+        textDecoration: "none",
+        fontSize: "12px",
+        fontWeight: 600,
+        fontFamily: "var(--font-sans)",
+        transition: "background 0.15s",
+      }}
+    >
+      <Coffee size={14} />
+      Buy Me a Coffee
+    </a>
+  );
+}
+
 export default function PopupView() {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
   const [crawlDepth, setCrawlDepth] = useState<number>(5);
@@ -145,6 +177,18 @@ export default function PopupView() {
   const secondaryBtnHover: React.CSSProperties = {
     background: "#ede8e3",
     borderColor: "#c8bfb5",
+  };
+
+  // Responsive variant — orange stroke
+  const responsiveBtn: React.CSSProperties = {
+    ...baseBtn,
+    border: "1.5px solid var(--accent-color)",
+    background: "var(--bg-card)",
+    color: "var(--text-primary)",
+  };
+  const responsiveBtnHover: React.CSSProperties = {
+    background: "rgba(217,107,67,0.06)",
+    borderColor: "var(--accent-color)",
   };
 
   const sectionLabel: React.CSSProperties = {
@@ -287,8 +331,8 @@ export default function PopupView() {
               </div>
             </HoverButton>
 
-            <HoverButton style={secondaryBtn} hoverStyle={secondaryBtnHover} onClick={() => openDashboard("responsive")}>
-              <Monitor size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
+            <HoverButton style={responsiveBtn} hoverStyle={responsiveBtnHover} onClick={() => openDashboard("responsive")}>
+              <Monitor size={16} style={{ flexShrink: 0, color: "var(--accent-color)" }} />
               <div>
                 <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture current page + responsive</div>
                 <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
@@ -491,28 +535,7 @@ export default function PopupView() {
           </div>
 
           {/* Buy Me a Coffee */}
-          <a
-            href="https://buymeacoffee.com/theoneatom"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              padding: "10px 12px",
-              borderRadius: "12px",
-              background: "rgba(217, 107, 67, 0.12)",
-              color: "var(--accent-color)",
-              textDecoration: "none",
-              fontSize: "12px",
-              fontWeight: 600,
-              fontFamily: "var(--font-sans)",
-            }}
-          >
-            <Coffee size={14} />
-            Buy Me a Coffee
-          </a>
+          <CoffeeLink />
         </>
       )}
     </div>

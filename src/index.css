@@ -1,9 +1,9 @@
 /* Claude-inspired Premium Design System */
 :root {
   /* Warm cream/beige light theme */
-  --bg-app: #f9f6f0;
+  --bg-app: #f0eee6;
   --bg-card: #ffffff;
-  --bg-hover: #f3efe6;
+  --bg-hover: #e8e4db;
   --text-primary: #1f1f1f;
   --text-secondary: #575757;
   --text-muted: #8c8c8c;
