@@ -323,17 +323,23 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       }
     })();
     return true;
-  } else if (message.action === 'START_CRAWL') {
+  } else if (message.action === 'START_CRAWL' || message.action === 'START_CRAWL_RESPONSIVE') {
     (async () => {
-      const { startUrl, maxPages = 5 } = message;
+      const { startUrl, maxPages = 5, customUrls = [] } = message;
+      const isResponsive = message.action === 'START_CRAWL_RESPONSIVE';
       try {
         updateStatus('crawling', 0, maxPages, `Initializing crawler at ${startUrl}...`);
-        
+
         const origin = new URL(startUrl).origin;
-        const discoveredUrls = [startUrl];
+
+        // Seed queue: custom URLs first, then start URL
+        const seededUrls: string[] = [...customUrls];
+        if (!seededUrls.includes(startUrl)) seededUrls.push(startUrl);
+
+        const discoveredUrls: string[] = [...seededUrls];
         const crawledPages: any[] = [];
         const visited = new Set<string>();
-        // Create a temporary window to capture crawled pages cleanly
+
         const tempWindow = await chrome.windows.create({
           url: 'about:blank',
           width: 1440,
@@ -345,6 +351,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           throw new Error('Failed to create temporary crawler window');
         }
         const tempWindowId = tempWindow.id;
+
+        const viewports = isResponsive
+          ? [
+              { name: 'desktop', width: 1440, height: 900 },
+              { name: 'tablet', width: 768, height: 1024 },
+              { name: 'mobile', width: 390, height: 844 }
+            ]
+          : [{ name: 'desktop', width: 1440, height: 900 }];
 
         while (discoveredUrls.length > 0 && crawledPages.length < maxPages) {
           const currentUrl = discoveredUrls.shift()!;
@@ -358,11 +372,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             `Crawling (${crawledPages.length + 1}/${maxPages}): ${new URL(currentUrl).pathname}`
           );
 
-          // Update temporary tab
+          // Navigate temp tab
           const [tempTab] = await chrome.tabs.query({ windowId: tempWindowId });
+
+          // Ensure first viewport is desktop
+          if (isResponsive) {
+            await chrome.windows.update(tempWindowId, { width: 1440, height: 900, state: 'normal' });
+            await new Promise(r => setTimeout(r, 400));
+          }
+
           await chrome.tabs.update(tempTab.id!, { url: currentUrl });
 
-          // Wait for page load safely to prevent hanging
           const currentTabInfo = await chrome.tabs.get(tempTab.id!);
           if (currentTabInfo.status !== 'complete') {
             await new Promise<void>((resolve) => {
@@ -378,38 +398,56 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             await new Promise(r => setTimeout(r, 1500));
           }
 
-          // Inject content script if needed (in case content script didn't run automatically)
           try {
             await chrome.scripting.executeScript({
               target: { tabId: tempTab.id! },
               files: ['content.js']
             });
           } catch {
-            // Already injected or unable
+            // Already injected
           }
 
-          // Capture
-          const screenshot = await captureFullPage(tempTab.id!, tempWindowId);
+          const screenshots: Record<string, string> = {};
+
+          for (const vp of viewports) {
+            if (isResponsive) {
+              await resizeWindow(tempWindowId, vp.width, vp.height);
+            }
+            screenshots[vp.name] = await captureFullPage(tempTab.id!, tempWindowId);
+          }
+
+          // Restore to desktop after responsive
+          if (isResponsive) {
+            await chrome.windows.update(tempWindowId, { width: 1440, height: 900, state: 'normal' });
+            await new Promise(r => setTimeout(r, 300));
+          }
+
           const meta = await chrome.tabs.sendMessage(tempTab.id!, { action: 'EXTRACT_METADATA' });
           const downloadedAssets = await downloadPageAssets(meta.assets);
           delete meta.assets;
 
-          // Add child links to discovery queue
+          // Discover more links (from origin only)
           if (meta.links) {
             meta.links.forEach((link: string) => {
-              if (!visited.has(link) && !discoveredUrls.includes(link) && new URL(link).origin === origin) {
-                discoveredUrls.push(link);
-              }
+              try {
+                if (
+                  !visited.has(link) &&
+                  !discoveredUrls.includes(link) &&
+                  new URL(link).origin === origin
+                ) {
+                  discoveredUrls.push(link);
+                }
+              } catch { /* skip invalid */ }
             });
           }
 
           crawledPages.push({
             url: currentUrl,
             slug: new URL(currentUrl).pathname,
-            screenshots: { desktop: screenshot },
+            screenshots,
             metadata: {
               title: meta.title || currentUrl,
-              viewport: '1440x900',
+              viewport: isResponsive ? 'Multiple' : '1440x900',
               timestamp: new Date().toISOString(),
               fonts: meta.fonts || [],
               colors: meta.colors || []
@@ -418,7 +456,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           });
         }
 
-        // Close temp window
         await chrome.windows.remove(tempWindowId);
 
         updateStatus('idle', maxPages, maxPages, 'Crawl complete.');
