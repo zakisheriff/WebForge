@@ -96,8 +96,8 @@ a:hover {
 .btn-nav-split {
   display: inline-flex;
   align-items: center;
-  background-color: var(--text-primary);
-  color: var(--bg-color) !important;
+  background-color: var(--accent-color);
+  color: #fff !important;
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 14px;
@@ -368,8 +368,8 @@ a:hover {
 }
 
 .btn-banner {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
+  background-color: var(--accent-color);
+  color: #fff;
   padding: 12px 28px;
   border-radius: 24px;
   font-size: 14px;
@@ -377,14 +377,14 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--bg-color);
+  border: 1px solid var(--accent-color);
   transition: all 0.2s ease;
   z-index: 10;
 }
 
 .btn-banner:hover {
-  background-color: transparent;
-  color: var(--bg-color);
+  background-color: #c65a34;
+  color: #fff;
 }
 
 /* Network Graph Mock Background */
