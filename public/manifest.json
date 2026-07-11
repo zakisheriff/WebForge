@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "WebForge",
+  "version": "1.0.0",
+  "description": "AI-Ready Website Capture Engine. Capture visual blueprints, design tokens, sitemaps, and multi-viewport layouts for AI coding agents.",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open WebForge"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "downloads",
+    "storage",
+    "windows"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}
