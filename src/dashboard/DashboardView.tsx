@@ -191,7 +191,8 @@ export default function DashboardView() {
         background: 'var(--bg-card)',
         borderBottom: '1px solid var(--border-color)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img src="/icons/icon32.png" alt="Logo" style={{ width: '22px', height: '22px', borderRadius: '4px' }} />
           <h1 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
             <span style={{ color: 'var(--accent-color)' }}>Web</span>Forge Workspace <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 400 }}>by The Atom</span>
           </h1>

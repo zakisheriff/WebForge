@@ -39,8 +39,9 @@ export default function Home() {
       <div className="navbar-container">
         <nav className="navbar">
           {/* Logo styled similar to A\ */}
-          <div className="nav-brand" style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-            WEBF\RGE 
+          <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '22px', height: '22px', borderRadius: '4px' }} />
+            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBF\RGE</span> 
             <span style={{ fontSize: '11px', opacity: 0.6, fontWeight: 'normal', textTransform: 'none', letterSpacing: 'normal' }}>
               by The Atom
             </span>
@@ -97,28 +98,7 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <header className="hero" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        {/* Claude Brand Orange Hand-drawn Starburst */}
-        <svg width="100" height="100" viewBox="0 0 100 100" style={{ marginBottom: '28px', opacity: 0.95, filter: 'drop-shadow(0 4px 10px rgba(217, 107, 67, 0.15))' }}>
-          <g transform="translate(50, 50)" stroke="var(--accent-color)" strokeWidth="7.5" strokeLinecap="round">
-            <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(0) translate(0, -1)" />
-            <line x1="0" y1="0" x2="0" y2="-36" transform="rotate(25) translate(0, -2)" />
-            <line x1="0" y1="0" x2="0" y2="-40" transform="rotate(51) translate(0, 1)" />
-            <line x1="0" y1="0" x2="0" y2="-34" transform="rotate(78) translate(0, -1)" />
-            <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(103) translate(0, 2)" />
-            <line x1="0" y1="0" x2="0" y2="-35" transform="rotate(128) translate(0, -3)" />
-            <line x1="0" y1="0" x2="0" y2="-39" transform="rotate(154) translate(0, 1)" />
-            <line x1="0" y1="0" x2="0" y2="-37" transform="rotate(180) translate(0, 0)" />
-            <line x1="0" y1="0" x2="0" y2="-41" transform="rotate(205) translate(0, -2)" />
-            <line x1="0" y1="0" x2="0" y2="-34" transform="rotate(231) translate(0, 2)" />
-            <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(258) translate(0, -1)" />
-            <line x1="0" y1="0" x2="0" y2="-35" transform="rotate(283) translate(0, 1)" />
-            <line x1="0" y1="0" x2="0" y2="-40" transform="rotate(309) translate(0, -3)" />
-            <line x1="0" y1="0" x2="0" y2="-36" transform="rotate(334) translate(0, 2)" />
-            <circle cx="0" cy="0" r="9.5" fill="var(--accent-color)" stroke="none" />
-          </g>
-        </svg>
-
+      <header className="hero">
         <h1 className="hero-title">
           Web capture and <span>visual blueprints</span> that put clarity in AI context
         </h1>
@@ -129,29 +109,7 @@ export default function Home() {
 
       {/* Main Banner Container */}
       <section className="banner-container">
-        <div className="dark-banner" style={{ position: 'relative', overflow: 'hidden' }}>
-          {/* Subtle floating star logo in the background */}
-          <div style={{ position: 'absolute', right: '8%', top: '50%', transform: 'translateY(-50%) rotate(15deg)', opacity: 0.12 }}>
-            <svg width="180" height="180" viewBox="0 0 100 100">
-              <g transform="translate(50, 50)" stroke="var(--accent-color)" strokeWidth="7.5" strokeLinecap="round">
-                <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(0)" />
-                <line x1="0" y1="0" x2="0" y2="-36" transform="rotate(25) translate(0, -2)" />
-                <line x1="0" y1="0" x2="0" y2="-40" transform="rotate(51) translate(0, 1)" />
-                <line x1="0" y1="0" x2="0" y2="-34" transform="rotate(78) translate(0, -1)" />
-                <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(103) translate(0, 2)" />
-                <line x1="0" y1="0" x2="0" y2="-35" transform="rotate(128) translate(0, -3)" />
-                <line x1="0" y1="0" x2="0" y2="-39" transform="rotate(154) translate(0, 1)" />
-                <line x1="0" y1="0" x2="0" y2="-37" transform="rotate(180)" />
-                <line x1="0" y1="0" x2="0" y2="-41" transform="rotate(205) translate(0, -2)" />
-                <line x1="0" y1="0" x2="0" y2="-34" transform="rotate(231) translate(0, 2)" />
-                <line x1="0" y1="0" x2="0" y2="-38" transform="rotate(258) translate(0, -1)" />
-                <line x1="0" y1="0" x2="0" y2="-35" transform="rotate(283) translate(0, 1)" />
-                <line x1="0" y1="0" x2="0" y2="-40" transform="rotate(309) translate(0, -3)" />
-                <line x1="0" y1="0" x2="0" y2="-36" transform="rotate(334) translate(0, 2)" />
-                <circle cx="0" cy="0" r="9.5" fill="var(--accent-color)" stroke="none" />
-              </g>
-            </svg>
-          </div>
+        <div className="dark-banner">
 
           <h2 className="banner-title">WebForge is built on clear structure.</h2>
           <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-banner">
@@ -221,7 +179,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-inner">
-          <div className="footer-logo">WEBF\RGE</div>
+          <div className="footer-logo" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
+            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBF\RGE</span>
+          </div>
           
           <div className="footer-col">
             <h5>Product</h5>

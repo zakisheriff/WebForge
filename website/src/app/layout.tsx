@@ -25,13 +25,13 @@ export const metadata: Metadata = {
     title: "WebForge — AI-Ready Website Capture Engine",
     description: "Capture visual blueprints, sitemaps, and design tokens to feed into AI coding workflows.",
     siteName: "WebForge",
-    images: [{ url: "https://webforge.theatom.lk/assets/hero.png" }],
+    images: [{ url: "https://webforge.theatom.lk/Logo-WebForge.png" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "WebForge — AI-Ready Website Capture Engine",
     description: "Generate complete visual blueprints and CSS variables of any webpage for AI coding agents.",
-    images: ["https://webforge.theatom.lk/assets/hero.png"],
+    images: ["https://webforge.theatom.lk/Logo-WebForge.png"],
   }
 };
 
