@@ -254,22 +254,21 @@ a:hover {
   font-weight: 500;
 }
 
-/* Hero Section */
 .hero {
   max-width: 1440px;
   margin: 0 auto;
   padding: 80px 6% 40px;
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
   align-items: flex-start;
 }
 
 .hero-title {
-  font-size: 56px;
+  font-size: 64px;
   line-height: 1.15;
   letter-spacing: -1.5px;
-  max-width: 600px;
+  max-width: 900px;
 }
 
 .hero-title span {
@@ -280,16 +279,16 @@ a:hover {
 }
 
 .hero-desc {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--text-secondary);
   line-height: 1.6;
-  max-width: 440px;
+  max-width: 720px;
   padding-top: 10px;
 }
 
 @keyframes expandBanner {
   0% {
-    padding: 40px 18%;
+    padding: 40px 28%;
   }
   100% {
     padding: 40px 0%;
@@ -307,7 +306,7 @@ a:hover {
 
 .banner-container {
   width: 100%;
-  padding: 40px 18%;
+  padding: 40px 28%;
   animation: expandBanner linear both;
   animation-timeline: view();
   animation-range: entry 10% cover 45%;
