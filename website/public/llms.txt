@@ -1,0 +1,26 @@
+# WebForge
+
+WebForge is a high-fidelity Chrome Extension designed to capture website designs and output organized visual and structural blueprints tailored for AI coding agents.
+
+## Core Capabilities
+
+1. **Incremental Stitching Capture**: Scrolls dynamic pages, bypasses lazy-loading delays, hides scrollbars, and hides fixed/sticky headers to build a seamless screenshot canvas.
+2. **Viewport Emulation**: Dynamically resizes browser window dimensions to capture authentic media queries across devices (Desktop: 1440x900, Tablet: 768x1024, Mobile: 390x844).
+3. **Domain Crawler**: Spawns temporary sandboxed tabs to crawl and capture same-domain sitemaps sequentially.
+4. **Token Extractor**: Harvests active document color palettes (converted to hex values) and font family lists.
+
+## Blueprint Output Schema
+
+Every exported zip archive is structured as a standard directory containing:
+- `sitemap.json`: Array of crawled URLs.
+- `metadata.json`: Global design tokens (combined font families, colors, capture timestamp, page indexes).
+- `pages/<slug>/`: Folder for each captured page containing:
+  - `desktop.png`, `tablet.png`, `mobile.png` (high-fidelity screenshots).
+  - `metadata.json` (page-specific title, URL, extracted fonts, and colors).
+
+## For LLM Context Loading
+
+When rebuilding or studying layouts:
+- Feed `metadata.json` to understand global styles.
+- Look at the respective device PNG screenshot under `pages/<slug>/` as the visual blueprint.
+- Reference extracted colors for exact HEX matching.
