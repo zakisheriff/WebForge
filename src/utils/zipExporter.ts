@@ -60,11 +60,24 @@ export async function generateProjectZip(
       }
     }
 
-    // Save page metadata
-    pageFolder.file("metadata.json", JSON.stringify(page.metadata, null, 2));
+    // Save page metadata with debug asset metadata
+    const debugMetadata = {
+      ...page.metadata,
+      _debug_assets: page.assets ? {
+        has_assets: true,
+        html_size: page.assets.html?.length || 0,
+        inlineStyles_count: page.assets.inlineStyles?.length || 0,
+        externalStyles_count: page.assets.externalStyles?.length || 0,
+        inlineScripts_count: page.assets.inlineScripts?.length || 0,
+        externalScripts_count: page.assets.externalScripts?.length || 0,
+        media_count: page.assets.media?.length || 0
+      } : { has_assets: false }
+    };
+    pageFolder.file("metadata.json", JSON.stringify(debugMetadata, null, 2));
 
     // Save page source assets if present
     if (page.assets) {
+      pageFolder.file("debug_assets.json", JSON.stringify(page.assets, null, 2));
       const sourceFolder = pageFolder.folder("source");
       if (sourceFolder) {
         if (page.assets.html) {

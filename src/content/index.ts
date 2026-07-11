@@ -125,7 +125,7 @@ function preparePage() {
       pointer-events: none;
       white-space: nowrap;
     ">
-      <span style="font-size: 14px;">⚠️</span> WebForge is capturing this page. Please DO NOT touch, scroll, or switch tabs!
+      WebForge is capturing this page. Please DO NOT touch, scroll, or switch tabs!
     </div>
   `;
   document.body.appendChild(overlay);
