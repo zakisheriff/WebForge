@@ -53,9 +53,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(247, 245, 240, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgb(247, 245, 240);
   border-bottom: 1px solid var(--border-color);
   width: 100%;
 }
@@ -257,7 +255,7 @@ a:hover {
 
 @keyframes expandBanner {
   0% {
-    padding: 40px 6%;
+    padding: 40px 12%;
   }
   100% {
     padding: 40px 0%;
@@ -274,13 +272,11 @@ a:hover {
 }
 
 .banner-container {
-  max-width: 1440px;
-  margin: 0 auto;
   width: 100%;
-  padding: 40px 6%;
+  padding: 40px 12%;
   animation: expandBanner linear both;
   animation-timeline: view();
-  animation-range: entry 10% cover 40%;
+  animation-range: entry 10% cover 45%;
 }
 
 .dark-banner {
