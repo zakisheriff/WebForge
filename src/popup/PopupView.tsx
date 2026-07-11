@@ -11,6 +11,31 @@ import {
   X,
 } from "lucide-react";
 
+// Hover-aware button wrapper
+function HoverButton({
+  style,
+  hoverStyle,
+  onClick,
+  children,
+}: {
+  style: React.CSSProperties;
+  hoverStyle: React.CSSProperties;
+  onClick?: () => void;
+  children: React.ReactNode;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      style={{ ...style, ...(hovered ? hoverStyle : {}) }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function PopupView() {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
   const [crawlDepth, setCrawlDepth] = useState<number>(5);
@@ -18,6 +43,7 @@ export default function PopupView() {
   const [customUrls, setCustomUrls] = useState<string[]>([]);
   const [urlInput, setUrlInput] = useState<string>("");
   const [showUrlInput, setShowUrlInput] = useState<boolean>(false);
+  const [wsHovered, setWsHovered] = useState(false);
 
   useEffect(() => {
     if (typeof chrome !== "undefined" && chrome.tabs) {
@@ -79,8 +105,8 @@ export default function PopupView() {
     return base;
   };
 
-  // Shared styles
-  const secondaryBtn: React.CSSProperties = {
+  // Base styles
+  const baseBtn: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
@@ -88,28 +114,37 @@ export default function PopupView() {
     width: "100%",
     padding: "11px 14px",
     borderRadius: "12px",
-    border: "1px solid var(--border-color)",
-    background: "var(--bg-card)",
     cursor: "pointer",
     textAlign: "left",
     fontFamily: "var(--font-sans)",
-    color: "var(--text-primary)",
+    transition: "background 0.15s, opacity 0.15s",
   };
 
-  const primaryBtn: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: "10px",
-    width: "100%",
-    padding: "11px 14px",
-    borderRadius: "12px",
+  const orangeBtn: React.CSSProperties = {
+    ...baseBtn,
     border: "none",
     background: "var(--accent-color)",
-    cursor: "pointer",
-    textAlign: "left",
-    fontFamily: "var(--font-sans)",
     color: "#fff",
+  };
+  const orangeBtnHover: React.CSSProperties = { background: "#c25a33" };
+
+  const blackBtn: React.CSSProperties = {
+    ...baseBtn,
+    border: "none",
+    background: "#1a1a1a",
+    color: "#fff",
+  };
+  const blackBtnHover: React.CSSProperties = { background: "#333333" };
+
+  const secondaryBtn: React.CSSProperties = {
+    ...baseBtn,
+    border: "1px solid var(--border-color)",
+    background: "var(--bg-card)",
+    color: "var(--text-primary)",
+  };
+  const secondaryBtnHover: React.CSSProperties = {
+    background: "#ede8e3",
+    borderColor: "#c8bfb5",
   };
 
   const sectionLabel: React.CSSProperties = {
@@ -118,7 +153,7 @@ export default function PopupView() {
     color: "var(--text-muted)",
     letterSpacing: "0.3px",
     paddingLeft: "2px",
-    marginTop: "4px",
+    marginTop: "2px",
   };
 
   return (
@@ -171,10 +206,27 @@ export default function PopupView() {
             AI-Ready Website Capture Engine
           </p>
         </div>
+
+        {/* Workspace button with hover */}
         <button
+          onMouseEnter={() => setWsHovered(true)}
+          onMouseLeave={() => setWsHovered(false)}
           onClick={() => openDashboard("view")}
-          className="button"
-          style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+          style={{
+            padding: "6px 10px",
+            fontSize: "11px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            border: "1px solid var(--border-color)",
+            borderRadius: "8px",
+            background: wsHovered ? "#ede8e3" : "var(--bg-card)",
+            color: "var(--text-primary)",
+            cursor: "pointer",
+            fontFamily: "var(--font-sans)",
+            fontWeight: 500,
+            transition: "background 0.15s",
+          }}
         >
           Workspace <ExternalLink size={12} />
         </button>
@@ -182,13 +234,14 @@ export default function PopupView() {
 
       {error ? (
         <div
-          className="card"
           style={{
             display: "flex",
             gap: "10px",
             alignItems: "start",
-            borderColor: "#e0b3b3",
+            border: "1px solid #e0b3b3",
             background: "rgba(224,179,179,0.1)",
+            borderRadius: "10px",
+            padding: "10px 12px",
           }}
         >
           <ShieldAlert size={18} style={{ color: "#c0392b", flexShrink: 0, marginTop: "2px" }} />
@@ -222,19 +275,19 @@ export default function PopupView() {
             </div>
           </div>
 
-          {/* ── Current Page ─────────────────────────── */}
+          {/* ── Current Page ──────────────────────────────── */}
           <div style={sectionLabel}>Current page</div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <button style={primaryBtn} onClick={() => openDashboard("capture")}>
+            <HoverButton style={orangeBtn} hoverStyle={orangeBtnHover} onClick={() => openDashboard("capture")}>
               <Camera size={16} style={{ flexShrink: 0 }} />
               <div>
                 <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture current page</div>
                 <div style={{ fontSize: "11px", opacity: 0.85 }}>Full-page screenshot at desktop</div>
               </div>
-            </button>
+            </HoverButton>
 
-            <button style={secondaryBtn} onClick={() => openDashboard("responsive")}>
+            <HoverButton style={secondaryBtn} hoverStyle={secondaryBtnHover} onClick={() => openDashboard("responsive")}>
               <Monitor size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
               <div>
                 <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture current page + responsive</div>
@@ -242,22 +295,22 @@ export default function PopupView() {
                   Desktop, Tablet &amp; Mobile viewports
                 </div>
               </div>
-            </button>
+            </HoverButton>
           </div>
 
-          {/* ── Website Pages ─────────────────────────── */}
+          {/* ── Website Pages ──────────────────────────────── */}
           <div style={sectionLabel}>Website pages</div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <button style={{ ...primaryBtn, background: "rgba(217,107,67,0.9)" }} onClick={() => openDashboard("crawl", buildCrawlParams(false))}>
+            <HoverButton style={blackBtn} hoverStyle={blackBtnHover} onClick={() => openDashboard("crawl", buildCrawlParams(false))}>
               <Globe size={16} style={{ flexShrink: 0 }} />
               <div>
                 <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture website pages</div>
-                <div style={{ fontSize: "11px", opacity: 0.85 }}>Auto-crawl &amp; capture linked pages</div>
+                <div style={{ fontSize: "11px", opacity: 0.8 }}>Auto-crawl &amp; capture linked pages</div>
               </div>
-            </button>
+            </HoverButton>
 
-            <button style={secondaryBtn} onClick={() => openDashboard("crawl", buildCrawlParams(true))}>
+            <HoverButton style={secondaryBtn} hoverStyle={secondaryBtnHover} onClick={() => openDashboard("crawl", buildCrawlParams(true))}>
               <LayoutGrid size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
               <div>
                 <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture website pages + responsive</div>
@@ -265,7 +318,7 @@ export default function PopupView() {
                   Crawl pages with all 3 viewports each
                 </div>
               </div>
-            </button>
+            </HoverButton>
 
             {/* Crawl settings card */}
             <div
@@ -296,6 +349,7 @@ export default function PopupView() {
                     outline: "none",
                     fontSize: "11px",
                     cursor: "pointer",
+                    fontFamily: "var(--font-sans)",
                   }}
                 >
                   <option value={2}>2 pages</option>
@@ -345,7 +399,6 @@ export default function PopupView() {
 
               {showUrlInput && (
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  {/* Input row */}
                   <div style={{ display: "flex", gap: "6px" }}>
                     <input
                       type="text"
@@ -384,7 +437,6 @@ export default function PopupView() {
                     </button>
                   </div>
 
-                  {/* URL list */}
                   {customUrls.length > 0 && (
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {customUrls.map((u, i) => (
