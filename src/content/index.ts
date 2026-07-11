@@ -82,7 +82,12 @@ let hiddenElements: { element: HTMLElement; originalStyle: string }[] = [];
 // Prepare the page for screenshot capture (hiding fixed/sticky headers & scrollbars)
 function preparePage() {
   hiddenElements = [];
-  
+
+  // Always scroll to absolute top before starting capture so the first strip is the page header
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
   // Hide scrollbars
   document.body.style.overflow = 'hidden';
   document.documentElement.style.overflow = 'hidden';
