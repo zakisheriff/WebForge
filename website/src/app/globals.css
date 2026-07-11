@@ -388,9 +388,11 @@ a:hover {
 }
 
 .footer-logo {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 32px;
   color: var(--bg-color);
+  font-weight: 700;
+  letter-spacing: -1px;
 }
 
 .footer-col h5 {

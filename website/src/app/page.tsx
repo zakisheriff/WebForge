@@ -11,7 +11,7 @@ export default function Home() {
       <div className="navbar-container">
         <nav className="navbar">
           {/* Logo styled similar to A\ */}
-          <div className="nav-brand">W</div>
+          <div className="nav-brand">WEBF\RGE</div>
           
           {/* Desktop Menu */}
           <ul className="nav-menu-desktop">
@@ -40,7 +40,7 @@ export default function Home() {
           <div className="drawer-overlay" onClick={() => setIsMenuOpen(false)}></div>
           <div className="drawer-content">
             <div className="drawer-header">
-              <div className="nav-brand">W\</div>
+              <div className="nav-brand">WEBF\RGE</div>
               <button className="drawer-close-btn" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">&times;</button>
             </div>
             <ul className="drawer-links" style={{ marginTop: 0 }}>
@@ -142,7 +142,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-inner">
-          <div className="footer-logo">WebForge</div>
+          <div className="footer-logo">WEBF\RGE</div>
           
           <div className="footer-col">
             <h5>Product</h5>
