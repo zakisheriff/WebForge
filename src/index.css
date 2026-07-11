@@ -57,6 +57,7 @@ body.popup-mode {
   width: 380px;
   min-height: 400px;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 /* Scrollbars */

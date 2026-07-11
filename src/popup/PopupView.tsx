@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Camera, Monitor, Compass, ExternalLink, Settings, ShieldAlert } from 'lucide-react';
+import { Camera, Monitor, Compass, ExternalLink, ShieldAlert } from 'lucide-react';
 
 export default function PopupView() {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
-  const [crawlDepth, setCrawlDepth] = useState<number>(5);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,7 +33,8 @@ export default function PopupView() {
       color: 'var(--text-primary)',
       display: 'flex',
       flexDirection: 'column',
-      gap: '16px'
+      gap: '16px',
+      borderRadius: '20px'
     }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
@@ -61,7 +61,7 @@ export default function PopupView() {
       ) : (
         <>
           {/* Active site banner */}
-          <div className="card" style={{ padding: '10px 12px', background: 'var(--bg-card)' }}>
+          <div className="card" style={{ padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px' }}>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Target Website</div>
             <div style={{ fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--accent-color)' }}>
               {activeTab ? new URL(activeTab.url!).hostname : 'Detecting page...'}
@@ -72,7 +72,7 @@ export default function PopupView() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <button 
               className="button button-primary" 
-              style={{ justifyContent: 'flex-start', padding: '12px 16px' }}
+              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
               onClick={() => openDashboard('capture')}
             >
               <Camera size={16} />
@@ -84,7 +84,7 @@ export default function PopupView() {
 
             <button 
               className="button" 
-              style={{ justifyContent: 'flex-start', padding: '12px 16px' }}
+              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
               onClick={() => openDashboard('responsive')}
             >
               <Monitor size={16} />
@@ -94,49 +94,20 @@ export default function PopupView() {
               </div>
             </button>
 
-            <div className="card" style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button 
-                className="button" 
-                style={{ justifyContent: 'flex-start', padding: '8px 12px', width: '100%' }}
-                onClick={() => openDashboard('crawl', `&depth=${crawlDepth}`)}
-              >
-                <Compass size={16} />
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontWeight: 600, fontSize: '13px' }}>Crawl & Capture Website</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Follow local sitemap links</div>
-                </div>
-              </button>
-              
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px' }}>
-                <span style={{ color: 'var(--text-secondary)' }}>Crawl Depth:</span>
-                <select 
-                  value={crawlDepth} 
-                  onChange={(e) => setCrawlDepth(Number(e.target.value))}
-                  style={{
-                    background: 'var(--bg-app)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '4px',
-                    padding: '2px 6px',
-                    color: 'var(--text-primary)',
-                    outline: 'none'
-                  }}
-                >
-                  <option value={1}>1 page</option>
-                  <option value={5}>5 pages</option>
-                  <option value={10}>10 pages</option>
-                  <option value={20}>20 pages (Max)</option>
-                </select>
+            <button 
+              className="button" 
+              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
+              onClick={() => openDashboard('crawl', `&depth=10`)}
+            >
+              <Compass size={16} />
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontWeight: 600, fontSize: '13px' }}>Crawl & Capture Website</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Follow local sitemap links</div>
               </div>
-            </div>
+            </button>
           </div>
         </>
       )}
-
-      {/* Footer */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '10px', fontSize: '11px', color: 'var(--text-muted)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Settings size={12} /> WebForge v1.0.0</span>
-        <span>Developer Tool</span>
-      </div>
     </div>
   );
 }
