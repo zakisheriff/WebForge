@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  Download, Loader2, Monitor, Tablet, Smartphone, 
+  Download, Loader2, 
   Type, Palette, ExternalLink, FileText, ChevronRight, AlertTriangle 
 } from 'lucide-react';
 import { generateProjectZip } from '../utils/zipExporter';
@@ -8,7 +8,6 @@ import type { CapturedPage } from '../utils/zipExporter';
 
 export default function DashboardView() {
   const [targetUrl, setTargetUrl] = useState<string>('');
-  const [jobType, setJobType] = useState<string>('');
   const [status, setStatus] = useState<'idle' | 'capturing' | 'crawling' | 'error' | 'success'>('idle');
   const [progressMsg, setProgressMsg] = useState<string>('Initializing...');
   const [progressBar, setProgressBar] = useState<number>(0);
@@ -31,7 +30,6 @@ export default function DashboardView() {
     }
 
     setTargetUrl(url);
-    setJobType(action);
     startJob(action, url, depth, tabId);
   }, []);
 
@@ -197,7 +195,6 @@ export default function DashboardView() {
           <h1 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
             <span style={{ color: 'var(--accent-color)' }}>Web</span>Forge Workspace
           </h1>
-          <span className="badge" style={{ textTransform: 'capitalize' }}>{jobType} Mode</span>
         </div>
 
         {status === 'success' && (
@@ -276,7 +273,7 @@ export default function DashboardView() {
               flexDirection: 'column',
               overflowY: 'auto'
             }}>
-              <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
                 Captured Pages ({pages.length})
               </div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -335,27 +332,27 @@ export default function DashboardView() {
                     <button 
                       onClick={() => setActiveViewport('desktop')}
                       className={`button ${activeViewport === 'desktop' ? 'button-primary' : ''}`}
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     >
-                      <Monitor size={14} /> Desktop (1440)
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg> Desktop (1440)
                     </button>
                   )}
                   {availableViewports.includes('tablet') && (
                     <button 
                       onClick={() => setActiveViewport('tablet')}
                       className={`button ${activeViewport === 'tablet' ? 'button-primary' : ''}`}
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     >
-                      <Tablet size={14} /> Tablet (768)
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><circle cx="12" cy="17" r="0.75"></circle></svg> Tablet (768)
                     </button>
                   )}
                   {availableViewports.includes('mobile') && (
                     <button 
                       onClick={() => setActiveViewport('mobile')}
                       className={`button ${activeViewport === 'mobile' ? 'button-primary' : ''}`}
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     >
-                      <Smartphone size={14} /> Mobile (390)
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"></rect><circle cx="12" cy="18" r="0.75"></circle></svg> Mobile (390)
                     </button>
                   )}
                 </div>
