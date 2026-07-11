@@ -182,13 +182,14 @@ export default function PopupView() {
   // Responsive variant — orange stroke
   const responsiveBtn: React.CSSProperties = {
     ...baseBtn,
-    border: "1.5px solid var(--accent-color)",
+    border: "1px solid rgba(217, 107, 67, 0.55)",
     background: "var(--bg-card)",
     color: "var(--text-primary)",
+    outline: "none",
   };
   const responsiveBtnHover: React.CSSProperties = {
     background: "rgba(217,107,67,0.06)",
-    borderColor: "var(--accent-color)",
+    border: "1px solid rgba(217, 107, 67, 1)",
   };
 
   const sectionLabel: React.CSSProperties = {
