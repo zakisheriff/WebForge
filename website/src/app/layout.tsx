@@ -2,37 +2,188 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WebForge — AI-Ready Website Capture Chrome Extension",
-  description: "Capture high-fidelity visual blueprints, multi-viewport designs, sitemaps, and CSS design tokens from any website. Optimized for Claude, Cursor, and AI coding agents.",
+  metadataBase: new URL("https://webforge.theatom.lk"),
+
+  title: {
+    default: "WebForge — AI Website Capture & Visual Blueprint Chrome Extension",
+    template: "%s | WebForge",
+  },
+
+  description:
+    "WebForge is an AI-ready Chrome extension that captures complete websites into high-fidelity visual blueprints, full-page screenshots, sitemaps, CSS design tokens, fonts, colors, layouts, and assets for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, and modern AI coding workflows.",
+
   keywords: [
-    "webforge", 
-    "website capture", 
-    "gofullpage alternative", 
-    "screenshot to code", 
-    "claude code input", 
-    "cursor visual blueprint", 
-    "design token extractor", 
-    "web crawler", 
-    "chrome extension"
+    // Brand
+    "WebForge",
+    "WebForge AI",
+    "WebForge Download",
+    "Download WebForge",
+    "WebForge Chrome Extension",
+    "WebForge Extension",
+    "Install WebForge",
+    "WebForge by The Atom",
+    "The Atom WebForge",
+    "WebForge LK",
+    "WebForge Sri Lanka",
+
+    // Company
+    "The Atom",
+    "The Atom Studio",
+    "The Atom Sri Lanka",
+    "The Atom LK",
+    "The Atom Developer Tools",
+
+    // Core Product
+    "website capture",
+    "website screenshot",
+    "full page screenshot",
+    "website blueprint",
+    "visual blueprint",
+    "website crawler",
+    "website scraper",
+    "website inspector",
+    "website analyzer",
+    "website reverse engineering",
+    "website cloning",
+    "website clone tool",
+    "responsive website capture",
+    "multi viewport capture",
+    "desktop mobile tablet capture",
+    "CSS design token extractor",
+    "CSS variable extractor",
+    "CSS extractor",
+    "font extractor",
+    "color palette extractor",
+    "layout extractor",
+    "HTML extractor",
+    "DOM analyzer",
+    "website audit",
+    "website exporter",
+    "website documentation",
+    "web archive",
+
+    // AI
+    "AI website capture",
+    "AI website scraper",
+    "AI website blueprint",
+    "AI web crawler",
+    "AI frontend development",
+    "AI coding workflow",
+    "website to AI",
+    "website to code",
+    "screenshot to code",
+    "image to code",
+    "design to code",
+    "frontend to AI",
+    "visual context for AI",
+    "AI developer tools",
+    "AI coding extension",
+
+    // AI Platforms
+    "Claude Code",
+    "Claude AI",
+    "Cursor",
+    "Cursor AI",
+    "Windsurf",
+    "GitHub Copilot",
+    "ChatGPT",
+    "OpenAI",
+    "Gemini",
+    "Google Gemini",
+    "Lovable",
+    "Bolt.new",
+    "v0",
+    "v0.dev",
+    "Replit AI",
+    "Codeium",
+    "Continue.dev",
+
+    // SEO / Searches
+    "best website capture tool",
+    "best website screenshot extension",
+    "Chrome developer extension",
+    "developer productivity",
+    "frontend developer tools",
+    "web development tools",
+
+    // Competitors
+    "GoFullPage alternative",
+    "Firecrawl alternative",
+    "Browser Use alternative",
+    "ScreenshotOne alternative",
+    "website crawler alternative",
+    "website scraper alternative",
   ],
-  authors: [{ name: "Zaki Sheriff", url: "https://github.com/zakisheriff" }],
+
+  authors: [
+    {
+      name: "Zaki Sheriff",
+      url: "https://github.com/zakisheriff",
+    },
+  ],
+
+  creator: "Zaki Sheriff",
+
+  publisher: "The Atom",
+
+  category: "Developer Tools",
+
   alternates: {
     canonical: "https://webforge.theatom.lk",
   },
+
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
+    },
+  },
+
   openGraph: {
     type: "website",
+    locale: "en_US",
     url: "https://webforge.theatom.lk",
-    title: "WebForge — AI-Ready Website Capture Engine",
-    description: "Capture visual blueprints, sitemaps, and design tokens to feed into AI coding workflows.",
     siteName: "WebForge",
-    images: [{ url: "https://webforge.theatom.lk/Logo-WebForge.png" }],
+
+    title:
+      "WebForge — AI Website Capture & Visual Blueprint Chrome Extension",
+
+    description:
+      "Capture complete websites into AI-ready visual blueprints, responsive screenshots, sitemaps, CSS design tokens, fonts, colors, layouts, and assets for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and modern AI coding workflows.",
+
+    images: [
+      {
+        url: "https://webforge.theatom.lk/Logo-WebForge.png",
+        width: 1200,
+        height: 630,
+        alt: "WebForge",
+      },
+    ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "WebForge — AI-Ready Website Capture Engine",
-    description: "Generate complete visual blueprints and CSS variables of any webpage for AI coding agents.",
+
+    title:
+      "WebForge — AI Website Capture & Visual Blueprint Extension",
+
+    description:
+      "Generate AI-ready website blueprints, screenshots, sitemaps, CSS variables, fonts, layouts, and design tokens for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and other AI coding agents.",
+
     images: ["https://webforge.theatom.lk/Logo-WebForge.png"],
-  }
+  },
+
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -49,24 +200,67 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              "name": "WebForge",
-              "operatingSystem": "Chrome OS, macOS, Windows, Linux",
-              "applicationCategory": "DeveloperApplication",
-              "offers": {
-                "@type": "Offer",
-                "price": "0.00",
-                "priceCurrency": "USD"
+
+              name: "WebForge",
+
+              url: "https://webforge.theatom.lk",
+
+              applicationCategory: "DeveloperApplication",
+
+              operatingSystem:
+                "Windows, macOS, Linux, ChromeOS",
+
+              description:
+                "WebForge is an AI-ready Chrome extension that captures complete websites into visual blueprints, screenshots, sitemaps, CSS design tokens, fonts, layouts, and assets for AI coding assistants like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and Gemini.",
+
+              author: {
+                "@type": "Person",
+                name: "Zaki Sheriff",
               },
-              "description": "An advanced browser screenshot and website crawler extension that compiles pages into visual blueprints and CSS design tokens for AI coding tools like Claude and Cursor.",
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "ratingCount": "142"
-              }
-            })
+
+              creator: {
+                "@type": "Organization",
+                name: "The Atom",
+              },
+
+              publisher: {
+                "@type": "Organization",
+                name: "The Atom",
+              },
+
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+              },
+
+              softwareVersion: "1.0",
+
+              browserRequirements: "Google Chrome",
+
+              keywords: [
+                "WebForge",
+                "Website Capture",
+                "Website Blueprint",
+                "Website Screenshot",
+                "Website Scraper",
+                "Website Crawler",
+                "AI Coding",
+                "Claude Code",
+                "Cursor",
+                "Windsurf",
+                "GitHub Copilot",
+                "ChatGPT",
+                "Gemini",
+                "Chrome Extension",
+                "CSS Design Tokens",
+                "Frontend Development",
+              ],
+            }),
           }}
         />
       </head>
+
       <body>{children}</body>
     </html>
   );
