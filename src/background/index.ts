@@ -55,8 +55,15 @@ async function captureFullPage(tabId: number, windowId: number): Promise<string>
       // Delay to allow rendering to settle and prevent MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND quota limit
       await new Promise(r => setTimeout(r, 350));
 
+      // Hide overlay in target page so it is excluded from the screenshot
+      await chrome.tabs.sendMessage(tabId, { action: 'HIDE_OVERLAY' }).catch(() => {});
+
       // Capture visible viewport
       const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
+
+      // Restore warning overlay on target page for user visibility
+      await chrome.tabs.sendMessage(tabId, { action: 'SHOW_OVERLAY' }).catch(() => {});
+
       const bitmap = await dataUrlToImageBitmap(dataUrl);
 
       // Draw on stitched canvas

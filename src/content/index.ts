@@ -100,6 +100,35 @@ function preparePage() {
       el.style.visibility = 'hidden';
     }
   });
+
+  // Inject floating warning banner so user does not touch or close the tab
+  const overlay = document.createElement('div');
+  overlay.id = 'webforge-capture-overlay';
+  overlay.innerHTML = `
+    <div style="
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #d96b43;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 99999999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      white-space: nowrap;
+    ">
+      <span style="font-size: 14px;">⚠️</span> WebForge is capturing this page. Please DO NOT touch, scroll, or switch tabs!
+    </div>
+  `;
+  document.body.appendChild(overlay);
   
   return {
     totalWidth: Math.max(document.body.scrollWidth, document.documentElement.scrollWidth, window.innerWidth),
@@ -119,6 +148,9 @@ function restorePage() {
     element.style.visibility = originalStyle;
   });
   hiddenElements = [];
+
+  const overlay = document.getElementById('webforge-capture-overlay');
+  if (overlay) overlay.remove();
 }
 
 // Main message router
@@ -137,6 +169,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   } else if (message.action === 'RESTORE_PAGE') {
     restorePage();
     sendResponse({ status: 'restored' });
+  } else if (message.action === 'HIDE_OVERLAY') {
+    const overlay = document.getElementById('webforge-capture-overlay');
+    if (overlay) overlay.style.display = 'none';
+    sendResponse({ status: 'hidden' });
+  } else if (message.action === 'SHOW_OVERLAY') {
+    const overlay = document.getElementById('webforge-capture-overlay');
+    if (overlay) overlay.style.display = 'block';
+    sendResponse({ status: 'shown' });
   } else if (message.action === 'EXTRACT_METADATA') {
     const tokens = extractDesignTokens();
     const links = extractLinks();
