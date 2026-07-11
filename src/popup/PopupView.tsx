@@ -48,22 +48,27 @@ export default function PopupView() {
     const trimmed = urlInput.trim();
     if (!trimmed) return;
     try {
-      const parsed = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
-      if (!customUrls.includes(parsed.href)) {
-        setCustomUrls([...customUrls, parsed.href]);
-      }
+      const full = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+      const parsed = new URL(full);
+      setCustomUrls((prev) => {
+        if (prev.includes(parsed.href)) return prev;
+        return [...prev, parsed.href];
+      });
+      setUrlInput("");
     } catch {
-      // invalid URL, ignore
+      // invalid url — silently ignore
     }
-    setUrlInput("");
   };
 
   const removeCustomUrl = (idx: number) => {
-    setCustomUrls(customUrls.filter((_, i) => i !== idx));
+    setCustomUrls((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") addCustomUrl();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addCustomUrl();
+    }
   };
 
   const buildCrawlParams = (responsive = false) => {
@@ -74,19 +79,46 @@ export default function PopupView() {
     return base;
   };
 
-  const btnBase: React.CSSProperties = {
-    justifyContent: "flex-start",
-    padding: "11px 14px",
-    borderRadius: "12px",
-    width: "100%",
-    gap: "10px",
+  // Shared styles
+  const secondaryBtn: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
+    justifyContent: "flex-start",
+    gap: "10px",
+    width: "100%",
+    padding: "11px 14px",
+    borderRadius: "12px",
     border: "1px solid var(--border-color)",
     background: "var(--bg-card)",
     cursor: "pointer",
     textAlign: "left",
-    transition: "background 0.15s, border-color 0.15s",
+    fontFamily: "var(--font-sans)",
+    color: "var(--text-primary)",
+  };
+
+  const primaryBtn: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: "10px",
+    width: "100%",
+    padding: "11px 14px",
+    borderRadius: "12px",
+    border: "none",
+    background: "var(--accent-color)",
+    cursor: "pointer",
+    textAlign: "left",
+    fontFamily: "var(--font-sans)",
+    color: "#fff",
+  };
+
+  const sectionLabel: React.CSSProperties = {
+    fontSize: "11px",
+    fontWeight: 600,
+    color: "var(--text-muted)",
+    letterSpacing: "0.3px",
+    paddingLeft: "2px",
+    marginTop: "4px",
   };
 
   return (
@@ -99,7 +131,7 @@ export default function PopupView() {
         color: "var(--text-primary)",
         display: "flex",
         flexDirection: "column",
-        gap: "14px",
+        gap: "12px",
         borderRadius: "20px",
       }}
     >
@@ -128,21 +160,10 @@ export default function PopupView() {
             <img
               src="/icons/icon128.png"
               alt="WebForge Logo"
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "8px",
-                flexShrink: 0,
-              }}
+              style={{ width: "40px", height: "40px", borderRadius: "8px", flexShrink: 0 }}
             />
             WebForge{" "}
-            <span
-              style={{
-                fontSize: "11px",
-                color: "var(--text-muted)",
-                fontWeight: 400,
-              }}
-            >
+            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontWeight: 400 }}>
               by The Atom
             </span>
           </h2>
@@ -153,13 +174,7 @@ export default function PopupView() {
         <button
           onClick={() => openDashboard("view")}
           className="button"
-          style={{
-            padding: "4px 8px",
-            fontSize: "11px",
-            display: "flex",
-            alignItems: "center",
-            gap: "4px",
-          }}
+          style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
         >
           Workspace <ExternalLink size={12} />
         </button>
@@ -176,34 +191,21 @@ export default function PopupView() {
             background: "rgba(224,179,179,0.1)",
           }}
         >
-          <ShieldAlert
-            size={18}
-            style={{ color: "#c0392b", flexShrink: 0, marginTop: "2px" }}
-          />
-          <div style={{ fontSize: "12px", color: "var(--text-primary)" }}>
-            {error}
-          </div>
+          <ShieldAlert size={18} style={{ color: "#c0392b", flexShrink: 0, marginTop: "2px" }} />
+          <div style={{ fontSize: "12px", color: "var(--text-primary)" }}>{error}</div>
         </div>
       ) : (
         <>
           {/* Active site banner */}
           <div
-            className="card"
             style={{
               padding: "9px 12px",
               background: "var(--bg-card)",
+              border: "1px solid var(--border-color)",
               borderRadius: "12px",
             }}
           >
-            <div
-              style={{
-                fontSize: "10px",
-                color: "var(--text-muted)",
-                letterSpacing: "0.5px",
-                textTransform: "uppercase",
-                marginBottom: "2px",
-              }}
-            >
+            <div style={{ fontSize: "10px", color: "var(--text-muted)", marginBottom: "2px" }}>
               Target Website
             </div>
             <div
@@ -220,65 +222,52 @@ export default function PopupView() {
             </div>
           </div>
 
-          {/* Capture Actions */}
+          {/* ── Current Page ─────────────────────────── */}
+          <div style={sectionLabel}>Current page</div>
+
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-
-            {/* ── Single Page ─────────────────────────────── */}
-            <div style={{ fontSize: "10px", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.6px", paddingLeft: "2px" }}>
-              Current Page
-            </div>
-
-            <button
-              className="button button-primary"
-              style={{ ...btnBase, border: "none" }}
-              onClick={() => openDashboard("capture")}
-            >
+            <button style={primaryBtn} onClick={() => openDashboard("capture")}>
               <Camera size={16} style={{ flexShrink: 0 }} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture Current Page</div>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture current page</div>
                 <div style={{ fontSize: "11px", opacity: 0.85 }}>Full-page screenshot at desktop</div>
               </div>
             </button>
 
-            <button
-              style={{ ...btnBase }}
-              onClick={() => openDashboard("responsive")}
-            >
+            <button style={secondaryBtn} onClick={() => openDashboard("responsive")}>
               <Monitor size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture Current Page + Responsive</div>
-                <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>Desktop, Tablet &amp; Mobile viewports</div>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture current page + responsive</div>
+                <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
+                  Desktop, Tablet &amp; Mobile viewports
+                </div>
               </div>
             </button>
+          </div>
 
-            {/* ── Website Pages ────────────────────────────── */}
-            <div style={{ fontSize: "10px", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.6px", paddingLeft: "2px", marginTop: "4px" }}>
-              Website Pages
-            </div>
+          {/* ── Website Pages ─────────────────────────── */}
+          <div style={sectionLabel}>Website pages</div>
 
-            <button
-              style={{ ...btnBase }}
-              onClick={() => openDashboard("crawl", buildCrawlParams(false))}
-            >
-              <Globe size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <button style={{ ...primaryBtn, background: "rgba(217,107,67,0.9)" }} onClick={() => openDashboard("crawl", buildCrawlParams(false))}>
+              <Globe size={16} style={{ flexShrink: 0 }} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture Website Pages</div>
-                <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>Auto-crawl &amp; capture linked pages</div>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture website pages</div>
+                <div style={{ fontSize: "11px", opacity: 0.85 }}>Auto-crawl &amp; capture linked pages</div>
               </div>
             </button>
 
-            <button
-              style={{ ...btnBase }}
-              onClick={() => openDashboard("crawl", buildCrawlParams(true))}
-            >
+            <button style={secondaryBtn} onClick={() => openDashboard("crawl", buildCrawlParams(true))}>
               <LayoutGrid size={16} style={{ flexShrink: 0, color: "var(--text-secondary)" }} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture Website Pages + Responsive</div>
-                <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>Crawl pages with all 3 viewports each</div>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>Capture website pages + responsive</div>
+                <div style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
+                  Crawl pages with all 3 viewports each
+                </div>
               </div>
             </button>
 
-            {/* ── Crawl settings ────────────────────────────── */}
+            {/* Crawl settings card */}
             <div
               style={{
                 background: "var(--bg-card)",
@@ -290,7 +279,7 @@ export default function PopupView() {
                 gap: "8px",
               }}
             >
-              {/* Pages limit row */}
+              {/* Pages limit */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ color: "var(--text-secondary)", fontSize: "11px", fontWeight: 500 }}>
                   Pages limit
@@ -309,153 +298,169 @@ export default function PopupView() {
                     cursor: "pointer",
                   }}
                 >
-                  <option value={1}>1 page</option>
                   <option value={2}>2 pages</option>
                   <option value={3}>3 pages</option>
                   <option value={5}>5 pages</option>
+                  <option value={8}>8 pages</option>
                   <option value={10}>10 pages</option>
+                  <option value={15}>15 pages</option>
                   <option value={20}>20 pages</option>
-                  <option value={50}>50 pages</option>
                 </select>
               </div>
 
-              {/* Custom URLs */}
-              <div>
-                <button
-                  onClick={() => setShowUrlInput(!showUrlInput)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    color: "var(--accent-color)",
-                    padding: 0,
-                  }}
-                >
-                  <Plus size={12} />
-                  Add specific page URLs to crawl
-                  {customUrls.length > 0 && (
-                    <span style={{
+              {/* Custom URLs toggle */}
+              <button
+                onClick={() => setShowUrlInput((v) => !v)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  color: "var(--accent-color)",
+                  padding: 0,
+                  fontFamily: "var(--font-sans)",
+                }}
+              >
+                <Plus size={12} />
+                Add specific page URLs to crawl
+                {customUrls.length > 0 && (
+                  <span
+                    style={{
                       background: "var(--accent-color)",
                       color: "#fff",
                       borderRadius: "10px",
                       padding: "1px 6px",
                       fontSize: "10px",
                       fontWeight: 700,
-                    }}>
-                      {customUrls.length}
-                    </span>
-                  )}
-                </button>
+                    }}
+                  >
+                    {customUrls.length}
+                  </span>
+                )}
+              </button>
 
-                {showUrlInput && (
-                  <div style={{ marginTop: "8px", display: "flex", flexDirection: "column", gap: "6px" }}>
-                    <div style={{ display: "flex", gap: "6px" }}>
-                      <input
-                        type="text"
-                        value={urlInput}
-                        onChange={(e) => setUrlInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="https://example.com/about"
-                        style={{
-                          flex: 1,
-                          fontSize: "11px",
-                          padding: "5px 8px",
-                          border: "1px solid var(--border-color)",
-                          borderRadius: "7px",
-                          background: "var(--bg-app)",
-                          color: "var(--text-primary)",
-                          outline: "none",
-                        }}
-                      />
-                      <button
-                        onClick={addCustomUrl}
-                        style={{
-                          background: "var(--accent-color)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "7px",
-                          padding: "0 10px",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Add
-                      </button>
-                    </div>
+              {showUrlInput && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  {/* Input row */}
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    <input
+                      type="text"
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="https://example.com/about"
+                      style={{
+                        flex: 1,
+                        fontSize: "11px",
+                        padding: "5px 8px",
+                        border: "1px solid var(--border-color)",
+                        borderRadius: "7px",
+                        background: "var(--bg-app)",
+                        color: "var(--text-primary)",
+                        outline: "none",
+                        fontFamily: "var(--font-sans)",
+                      }}
+                    />
+                    <button
+                      onClick={addCustomUrl}
+                      style={{
+                        background: "var(--accent-color)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "7px",
+                        padding: "0 12px",
+                        cursor: "pointer",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        fontFamily: "var(--font-sans)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
 
-                    {customUrls.length > 0 && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                        {customUrls.map((u, i) => (
-                          <div
-                            key={i}
+                  {/* URL list */}
+                  {customUrls.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                      {customUrls.map((u, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            background: "var(--bg-app)",
+                            border: "1px solid var(--border-color)",
+                            borderRadius: "6px",
+                            padding: "4px 6px 4px 8px",
+                          }}
+                        >
+                          <span
                             style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              background: "var(--bg-app)",
-                              border: "1px solid var(--border-color)",
-                              borderRadius: "6px",
-                              padding: "4px 8px",
+                              flex: 1,
                               fontSize: "10px",
                               color: "var(--text-secondary)",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
                             }}
                           >
-                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
-                              {u}
-                            </span>
-                            <button
-                              onClick={() => removeCustomUrl(i)}
-                              style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                padding: "0 0 0 6px",
-                                color: "var(--text-muted)",
-                                flexShrink: 0,
-                              }}
-                            >
-                              <X size={10} />
-                            </button>
-                          </div>
-                        ))}
-                        <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>
-                          These URLs will be crawled first, then auto-discovery continues up to the page limit.
+                            {u}
+                          </span>
+                          <button
+                            onClick={() => removeCustomUrl(i)}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: "2px 4px",
+                              color: "var(--text-muted)",
+                              display: "flex",
+                              alignItems: "center",
+                              flexShrink: 0,
+                            }}
+                          >
+                            <X size={11} />
+                          </button>
                         </div>
+                      ))}
+                      <div style={{ fontSize: "10px", color: "var(--text-muted)" }}>
+                        These URLs are crawled first, then auto-discovery fills the rest.
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-
-            {/* Buy Me a Coffee */}
-            <a
-              href="https://buymeacoffee.com/theoneatom"
-              target="_blank"
-              rel="noreferrer"
-              className="button"
-              style={{
-                justifyContent: "center",
-                gap: "6px",
-                padding: "10px 12px",
-                borderRadius: "12px",
-                background: "rgba(217, 107, 67, 0.12)",
-                color: "var(--accent-color)",
-                textDecoration: "none",
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-            >
-              <Coffee size={14} />
-              Buy Me a Coffee
-            </a>
           </div>
+
+          {/* Buy Me a Coffee */}
+          <a
+            href="https://buymeacoffee.com/theoneatom"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              padding: "10px 12px",
+              borderRadius: "12px",
+              background: "rgba(217, 107, 67, 0.12)",
+              color: "var(--accent-color)",
+              textDecoration: "none",
+              fontSize: "12px",
+              fontWeight: 600,
+              fontFamily: "var(--font-sans)",
+            }}
+          >
+            <Coffee size={14} />
+            Buy Me a Coffee
+          </a>
         </>
       )}
     </div>
