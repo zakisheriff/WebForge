@@ -80,21 +80,6 @@ export default function Home() {
           <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-banner">
             Get Chrome Extension <span>&rarr;</span>
           </a>
-
-          <div className="banner-footer">
-            <div className="banner-footer-item">
-              <h4>Incremental Stitching</h4>
-              <p>Hides scrollbars, scroll-triggers lazy elements, and removes sticky duplication.</p>
-            </div>
-            <div className="banner-footer-item">
-              <h4>Viewport Emulation</h4>
-              <p>Resizes the tab window to capture authentic CSS media queries across devices.</p>
-            </div>
-            <div className="banner-footer-item">
-              <h4>Domain Crawling</h4>
-              <p>Traverses page hierarchies to compile sitemaps and visual indexes instantly.</p>
-            </div>
-          </div>
         </div>
       </section>
 
