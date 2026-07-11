@@ -51,6 +51,7 @@ export default function Home() {
             <li><a href="#features">How It Works</a></li>
             <li><a href="#structure">Blueprint Structure</a></li>
             <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer">Releases</a></li>
+            <li><a href="https://buymeacoffee.com/theoneatom" target="_blank" rel="noreferrer">Buy Me a Coffee</a></li>
             <li>
               <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-nav-split">
                 Install WebForge <span>&or;</span>
@@ -80,6 +81,7 @@ export default function Home() {
               <li><a href="#features" onClick={() => handleLinkClick('#features')}>How It Works</a></li>
               <li><a href="#structure" onClick={() => handleLinkClick('#structure')}>Blueprint Structure</a></li>
               <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={closeMenu}>Releases</a></li>
+              <li><a href="https://buymeacoffee.com/theoneatom" target="_blank" rel="noreferrer" onClick={closeMenu}>Buy Me a Coffee</a></li>
             </ul>
             
             <div className="drawer-footer" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -193,6 +195,7 @@ export default function Home() {
             <ul className="footer-links">
               <li><a href="https://github.com/zakisheriff" target="_blank" rel="noreferrer">Developer Profile</a></li>
               <li><a href="mailto:zaki@theoneatom.com">Contact Support</a></li>
+              <li><a href="https://buymeacoffee.com/theoneatom" target="_blank" rel="noreferrer">Buy Me a Coffee</a></li>
             </ul>
           </div>
         </div>
