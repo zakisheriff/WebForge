@@ -37,54 +37,60 @@ async function captureFullPage(tabId: number, windowId: number): Promise<string>
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get OffscreenCanvas 2D context');
 
-  // 3. Scroll and capture
-  let currentY = 0;
-  while (currentY < totalHeight) {
-    let scrollY = currentY;
-    // Handle overlapping bottom section
-    if (scrollY + viewportHeight > totalHeight) {
-      scrollY = Math.max(0, totalHeight - viewportHeight);
+  try {
+    // 3. Scroll and capture
+    let currentY = 0;
+    while (currentY < totalHeight) {
+      let scrollY = currentY;
+      // Handle overlapping bottom section
+      if (scrollY + viewportHeight > totalHeight) {
+        scrollY = Math.max(0, totalHeight - viewportHeight);
+      }
+
+      // Scroll to position
+      await chrome.tabs.sendMessage(tabId, { action: 'SCROLL_TO', x: 0, y: scrollY });
+      
+      // Delay to allow rendering to settle and prevent MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND quota limit
+      await new Promise(r => setTimeout(r, 350));
+
+      // Capture visible viewport
+      const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
+      const bitmap = await dataUrlToImageBitmap(dataUrl);
+
+      // Draw on stitched canvas
+      ctx.drawImage(
+        bitmap,
+        0,
+        0,
+        bitmap.width,
+        bitmap.height,
+        0,
+        scrollY * devicePixelRatio,
+        totalWidth * devicePixelRatio,
+        viewportHeight * devicePixelRatio
+      );
+
+      bitmap.close();
+
+      if (currentY + viewportHeight >= totalHeight) {
+        break;
+      }
+      currentY += viewportHeight;
     }
 
-    // Scroll to position
-    await chrome.tabs.sendMessage(tabId, { action: 'SCROLL_TO', x: 0, y: scrollY });
-    
-    // Capture visible viewport
-    const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
-    const bitmap = await dataUrlToImageBitmap(dataUrl);
+    // 4. Convert stitched canvas back to base64 URL
+    const blob = await canvas.convertToBlob({ type: 'image/png' });
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
 
-    // Draw on stitched canvas
-    ctx.drawImage(
-      bitmap,
-      0,
-      0,
-      bitmap.width,
-      bitmap.height,
-      0,
-      scrollY * devicePixelRatio,
-      totalWidth * devicePixelRatio,
-      viewportHeight * devicePixelRatio
-    );
-
-    bitmap.close();
-
-    if (currentY + viewportHeight >= totalHeight) {
-      break;
-    }
-    currentY += viewportHeight;
+  } finally {
+    // ALWAYS restore page scroll state even if screenshot capture fails
+    await chrome.tabs.sendMessage(tabId, { action: 'RESTORE_PAGE' }).catch(() => {});
   }
-
-  // 4. Restore page scroll/elements
-  await chrome.tabs.sendMessage(tabId, { action: 'RESTORE_PAGE' });
-
-  // 5. Convert stitched canvas back to base64 URL
-  const blob = await canvas.convertToBlob({ type: 'image/png' });
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
 }
 
 // Resize window helper
