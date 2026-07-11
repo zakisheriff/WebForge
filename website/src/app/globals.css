@@ -49,13 +49,18 @@ a:hover {
 
 /* Nav Bar */
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 6%;
-  background: transparent;
-  max-width: 1440px;
-  margin: 0 auto;
+  padding: 16px 6%;
+  background: rgba(247, 245, 240, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-color);
+  width: 100%;
 }
 
 .nav-brand {

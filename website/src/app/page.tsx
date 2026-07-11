@@ -7,11 +7,10 @@ export default function Home() {
       <nav className="navbar">
         <div className="nav-brand">WebForge</div>
         <ul className="nav-links">
-          <li><a href="#features">Features</a></li>
-          <li><a href="#blueprints">Blueprints</a></li>
+          <li><a href="#features">How It Works</a></li>
+          <li><a href="#structure">Blueprint Structure</a></li>
           <li><a href="#releases">Releases</a></li>
-          <li><a href="#docs">Documentation</a></li>
-          <li><a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-nav-primary">Install WebForge</a></li>
+          <li><a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-nav-primary">Get Extension</a></li>
         </ul>
       </nav>
 
@@ -73,7 +72,7 @@ export default function Home() {
                   <span>Announcements</span>
                 </div>
               </div>
-              <a href="#releases" className="btn-card">Read announcement &rarr;</a>
+              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">Get WebForge &rarr;</a>
             </div>
           </div>
 
@@ -96,7 +95,7 @@ export default function Home() {
                   <span>Core Engine</span>
                 </div>
               </div>
-              <a href="#releases" className="btn-card">Explore features &rarr;</a>
+              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">Explore Code &rarr;</a>
             </div>
           </div>
 
@@ -119,38 +118,41 @@ export default function Home() {
                   <span>AI Blueprints</span>
                 </div>
               </div>
-              <a href="#releases" className="btn-card">View guide &rarr;</a>
+              <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-card">View guide &rarr;</a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* List / Publications Section */}
-      <section id="features" className="list-section">
+      {/* Differentiated Structure: Blueprint Output Explorer */}
+      <section id="structure" className="list-section" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '60px' }}>
         <div className="list-section-left">
-          <h3>At WebForge, we build tools to serve AI-driven development.</h3>
+          <h3>Generated Output Package Structure</h3>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '12px', lineHeight: '1.6' }}>
+            Every capture complies with the WebForge context specification. It packages visual layouts alongside structural tokens so AI agents can reconstruct frontend code with high precision.
+          </p>
         </div>
-        <div className="list-container">
-          <div className="list-item">
-            <span className="list-item-title">Core Views on AI Contexts</span>
-            <span className="list-item-tag">Announcements</span>
-          </div>
-          <div className="list-item">
-            <span className="list-item-title">Structure and Sitemap Indexing</span>
-            <span className="list-item-tag">Technical Specs</span>
-          </div>
-          <div className="list-item">
-            <span className="list-item-title">Window Dimension Resizing Policy</span>
-            <span className="list-item-tag">Documentation</span>
-          </div>
-          <div className="list-item">
-            <span className="list-item-title">JSON Metadata Schemas</span>
-            <span className="list-item-tag">AI Input Specifications</span>
-          </div>
-          <div className="list-item">
-            <span className="list-item-title">WebForge Constitution</span>
-            <span className="list-item-tag">Principles</span>
-          </div>
+        <div style={{
+          background: 'var(--card-bg)',
+          borderRadius: '8px',
+          padding: '24px 32px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '13px',
+          lineHeight: '1.7',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-color)'
+        }}>
+          <div style={{ color: 'var(--accent-color)', fontWeight: 600, marginBottom: '10px' }}>WebForge_Project/</div>
+          <div style={{ paddingLeft: '20px' }}>├── pages/</div>
+          <div style={{ paddingLeft: '40px' }}>├── home/</div>
+          <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>├── desktop.png <span style={{ opacity: 0.5 }}>(1440x900 full page)</span></div>
+          <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>├── tablet.png <span style={{ opacity: 0.5 }}>(768x1024 full page)</span></div>
+          <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>└── mobile.png <span style={{ opacity: 0.5 }}>(390x844 full page)</span></div>
+          <div style={{ paddingLeft: '40px' }}>└── about/</div>
+          <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>├── desktop.png</div>
+          <div style={{ paddingLeft: '60px', color: 'var(--text-secondary)' }}>└── metadata.json</div>
+          <div style={{ paddingLeft: '20px' }}>├── sitemap.json <span style={{ opacity: 0.5 }}>(Discovered domain tree)</span></div>
+          <div style={{ paddingLeft: '20px' }}>└── metadata.json <span style={{ opacity: 0.5 }}>(Global colors, fonts & timestamps)</span></div>
         </div>
       </section>
 
@@ -160,46 +162,27 @@ export default function Home() {
           <div className="footer-logo">WebForge</div>
           
           <div className="footer-col">
-            <h5>Products</h5>
+            <h5>Product</h5>
             <ul className="footer-links">
-              <li><a href="#features">Chrome Extension</a></li>
-              <li><a href="#blueprints">Blueprint Schema</a></li>
-              <li><a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer">GitHub Release</a></li>
+              <li><a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer">Chrome Extension</a></li>
+              <li><a href="#structure">Blueprint Schema</a></li>
+              <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer">GitHub Releases</a></li>
             </ul>
           </div>
 
           <div className="footer-col">
-            <h5>Developer Tools</h5>
-            <ul className="footer-links">
-              <li><a href="#features">Zip Exporter</a></li>
-              <li><a href="#features">Token Extractor</a></li>
-              <li><a href="#features">Crawl Sandbox</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h5>Documentation</h5>
-            <ul className="footer-links">
-              <li><a href="#docs">API Guide</a></li>
-              <li><a href="#docs">Host Permissions</a></li>
-              <li><a href="#docs">AEO Guidelines</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h5>Company</h5>
+            <h5>Creator</h5>
             <ul className="footer-links">
               <li><a href="https://github.com/zakisheriff" target="_blank" rel="noreferrer">Developer Profile</a></li>
-              <li><a href="mailto:zaki@theoneatom.com">Contact Sales</a></li>
+              <li><a href="mailto:zaki@theoneatom.com">Contact Support</a></li>
             </ul>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <div>&copy; 2026 WebForge. All rights reserved.</div>
+          <div>&copy; 2026 WebForge. Created by Zaki Sheriff.</div>
           <div className="social-links">
             <a href="https://github.com/zakisheriff" target="_blank" rel="noreferrer">GitHub</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
           </div>
         </div>
       </footer>
