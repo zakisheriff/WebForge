@@ -3,6 +3,7 @@ import { Camera, Monitor, Compass, ExternalLink, ShieldAlert } from 'lucide-reac
 
 export default function PopupView() {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
+  const [crawlDepth, setCrawlDepth] = useState<number>(5);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -94,17 +95,42 @@ export default function PopupView() {
               </div>
             </button>
 
-            <button 
-              className="button" 
-              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
-              onClick={() => openDashboard('crawl', `&depth=10`)}
-            >
-              <Compass size={16} />
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: 600, fontSize: '13px' }}>Crawl & Capture Website</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Follow local sitemap links</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button 
+                className="button" 
+                style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px', width: '100%' }}
+                onClick={() => openDashboard('crawl', `&depth=${crawlDepth}`)}
+              >
+                <Compass size={16} />
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 600, fontSize: '13px' }}>Crawl & Capture Website</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Follow local sitemap links</div>
+                </div>
+              </button>
+              
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', fontSize: '12px' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>Pages Limit:</span>
+                <select 
+                  value={crawlDepth} 
+                  onChange={(e) => setCrawlDepth(Number(e.target.value))}
+                  style={{
+                    background: 'var(--bg-app)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '6px',
+                    padding: '2px 6px',
+                    color: 'var(--text-primary)',
+                    outline: 'none',
+                    fontSize: '11px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value={5}>5 pages</option>
+                  <option value={10}>10 pages</option>
+                  <option value={20}>20 pages</option>
+                  <option value={50}>50 pages</option>
+                </select>
               </div>
-            </button>
+            </div>
           </div>
         </>
       )}

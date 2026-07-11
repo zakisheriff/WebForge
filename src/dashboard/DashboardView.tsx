@@ -242,8 +242,9 @@ export default function DashboardView() {
                   transition: 'width 0.3s ease'
                 }} />
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                Please keep this tab focused during the capture loop.
+              <div style={{ fontSize: '11px', color: 'var(--accent-color)', fontWeight: 500, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div>⚠️ Please do not touch, scroll, or switch tabs while WebForge is capturing the page.</div>
+                <div style={{ color: 'var(--text-muted)', fontWeight: 400 }}>Please keep this tab focused during the capture loop.</div>
               </div>
             </div>
           </div>

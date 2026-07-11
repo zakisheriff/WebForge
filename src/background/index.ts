@@ -32,8 +32,10 @@ async function captureFullPage(tabId: number, windowId: number): Promise<string>
   }
   const { totalWidth, totalHeight, viewportHeight, devicePixelRatio } = metrics;
 
-  // 2. Setup canvas
-  const canvas = new OffscreenCanvas(totalWidth * devicePixelRatio, totalHeight * devicePixelRatio);
+  // 2. Setup canvas with default size fallbacks (1440x900) if dimensions return zero
+  const canvasWidth = (totalWidth || 1440) * (devicePixelRatio || 1);
+  const canvasHeight = (totalHeight || 900) * (devicePixelRatio || 1);
+  const canvas = new OffscreenCanvas(canvasWidth, canvasHeight);
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get OffscreenCanvas 2D context');
 
@@ -352,17 +354,21 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           const [tempTab] = await chrome.tabs.query({ windowId: tempWindowId });
           await chrome.tabs.update(tempTab.id!, { url: currentUrl });
 
-          // Wait for page load
-          await new Promise<void>((resolve) => {
-            const listener = (tabId: number, changeInfo: any) => {
-              if (tabId === tempTab.id && changeInfo.status === 'complete') {
-                chrome.tabs.onUpdated.removeListener(listener);
-                // Extra delay for dynamic scripts/images to finish loading
-                setTimeout(resolve, 1500);
-              }
-            };
-            chrome.tabs.onUpdated.addListener(listener);
-          });
+          // Wait for page load safely to prevent hanging
+          const currentTabInfo = await chrome.tabs.get(tempTab.id!);
+          if (currentTabInfo.status !== 'complete') {
+            await new Promise<void>((resolve) => {
+              const listener = (tabId: number, changeInfo: any) => {
+                if (tabId === tempTab.id && changeInfo.status === 'complete') {
+                  chrome.tabs.onUpdated.removeListener(listener);
+                  setTimeout(resolve, 1500);
+                }
+              };
+              chrome.tabs.onUpdated.addListener(listener);
+            });
+          } else {
+            await new Promise(r => setTimeout(r, 1500));
+          }
 
           // Inject content script if needed (in case content script didn't run automatically)
           try {
