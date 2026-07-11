@@ -1,5 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Camera, Monitor, Compass, ExternalLink, ShieldAlert } from 'lucide-react';
+import { useState, useEffect } from "react";
+import {
+  Camera,
+  Monitor,
+  Compass,
+  ExternalLink,
+  ShieldAlert,
+  Coffee,
+} from "lucide-react";
 
 export default function PopupView() {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
@@ -7,122 +14,262 @@ export default function PopupView() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof chrome !== 'undefined' && chrome.tabs) {
+    if (typeof chrome !== "undefined" && chrome.tabs) {
       chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-        if (tab && tab.url && (tab.url.startsWith('http://') || tab.url.startsWith('https://'))) {
+        if (
+          tab &&
+          tab.url &&
+          (tab.url.startsWith("http://") || tab.url.startsWith("https://"))
+        ) {
           setActiveTab(tab);
         } else {
-          setError('WebForge requires an active HTTP/HTTPS webpage to run.');
+          setError("WebForge requires an active HTTP/HTTPS webpage to run.");
         }
       });
     }
   }, []);
 
-  const openDashboard = (action: string, extraParams = '') => {
+  const openDashboard = (action: string, extraParams = "") => {
     if (!activeTab || !activeTab.url) return;
-    const url = chrome.runtime.getURL(`index.html?mode=dashboard&action=${action}&targetTabId=${activeTab.id}&targetUrl=${encodeURIComponent(activeTab.url)}${extraParams}`);
+    const url = chrome.runtime.getURL(
+      `index.html?mode=dashboard&action=${action}&targetTabId=${activeTab.id}&targetUrl=${encodeURIComponent(activeTab.url)}${extraParams}`,
+    );
     chrome.tabs.create({ url });
     window.close(); // Close extension popup
   };
 
   return (
-    <div style={{
-      width: '380px',
-      padding: '20px',
-      background: 'var(--bg-app)',
-      fontFamily: 'var(--font-sans)',
-      color: 'var(--text-primary)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-      borderRadius: '20px'
-    }}>
+    <div
+      style={{
+        width: "380px",
+        padding: "20px",
+        background: "var(--bg-app)",
+        fontFamily: "var(--font-sans)",
+        color: "var(--text-primary)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        borderRadius: "20px",
+      }}
+    >
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: "1px solid var(--border-color)",
+          paddingBottom: "12px",
+        }}
+      >
         <div>
-          <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <img src="/icons/icon32.png" alt="Logo" style={{ width: '18px', height: '18px', borderRadius: '3px' }} />
-            WebForge <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>by The Atom</span>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "16px",
+              fontWeight: 700,
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <img
+              src="/icons/icon128.png"
+              alt="WebForge Logo"
+              style={{
+                width: "42px",
+                height: "42px",
+                borderRadius: "8px",
+                flexShrink: 0,
+              }}
+            />
+            WebForge{" "}
+            <span
+              style={{
+                fontSize: "11px",
+                color: "var(--text-muted)",
+                fontWeight: 400,
+              }}
+            >
+              by The Atom
+            </span>
           </h2>
-          <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-muted)' }}>AI-Ready Website Capture Engine</p>
+          <p
+            style={{ margin: 0, fontSize: "11px", color: "var(--text-muted)" }}
+          >
+            AI-Ready Website Capture Engine
+          </p>
         </div>
-        <button 
-          onClick={() => openDashboard('view')}
+        <button
+          onClick={() => openDashboard("view")}
           className="button"
-          style={{ padding: '4px 8px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
+          style={{
+            padding: "4px 8px",
+            fontSize: "11px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}
         >
           Workspace <ExternalLink size={12} />
         </button>
       </div>
 
       {error ? (
-        <div className="card" style={{ display: 'flex', gap: '10px', alignItems: 'start', borderColor: '#e0b3b3', background: 'rgba(224,179,179,0.1)' }}>
-          <ShieldAlert size={18} style={{ color: '#c0392b', flexShrink: 0, marginTop: '2px' }} />
-          <div style={{ fontSize: '12px', color: 'var(--text-primary)' }}>{error}</div>
+        <div
+          className="card"
+          style={{
+            display: "flex",
+            gap: "10px",
+            alignItems: "start",
+            borderColor: "#e0b3b3",
+            background: "rgba(224,179,179,0.1)",
+          }}
+        >
+          <ShieldAlert
+            size={18}
+            style={{ color: "#c0392b", flexShrink: 0, marginTop: "2px" }}
+          />
+          <div style={{ fontSize: "12px", color: "var(--text-primary)" }}>
+            {error}
+          </div>
         </div>
       ) : (
         <>
           {/* Active site banner */}
-          <div className="card" style={{ padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Target Website</div>
-            <div style={{ fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--accent-color)' }}>
-              {activeTab ? new URL(activeTab.url!).hostname : 'Detecting page...'}
+          <div
+            className="card"
+            style={{
+              padding: "10px 12px",
+              background: "var(--bg-card)",
+              borderRadius: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "11px",
+                color: "var(--text-muted)",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Target Website
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                fontWeight: 500,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: "var(--accent-color)",
+              }}
+            >
+              {activeTab
+                ? new URL(activeTab.url!).hostname
+                : "Detecting page..."}
             </div>
           </div>
 
           {/* Action List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <button 
-              className="button button-primary" 
-              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
-              onClick={() => openDashboard('capture')}
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            <button
+              className="button button-primary"
+              style={{
+                justifyContent: "flex-start",
+                padding: "12px 16px",
+                borderRadius: "12px",
+              }}
+              onClick={() => openDashboard("capture")}
             >
               <Camera size={16} />
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: 600, fontSize: '13px' }}>Capture Current Page</div>
-                <div style={{ fontSize: '11px', opacity: 0.9 }}>Full-page screenshot capture</div>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Capture Current Page
+                </div>
+                <div style={{ fontSize: "11px", opacity: 0.9 }}>
+                  Full-page screenshot capture
+                </div>
               </div>
             </button>
 
-            <button 
-              className="button" 
-              style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px' }}
-              onClick={() => openDashboard('responsive')}
+            <button
+              className="button"
+              style={{
+                justifyContent: "flex-start",
+                padding: "12px 16px",
+                borderRadius: "12px",
+              }}
+              onClick={() => openDashboard("responsive")}
             >
               <Monitor size={16} />
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontWeight: 600, fontSize: '13px' }}>Capture Responsive</div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Desktop, Tablet, Mobile viewports</div>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontWeight: 600, fontSize: "13px" }}>
+                  Capture Responsive
+                </div>
+                <div
+                  style={{ fontSize: "11px", color: "var(--text-secondary)" }}
+                >
+                  Desktop, Tablet, Mobile viewports
+                </div>
               </div>
             </button>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button 
-                className="button" 
-                style={{ justifyContent: 'flex-start', padding: '12px 16px', borderRadius: '12px', width: '100%' }}
-                onClick={() => openDashboard('crawl', `&depth=${crawlDepth}`)}
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
+              <button
+                className="button"
+                style={{
+                  justifyContent: "flex-start",
+                  padding: "12px 16px",
+                  borderRadius: "12px",
+                  width: "100%",
+                }}
+                onClick={() => openDashboard("crawl", `&depth=${crawlDepth}`)}
               >
                 <Compass size={16} />
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontWeight: 600, fontSize: '13px' }}>Crawl & Capture Website</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Follow local sitemap links</div>
+                <div style={{ textAlign: "left" }}>
+                  <div style={{ fontWeight: 600, fontSize: "13px" }}>
+                    Crawl & Capture Website
+                  </div>
+                  <div
+                    style={{ fontSize: "11px", color: "var(--text-secondary)" }}
+                  >
+                    Follow local sitemap links
+                  </div>
                 </div>
               </button>
-              
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px', fontSize: '12px' }}>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>Pages Limit:</span>
-                <select 
-                  value={crawlDepth} 
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0 8px",
+                  fontSize: "12px",
+                }}
+              >
+                <span
+                  style={{ color: "var(--text-secondary)", fontSize: "11px" }}
+                >
+                  Pages Limit:
+                </span>
+                <select
+                  value={crawlDepth}
                   onChange={(e) => setCrawlDepth(Number(e.target.value))}
                   style={{
-                    background: 'var(--bg-app)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '6px',
-                    padding: '2px 6px',
-                    color: 'var(--text-primary)',
-                    outline: 'none',
-                    fontSize: '11px',
-                    cursor: 'pointer'
+                    background: "var(--bg-app)",
+                    border: "1px solid var(--border-color)",
+                    borderRadius: "6px",
+                    padding: "2px 6px",
+                    color: "var(--text-primary)",
+                    outline: "none",
+                    fontSize: "11px",
+                    cursor: "pointer",
                   }}
                 >
                   <option value={5}>5 pages</option>
@@ -132,6 +279,27 @@ export default function PopupView() {
                 </select>
               </div>
             </div>
+
+            <a
+              href="https://buymeacoffee.com/theoneatom"
+              target="_blank"
+              rel="noreferrer"
+              className="button"
+              style={{
+                justifyContent: "center",
+                gap: "6px",
+                padding: "10px 12px",
+                borderRadius: "12px",
+                background: "rgba(217, 107, 67, 0.12)",
+                color: "var(--accent-color)",
+                textDecoration: "none",
+                fontSize: "12px",
+                fontWeight: 600,
+              }}
+            >
+              <Coffee size={14} />
+              Buy Me a Coffee
+            </a>
           </div>
         </>
       )}
