@@ -22,6 +22,7 @@ export default function DashboardView() {
     const params = new URLSearchParams(window.location.search);
     const action = params.get('action');
     const url = params.get('targetUrl');
+    const tabId = Number(params.get('targetTabId') || '0');
     const depth = Number(params.get('depth') || '5');
 
     if (!action || !url) {
@@ -31,7 +32,7 @@ export default function DashboardView() {
 
     setTargetUrl(url);
     setJobType(action);
-    startJob(action, url, depth);
+    startJob(action, url, depth, tabId);
   }, []);
 
   // Listen to background progress messages
@@ -52,12 +53,12 @@ export default function DashboardView() {
     return () => chrome.runtime.onMessage.removeListener(progressListener);
   }, []);
 
-  const startJob = async (action: string, url: string, depth: number) => {
+  const startJob = async (action: string, url: string, depth: number, tabId: number) => {
     if (action === 'capture') {
       setStatus('capturing');
       setProgressMsg('Connecting to active page...');
       setProgressBar(10);
-      const res = await chrome.runtime.sendMessage({ action: 'START_SINGLE_CAPTURE' });
+      const res = await chrome.runtime.sendMessage({ action: 'START_SINGLE_CAPTURE', tabId });
       if (res && res.success) {
         setPages([{
           url: res.metadata.url,
@@ -80,7 +81,7 @@ export default function DashboardView() {
       setStatus('capturing');
       setProgressMsg('Connecting to active page...');
       setProgressBar(5);
-      const res = await chrome.runtime.sendMessage({ action: 'START_RESPONSIVE_CAPTURE' });
+      const res = await chrome.runtime.sendMessage({ action: 'START_RESPONSIVE_CAPTURE', tabId });
       if (res && res.success) {
         setPages([{
           url: res.metadata.url,

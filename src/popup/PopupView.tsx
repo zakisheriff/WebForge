@@ -20,7 +20,7 @@ export default function PopupView() {
 
   const openDashboard = (action: string, extraParams = '') => {
     if (!activeTab || !activeTab.url) return;
-    const url = chrome.runtime.getURL(`index.html?mode=dashboard&action=${action}&targetUrl=${encodeURIComponent(activeTab.url)}${extraParams}`);
+    const url = chrome.runtime.getURL(`index.html?mode=dashboard&action=${action}&targetTabId=${activeTab.id}&targetUrl=${encodeURIComponent(activeTab.url)}${extraParams}`);
     chrome.tabs.create({ url });
     window.close(); // Close extension popup
   };

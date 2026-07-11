@@ -115,12 +115,30 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     (async () => {
       try {
         updateStatus('capturing', 10, 100, 'Preparing page for full capture...');
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        let targetTabId = message.tabId;
+        let tab: chrome.tabs.Tab | undefined;
+        if (targetTabId) {
+          tab = await chrome.tabs.get(targetTabId);
+        } else {
+          const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          tab = activeTab;
+        }
         if (!tab || !tab.id || !tab.windowId) throw new Error('No active tab found');
+
+        const senderTabId = _sender.tab?.id;
+        
+        // Active target tab for captures
+        await chrome.tabs.update(tab.id, { active: true });
+        await new Promise(r => setTimeout(r, 250));
 
         const screenshot = await captureFullPage(tab.id, tab.windowId);
         updateStatus('capturing', 90, 100, 'Extracting page metadata...');
         const metadata = await chrome.tabs.sendMessage(tab.id, { action: 'EXTRACT_METADATA' });
+
+        // Restore active focus to dashboard
+        if (senderTabId) {
+          await chrome.tabs.update(senderTabId, { active: true });
+        }
 
         updateStatus('idle', 100, 100, 'Capture complete.');
         sendResponse({ success: true, screenshot, metadata });
@@ -133,8 +151,21 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   } else if (message.action === 'START_RESPONSIVE_CAPTURE') {
     (async () => {
       try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        let targetTabId = message.tabId;
+        let tab: chrome.tabs.Tab | undefined;
+        if (targetTabId) {
+          tab = await chrome.tabs.get(targetTabId);
+        } else {
+          const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          tab = activeTab;
+        }
         if (!tab || !tab.id || !tab.windowId) throw new Error('No active tab found');
+
+        const senderTabId = _sender.tab?.id;
+
+        // Activate target tab temporarily
+        await chrome.tabs.update(tab.id, { active: true });
+        await new Promise(r => setTimeout(r, 250));
 
         const originalWindow = await chrome.windows.get(tab.windowId);
         const screenshots: Record<string, string> = {};
@@ -163,6 +194,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         });
 
         const metadata = await chrome.tabs.sendMessage(tab.id, { action: 'EXTRACT_METADATA' });
+
+        // Switch back to sender tab
+        if (senderTabId) {
+          await chrome.tabs.update(senderTabId, { active: true });
+        }
+
         updateStatus('idle', 100, 100, 'Responsive captures completed.');
         sendResponse({ success: true, screenshots, metadata });
       } catch (err: any) {
