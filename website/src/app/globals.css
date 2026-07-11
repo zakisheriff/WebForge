@@ -141,17 +141,27 @@ a:hover {
 .drawer-content {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 85%;
-  max-width: 360px;
-  height: 100%;
+  left: 0;
+  width: 100%;
+  height: auto;
   background: var(--bg-color);
   z-index: 2100;
-  padding: 24px;
+  padding: 24px 24px 40px 24px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.05);
+  gap: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .drawer-header {
@@ -245,18 +255,38 @@ a:hover {
   padding-top: 10px;
 }
 
-/* Middle Large Dark Banner */
+@keyframes expandBanner {
+  0% {
+    padding: 40px 6%;
+  }
+  100% {
+    padding: 40px 0%;
+  }
+}
+
+@keyframes flattenBanner {
+  0% {
+    border-radius: 40px;
+  }
+  100% {
+    border-radius: 0;
+  }
+}
+
 .banner-container {
-  padding: 40px 2%;
   max-width: 1440px;
   margin: 0 auto;
   width: 100%;
+  padding: 40px 6%;
+  animation: expandBanner linear both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 40%;
 }
 
 .dark-banner {
   background-color: var(--text-primary);
   color: var(--bg-color);
-  border-radius: 12px;
+  border-radius: 40px;
   padding: 100px 40px;
   text-align: center;
   position: relative;
@@ -265,6 +295,9 @@ a:hover {
   align-items: center;
   justify-content: center;
   gap: 24px;
+  animation: flattenBanner linear both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 40%;
 }
 
 .banner-title {
@@ -403,6 +436,24 @@ a:hover {
   }
 }
 
+@keyframes expandBannerMobile {
+  0% {
+    padding: 20px 6%;
+  }
+  100% {
+    padding: 20px 0%;
+  }
+}
+
+@keyframes flattenBannerMobile {
+  0% {
+    border-radius: 40px;
+  }
+  100% {
+    border-radius: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 16px;
@@ -421,11 +472,17 @@ a:hover {
     font-size: 40px;
   }
   .banner-container {
-    padding: 20px 4px;
+    padding: 20px 6%;
+    animation: expandBannerMobile linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 40%;
   }
   .dark-banner {
     padding: 60px 16px;
-    border-radius: 8px;
+    border-radius: 40px;
+    animation: flattenBannerMobile linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 40%;
   }
   .banner-footer {
     flex-direction: column;

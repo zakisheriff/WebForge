@@ -11,7 +11,7 @@ export default function Home() {
       <div className="navbar-container">
         <nav className="navbar">
           {/* Logo styled similar to A\ */}
-          <div className="nav-brand">W\</div>
+          <div className="nav-brand">W</div>
           
           {/* Desktop Menu */}
           <ul className="nav-menu-desktop">
@@ -39,19 +39,17 @@ export default function Home() {
         <>
           <div className="drawer-overlay" onClick={() => setIsMenuOpen(false)}></div>
           <div className="drawer-content">
-            <div>
-              <div className="drawer-header">
-                <div className="nav-brand">W\</div>
-                <button className="drawer-close-btn" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">&times;</button>
-              </div>
-              <ul className="drawer-links">
-                <li><a href="#features" onClick={() => setIsMenuOpen(false)}>How It Works</a></li>
-                <li><a href="#structure" onClick={() => setIsMenuOpen(false)}>Blueprint Structure</a></li>
-                <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)}>Releases</a></li>
-              </ul>
+            <div className="drawer-header">
+              <div className="nav-brand">W\</div>
+              <button className="drawer-close-btn" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">&times;</button>
             </div>
+            <ul className="drawer-links" style={{ marginTop: 0 }}>
+              <li><a href="#features" onClick={() => setIsMenuOpen(false)}>How It Works</a></li>
+              <li><a href="#structure" onClick={() => setIsMenuOpen(false)}>Blueprint Structure</a></li>
+              <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)}>Releases</a></li>
+            </ul>
             
-            <div className="drawer-footer">
+            <div className="drawer-footer" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <a href="https://github.com/zakisheriff/WebForge" target="_blank" rel="noreferrer" className="btn-drawer-primary">
                 Install WebForge
               </a>
