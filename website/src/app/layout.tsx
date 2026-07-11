@@ -200,10 +200,10 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "https://webforge.theatom.lk/Logo-WebForge.png",
+        url: "https://webforge.theatom.lk/og-image.png",
         width: 1200,
         height: 630,
-        alt: "WebForge",
+        alt: "WebForge — AI Website Capture & Visual Blueprint",
       },
     ],
   },
@@ -217,17 +217,11 @@ export const metadata: Metadata = {
     description:
       "Generate AI-ready website blueprints, screenshots, sitemaps, CSS variables, fonts, layouts, and design tokens for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and other AI coding agents.",
 
-    images: ["https://webforge.theatom.lk/Logo-WebForge.png"],
+    images: ["https://webforge.theatom.lk/og-image.png"],
   },
 
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.png", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: "/apple-icon.png",
-  },
+  // Favicon, icon.png and apple-icon.png are auto-wired from src/app/ via
+  // Next.js file conventions — no explicit `icons` block needed.
 };
 
 export default function RootLayout({

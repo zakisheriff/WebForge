@@ -27,8 +27,8 @@ const graph = {
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/Logo-WebForge.png`,
-        width: 1200,
-        height: 630,
+        width: 808,
+        height: 808,
       },
       founder: {
         "@type": "Person",
