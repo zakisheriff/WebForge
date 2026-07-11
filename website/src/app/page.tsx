@@ -1,9 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuClosing, setIsMenuClosing] = useState(false);
+
+  // Prevent background scrolling when menu drawer is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMenuClosing(true);
+    setTimeout(() => {
+      setIsMenuOpen(false);
+      setIsMenuClosing(false);
+    }, 300); // Matches CSS slideUp animation duration
+  };
+
+  const handleLinkClick = (hash: string) => {
+    closeMenu();
+    // Smooth scroll to target anchor
+    const el = document.getElementById(hash.replace('#', ''));
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <>
@@ -35,18 +63,18 @@ export default function Home() {
       </div>
 
       {/* Mobile Drawer Menu */}
-      {isMenuOpen && (
+      {(isMenuOpen || isMenuClosing) && (
         <>
-          <div className="drawer-overlay" onClick={() => setIsMenuOpen(false)}></div>
-          <div className="drawer-content">
+          <div className={`drawer-overlay ${isMenuClosing ? 'closing' : ''}`} onClick={closeMenu}></div>
+          <div className={`drawer-content ${isMenuClosing ? 'closing' : ''}`}>
             <div className="drawer-header">
               <div className="nav-brand">WEBF\RGE</div>
-              <button className="drawer-close-btn" onClick={() => setIsMenuOpen(false)} aria-label="Close menu">&times;</button>
+              <button className="drawer-close-btn" onClick={closeMenu} aria-label="Close menu">&times;</button>
             </div>
             <ul className="drawer-links" style={{ marginTop: 0 }}>
-              <li><a href="#features" onClick={() => setIsMenuOpen(false)}>How It Works</a></li>
-              <li><a href="#structure" onClick={() => setIsMenuOpen(false)}>Blueprint Structure</a></li>
-              <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={() => setIsMenuOpen(false)}>Releases</a></li>
+              <li><a href="#features" onClick={() => handleLinkClick('#features')}>How It Works</a></li>
+              <li><a href="#structure" onClick={() => handleLinkClick('#structure')}>Blueprint Structure</a></li>
+              <li><a href="https://github.com/zakisheriff/WebForge/releases" target="_blank" rel="noreferrer" onClick={closeMenu}>Releases</a></li>
             </ul>
             
             <div className="drawer-footer" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
