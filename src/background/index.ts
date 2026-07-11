@@ -100,6 +100,97 @@ async function resizeWindow(windowId: number, width: number, height: number) {
   await new Promise(r => setTimeout(r, 600));
 }
 
+// Concurrently download page CSS stylesheets, JS scripts, and media resources
+async function downloadPageAssets(assets: any): Promise<any> {
+  if (!assets) return null;
+
+  const downloadLimitBytes = 5 * 1024 * 1024; // 5MB max size per file
+
+  // 1. Download external stylesheets
+  const externalStyles: string[] = [];
+  if (assets.externalStyles) {
+    const promises = assets.externalStyles.slice(0, 8).map(async (url: string) => {
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          const text = await res.text();
+          if (text.length < downloadLimitBytes) {
+            externalStyles.push(text);
+          }
+        }
+      } catch {
+        // Safe fail
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  // 2. Download external scripts
+  const externalScripts: string[] = [];
+  if (assets.externalScripts) {
+    const promises = assets.externalScripts.slice(0, 8).map(async (url: string) => {
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          const text = await res.text();
+          if (text.length < downloadLimitBytes) {
+            externalScripts.push(text);
+          }
+        }
+      } catch {
+        // Safe fail
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  // 3. Download media resources (images/videos)
+  const media: any[] = [];
+  if (assets.media) {
+    // Limit to top 24 media items to prevent memory bottleneck
+    const promises = assets.media.slice(0, 24).map(async (item: any) => {
+      if (item.type === 'svg') {
+        media.push(item);
+      } else if (item.url) {
+        try {
+          const res = await fetch(item.url);
+          if (res.ok) {
+            const buffer = await res.arrayBuffer();
+            if (buffer.byteLength < downloadLimitBytes) {
+              const bytes = new Uint8Array(buffer);
+              let binary = '';
+              for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              const base64 = btoa(binary);
+              const contentType = res.headers.get('content-type') || 'image/png';
+              const filename = item.url.split('/').pop()?.split('?')[0] || 'media_asset';
+              
+              media.push({
+                type: item.type,
+                filename,
+                data: `data:${contentType};base64,${base64}`
+              });
+            }
+          }
+        } catch {
+          // Safe fail
+        }
+      }
+    });
+    await Promise.all(promises);
+  }
+
+  return {
+    html: assets.html,
+    inlineStyles: assets.inlineStyles || [],
+    externalStyles,
+    inlineScripts: assets.inlineScripts || [],
+    externalScripts,
+    media
+  };
+}
+
 // Global active crawl / capture states
 let activeJob: {
   status: 'idle' | 'capturing' | 'crawling';
@@ -138,8 +229,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         await new Promise(r => setTimeout(r, 250));
 
         const screenshot = await captureFullPage(tab.id, tab.windowId);
-        updateStatus('capturing', 90, 100, 'Extracting page metadata...');
+        updateStatus('capturing', 85, 100, 'Extracting page metadata...');
         const metadata = await chrome.tabs.sendMessage(tab.id, { action: 'EXTRACT_METADATA' });
+
+        updateStatus('capturing', 95, 100, 'Downloading code and media assets...');
+        const downloadedAssets = await downloadPageAssets(metadata.assets);
+        delete metadata.assets;
 
         // Restore active focus to dashboard
         if (senderTabId) {
@@ -147,7 +242,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         }
 
         updateStatus('idle', 100, 100, 'Capture complete.');
-        sendResponse({ success: true, screenshot, metadata });
+        sendResponse({ success: true, screenshot, metadata, assets: downloadedAssets });
       } catch (err: any) {
         updateStatus('idle', 0, 100, `Error: ${err.message}`);
         sendResponse({ success: false, error: err.message });
@@ -201,13 +296,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
         const metadata = await chrome.tabs.sendMessage(tab.id, { action: 'EXTRACT_METADATA' });
 
+        updateStatus('capturing', 98, 100, 'Downloading code and media assets...');
+        const downloadedAssets = await downloadPageAssets(metadata.assets);
+        delete metadata.assets;
+
         // Switch back to sender tab
         if (senderTabId) {
           await chrome.tabs.update(senderTabId, { active: true });
         }
 
         updateStatus('idle', 100, 100, 'Responsive captures completed.');
-        sendResponse({ success: true, screenshots, metadata });
+        sendResponse({ success: true, screenshots, metadata, assets: downloadedAssets });
       } catch (err: any) {
         updateStatus('idle', 0, 100, `Error: ${err.message}`);
         sendResponse({ success: false, error: err.message });
@@ -278,6 +377,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           // Capture
           const screenshot = await captureFullPage(tempTab.id!, tempWindowId);
           const meta = await chrome.tabs.sendMessage(tempTab.id!, { action: 'EXTRACT_METADATA' });
+          const downloadedAssets = await downloadPageAssets(meta.assets);
+          delete meta.assets;
 
           // Add child links to discovery queue
           if (meta.links) {
@@ -298,7 +399,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
               timestamp: new Date().toISOString(),
               fonts: meta.fonts || [],
               colors: meta.colors || []
-            }
+            },
+            assets: downloadedAssets
           });
         }
 

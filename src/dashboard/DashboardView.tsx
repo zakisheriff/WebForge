@@ -70,7 +70,8 @@ export default function DashboardView() {
             timestamp: new Date().toISOString(),
             fonts: res.metadata.fonts,
             colors: res.metadata.colors
-          }
+          },
+          assets: res.assets
         }]);
         setSitemap([res.metadata.url]);
         setStatus('success');
@@ -97,7 +98,8 @@ export default function DashboardView() {
             timestamp: new Date().toISOString(),
             fonts: res.metadata.fonts,
             colors: res.metadata.colors
-          }
+          },
+          assets: res.assets
         }]);
         setSitemap([res.metadata.url]);
         setStatus('success');

@@ -15,6 +15,19 @@ export interface CapturedPage {
     fonts: string[];
     colors: string[];
   };
+  assets?: {
+    html?: string;
+    inlineStyles?: string[];
+    externalStyles?: string[];
+    inlineScripts?: string[];
+    externalScripts?: string[];
+    media?: {
+      type: 'image' | 'video' | 'svg';
+      filename?: string;
+      content?: string;
+      data?: string;
+    }[];
+  };
 }
 
 export async function generateProjectZip(
@@ -49,6 +62,52 @@ export async function generateProjectZip(
 
     // Save page metadata
     pageFolder.file("metadata.json", JSON.stringify(page.metadata, null, 2));
+
+    // Save page source assets if present
+    if (page.assets) {
+      const sourceFolder = pageFolder.folder("source");
+      if (sourceFolder) {
+        if (page.assets.html) {
+          sourceFolder.file("index.html", page.assets.html);
+        }
+
+        // CSS Stylesheets
+        const stylesFolder = sourceFolder.folder("styles");
+        if (stylesFolder) {
+          page.assets.inlineStyles?.forEach((style, i) => {
+            stylesFolder.file(`inline_${i}.css`, style);
+          });
+          page.assets.externalStyles?.forEach((style, i) => {
+            stylesFolder.file(`external_${i}.css`, style);
+          });
+        }
+
+        // JS Scripts
+        const scriptsFolder = sourceFolder.folder("scripts");
+        if (scriptsFolder) {
+          page.assets.inlineScripts?.forEach((script, i) => {
+            scriptsFolder.file(`inline_${i}.js`, script);
+          });
+          page.assets.externalScripts?.forEach((script, i) => {
+            scriptsFolder.file(`external_${i}.js`, script);
+          });
+        }
+
+        // Media resources
+        const mediaFolder = sourceFolder.folder("media");
+        if (mediaFolder) {
+          page.assets.media?.forEach((item, i) => {
+            if (item.type === 'svg' && item.content) {
+              mediaFolder.file(`vector_${i}.svg`, item.content);
+            } else if (item.data) {
+              const base64Data = item.data.split(',')[1] || item.data;
+              const ext = item.filename?.split('.').pop() || 'png';
+              mediaFolder.file(`media_${i}.${ext}`, base64Data, { base64: true });
+            }
+          });
+        }
+      }
+    }
 
     page.metadata.colors.forEach(c => globalColors.add(c));
     page.metadata.fonts.forEach(f => globalFonts.add(f));

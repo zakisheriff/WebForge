@@ -140,12 +140,47 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   } else if (message.action === 'EXTRACT_METADATA') {
     const tokens = extractDesignTokens();
     const links = extractLinks();
+    
+    // Harvest page source markup, styles, scripts, and media assets
+    const inlineStyles = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML);
+    const externalStyles = Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
+      .map((l: any) => l.href)
+      .filter(Boolean);
+    const inlineScripts = Array.from(document.querySelectorAll('script:not([src])')).map(s => s.innerHTML);
+    const externalScripts = Array.from(document.querySelectorAll('script[src]'))
+      .map((s: any) => s.src)
+      .filter(Boolean);
+      
+    const media = Array.from(document.querySelectorAll('img, video, source, svg')).map(el => {
+      const tag = el.tagName.toLowerCase();
+      if (tag === 'svg') {
+        return { type: 'svg', content: el.outerHTML };
+      }
+      const src = (el as any).src || (el as any).currentSrc || el.getAttribute('src');
+      if (!src) return null;
+      try {
+        const absUrl = new URL(src, window.location.href).toString();
+        const type = tag === 'video' || (tag === 'source' && el.parentElement?.tagName.toLowerCase() === 'video') ? 'video' : 'image';
+        return { type, url: absUrl };
+      } catch {
+        return null;
+      }
+    }).filter(Boolean);
+
     sendResponse({
       title: document.title,
       url: window.location.href,
       fonts: tokens.fonts,
       colors: tokens.colors,
-      links: links
+      links: links,
+      assets: {
+        html: document.documentElement.outerHTML,
+        inlineStyles,
+        externalStyles,
+        inlineScripts,
+        externalScripts,
+        media
+      }
     });
   }
 });
