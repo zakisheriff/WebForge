@@ -39,17 +39,28 @@ export async function generateProjectZip(
   const root = zip.folder("WebForge_Project");
   if (!root) throw new Error("Could not create WebForge_Project folder");
 
-  const pagesFolder = root.folder("pages");
-  if (!pagesFolder) throw new Error("Could not create pages folder");
+  const isSinglePage = pages.length === 1;
+
+  let pagesFolder: JSZip | null = null;
+  if (!isSinglePage) {
+    pagesFolder = root.folder("pages");
+    if (!pagesFolder) throw new Error("Could not create pages folder");
+  }
 
   // Gather unique colors and fonts for global metadata
   const globalColors = new Set<string>();
   const globalFonts = new Set<string>();
 
   for (const page of pages) {
-    const pageSlug = page.slug === '' || page.slug === '/' ? 'home' : page.slug.replace(/^\/+|\/+$/g, '').replace(/[^a-zA-Z0-9-_]/g, '_');
-    const pageFolder = pagesFolder.folder(pageSlug);
-    if (!pageFolder) continue;
+    let pageFolder: JSZip;
+    if (isSinglePage) {
+      pageFolder = root;
+    } else {
+      const pageSlug = page.slug === '' || page.slug === '/' ? 'home' : page.slug.replace(/^\/+|\/+$/g, '').replace(/[^a-zA-Z0-9-_]/g, '_');
+      const f = pagesFolder!.folder(pageSlug);
+      if (!f) continue;
+      pageFolder = f;
+    }
 
     // Save screenshots
     for (const [key, dataUrl] of Object.entries(page.screenshots)) {
@@ -75,50 +86,47 @@ export async function generateProjectZip(
     };
     pageFolder.file("metadata.json", JSON.stringify(debugMetadata, null, 2));
 
-    // Save page source assets if present
+    // Save page source assets if present (NO nested "source" folder anymore!)
     if (page.assets) {
       pageFolder.file("debug_assets.json", JSON.stringify(page.assets, null, 2));
-      const sourceFolder = pageFolder.folder("source");
-      if (sourceFolder) {
-        if (page.assets.html) {
-          sourceFolder.file("index.html", page.assets.html);
-        }
+      if (page.assets.html) {
+        pageFolder.file("index.html", page.assets.html);
+      }
 
-        // CSS Stylesheets
-        const stylesFolder = sourceFolder.folder("styles");
-        if (stylesFolder) {
-          page.assets.inlineStyles?.forEach((style, i) => {
-            stylesFolder.file(`inline_${i}.css`, style);
-          });
-          page.assets.externalStyles?.forEach((style, i) => {
-            stylesFolder.file(`external_${i}.css`, style);
-          });
-        }
+      // CSS Stylesheets
+      const stylesFolder = pageFolder.folder("styles");
+      if (stylesFolder) {
+        page.assets.inlineStyles?.forEach((style, i) => {
+          stylesFolder.file(`inline_${i}.css`, style);
+        });
+        page.assets.externalStyles?.forEach((style, i) => {
+          stylesFolder.file(`external_${i}.css`, style);
+        });
+      }
 
-        // JS Scripts
-        const scriptsFolder = sourceFolder.folder("scripts");
-        if (scriptsFolder) {
-          page.assets.inlineScripts?.forEach((script, i) => {
-            scriptsFolder.file(`inline_${i}.js`, script);
-          });
-          page.assets.externalScripts?.forEach((script, i) => {
-            scriptsFolder.file(`external_${i}.js`, script);
-          });
-        }
+      // JS Scripts
+      const scriptsFolder = pageFolder.folder("scripts");
+      if (scriptsFolder) {
+        page.assets.inlineScripts?.forEach((script, i) => {
+          scriptsFolder.file(`inline_${i}.js`, script);
+        });
+        page.assets.externalScripts?.forEach((script, i) => {
+          scriptsFolder.file(`external_${i}.js`, script);
+        });
+      }
 
-        // Media resources
-        const mediaFolder = sourceFolder.folder("media");
-        if (mediaFolder) {
-          page.assets.media?.forEach((item, i) => {
-            if (item.type === 'svg' && item.content) {
-              mediaFolder.file(`vector_${i}.svg`, item.content);
-            } else if (item.data) {
-              const base64Data = item.data.split(',')[1] || item.data;
-              const ext = item.filename?.split('.').pop() || 'png';
-              mediaFolder.file(`media_${i}.${ext}`, base64Data, { base64: true });
-            }
-          });
-        }
+      // Media resources
+      const mediaFolder = pageFolder.folder("media");
+      if (mediaFolder) {
+        page.assets.media?.forEach((item, i) => {
+          if (item.type === 'svg' && item.content) {
+            mediaFolder.file(`vector_${i}.svg`, item.content);
+          } else if (item.data) {
+            const base64Data = item.data.split(',')[1] || item.data;
+            const ext = item.filename?.split('.').pop() || 'png';
+            mediaFolder.file(`media_${i}.${ext}`, base64Data, { base64: true });
+          }
+        });
       }
     }
 
@@ -126,20 +134,21 @@ export async function generateProjectZip(
     page.metadata.fonts.forEach(f => globalFonts.add(f));
   }
 
-  // Create global sitemap.json
-  root.file("sitemap.json", JSON.stringify(sitemap, null, 2));
+  // Create global sitemap.json and global metadata.json only if multi-page
+  if (!isSinglePage) {
+    root.file("sitemap.json", JSON.stringify(sitemap, null, 2));
 
-  // Create global metadata.json
-  const globalMetadata = {
-    website: domain,
-    title: pages[0]?.metadata?.title || domain,
-    pages: pages.map(p => ({ url: p.url, slug: p.slug })),
-    timestamp: new Date().toISOString(),
-    fonts: Array.from(globalFonts),
-    colors: Array.from(globalColors)
-  };
-
-  root.file("metadata.json", JSON.stringify(globalMetadata, null, 2));
+    const globalMetadata = {
+      domain,
+      exportedAt: new Date().toISOString(),
+      sitemap: sitemap,
+      designTokens: {
+        colors: Array.from(globalColors),
+        fonts: Array.from(globalFonts)
+      }
+    };
+    root.file("metadata.json", JSON.stringify(globalMetadata, null, 2));
+  }
 
   return await zip.generateAsync({ type: "blob" });
 }
