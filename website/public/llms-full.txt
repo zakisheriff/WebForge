@@ -1,0 +1,75 @@
+# WebForge — Full Reference
+
+> WebForge is a free, AI-ready Chrome extension by The Atom (Sri Lanka) that turns any website into a structured, code-ready visual blueprint for AI coding agents. It captures full-page multi-viewport screenshots, crawls the domain into a sitemap, and extracts CSS design tokens so tools like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini can reconstruct a frontend with high fidelity.
+
+- Homepage: https://webforge.theatom.lk
+- Install / Source code: https://github.com/zakisheriff/WebForge
+- Releases: https://github.com/zakisheriff/WebForge/releases
+- Author: Zaki Sheriff — https://github.com/zakisheriff
+- Publisher: The Atom
+- Price: Free
+- Platform: Google Chrome / Chromium (Windows, macOS, Linux, ChromeOS)
+
+## What problem it solves
+
+AI coding agents recreate frontend layouts far more accurately when given clear visual references and exact design tokens. Pasting a single screenshot loses responsive behavior and precise colors/fonts. WebForge automates the full capture: it scrolls and stitches each page, emulates device viewports, crawls the whole domain, and packages everything an agent needs.
+
+## Capture modes
+
+- **Single page** — capture the current page as a stitched full-page screenshot.
+- **Multi-viewport** — capture the same page at desktop, tablet and mobile widths to reveal responsive/media-query behavior.
+- **Full-domain crawl** — discover and capture same-domain pages sequentially, with a configurable page limit (2–20).
+- **Design tokens only** — extract colors and fonts without full captures.
+
+## How it works (step by step)
+
+1. Install WebForge from GitHub into a Chrome/Chromium browser.
+2. Open the target website and click the WebForge toolbar popup.
+3. Pick a capture mode (single, multi-viewport, or full-domain crawl) and optionally set custom crawl URLs and a page limit.
+4. WebForge scrolls each page, hides scrollbars and sticky headers, waits out lazy-loading, and stitches a seamless canvas per viewport.
+5. It extracts the active color palette (as hex) and font families.
+6. It compiles a ZIP blueprint package and downloads it, ready to feed to an AI coding agent.
+
+## Technical details
+
+- **Incremental stitching**: scrolls dynamic pages, bypasses lazy-loading delays, hides scrollbars, and hides fixed/sticky headers to avoid duplicated overlays.
+- **Viewport emulation dimensions**: Desktop 1440x900, Tablet 768x1024, Mobile 390x844.
+- **Domain crawler**: spawns temporary sandboxed tabs to crawl and capture same-domain URLs sequentially.
+- **Token extractor**: harvests the document's computed color palette (converted to hex) and font-family list.
+
+## Output package schema
+
+Every exported ZIP is a directory:
+
+```
+WebForge_Project/
+├── pages/
+│   ├── home/
+│   │   ├── desktop.png        (1440x900 full page)
+│   │   ├── tablet.png         (768x1024 full page)
+│   │   ├── mobile.png         (390x844 full page)
+│   │   └── metadata.json      (page title, URL, fonts, colors)
+│   └── about/
+│       └── ...
+├── sitemap.json               (array of crawled URLs / domain tree)
+└── metadata.json              (global fonts, colors, timestamps, page index)
+```
+
+## Using a blueprint inside an AI agent
+
+- Feed the global `metadata.json` first to establish the design system (fonts, colors).
+- Attach the relevant device PNG from `pages/<slug>/` as the visual target.
+- Use the extracted hex colors for exact color matching rather than eyeballing screenshots.
+- Use `sitemap.json` to understand site structure and navigation.
+
+## Comparison
+
+- vs **GoFullPage**: WebForge adds multi-viewport capture, domain crawling, and design-token extraction with structured JSON output — not just a single screenshot.
+- vs **Firecrawl / ScreenshotOne**: WebForge runs locally as a browser extension (no API keys or servers) and is purpose-built to produce AI-agent-ready visual + token blueprints.
+
+## FAQ
+
+**Is WebForge free?** Yes, completely free; support via Buy Me a Coffee.
+**Which AI tools does it work with?** Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, Lovable, Bolt.new, v0, and any workflow accepting screenshots + tokens.
+**What browsers are supported?** Google Chrome and Chromium-based browsers.
+**Does it need an account or API key?** No.

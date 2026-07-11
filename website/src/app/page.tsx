@@ -62,6 +62,9 @@ export default function Home() {
               <a href="#structure">Blueprint Structure</a>
             </li>
             <li>
+              <a href="#faq">FAQ</a>
+            </li>
+            <li>
               <a
                 href="https://github.com/zakisheriff/WebForge/releases"
                 target="_blank"
@@ -415,6 +418,87 @@ export default function Home() {
               AI Input Specs
             </span>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section — mirrors FAQPage JSON-LD for AEO / answer engines */}
+      <section
+        id="faq"
+        className="list-section"
+        style={{
+          borderTop: "1px solid var(--border-color)",
+          paddingTop: "60px",
+        }}
+      >
+        <div className="list-section-left">
+          <h3>Frequently Asked Questions</h3>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--text-secondary)",
+              marginTop: "12px",
+              lineHeight: "1.6",
+            }}
+          >
+            Everything you need to know about capturing websites with WebForge
+            for AI coding workflows.
+          </p>
+        </div>
+        <div
+          className="faq-list"
+          style={{ display: "flex", flexDirection: "column", width: "100%" }}
+        >
+          {[
+            {
+              q: "What is WebForge?",
+              a: "WebForge is a free Chrome extension that captures any website into an AI-ready visual blueprint. It stitches full-page screenshots across desktop, tablet and mobile viewports, crawls same-domain pages, and extracts CSS design tokens, fonts and colors so AI coding agents can rebuild the layout accurately.",
+            },
+            {
+              q: "Is WebForge free?",
+              a: "Yes. WebForge is completely free to install and use. You can download it from GitHub and support development through Buy Me a Coffee.",
+            },
+            {
+              q: "Which AI tools does WebForge work with?",
+              a: "WebForge output is optimized for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, Lovable, Bolt.new, v0 and any AI coding workflow that accepts screenshots and design-token context.",
+            },
+            {
+              q: "How is WebForge different from GoFullPage or a normal screenshot tool?",
+              a: "Unlike a plain screenshot extension, WebForge captures multiple viewports, crawls the whole domain, and exports a structured package containing screenshots plus JSON metadata of colors, fonts and sitemap — everything an AI agent needs to reconstruct the frontend code.",
+            },
+            {
+              q: "What does the exported WebForge package contain?",
+              a: "Each export is a ZIP containing a pages/ folder with desktop.png, tablet.png and mobile.png per page, a per-page metadata.json (title, URL, fonts, colors), a global metadata.json with combined design tokens and timestamps, and a sitemap.json of the discovered domain tree.",
+            },
+          ].map((item) => (
+            <details
+              key={item.q}
+              style={{
+                borderBottom: "1px solid var(--border-color)",
+                padding: "20px 0",
+              }}
+            >
+              <summary
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  listStyle: "none",
+                }}
+              >
+                {item.q}
+              </summary>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "var(--text-secondary)",
+                  marginTop: "12px",
+                  lineHeight: "1.7",
+                }}
+              >
+                {item.a}
+              </p>
+            </details>
+          ))}
         </div>
       </section>
 

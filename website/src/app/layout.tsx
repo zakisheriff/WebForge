@@ -1,5 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import StructuredData from "./structured-data";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f0eee6" },
+    { media: "(prefers-color-scheme: dark)", color: "#191919" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://webforge.theatom.lk"),
@@ -128,8 +138,38 @@ export const metadata: Metadata = {
 
   category: "Developer Tools",
 
+  applicationName: "WebForge",
+
+  referrer: "origin-when-cross-origin",
+
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
+
+  appleWebApp: {
+    capable: true,
+    title: "WebForge",
+    statusBarStyle: "default",
+  },
+
+  manifest: "/manifest.webmanifest",
+
+  // Add your real tokens from Google Search Console / Bing Webmaster Tools.
+  verification: {
+    google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
+    other: {
+      "msvalidate.01": "BING_WEBMASTER_TOKEN",
+    },
+  },
+
   alternates: {
     canonical: "https://webforge.theatom.lk",
+    languages: {
+      "en-US": "https://webforge.theatom.lk",
+      "x-default": "https://webforge.theatom.lk",
+    },
   },
 
   robots: {
@@ -180,9 +220,12 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png" },
+    ],
     shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    apple: "/apple-icon.png",
   },
 };
 
@@ -194,71 +237,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-
-              name: "WebForge",
-
-              url: "https://webforge.theatom.lk",
-
-              applicationCategory: "DeveloperApplication",
-
-              operatingSystem:
-                "Windows, macOS, Linux, ChromeOS",
-
-              description:
-                "WebForge is an AI-ready Chrome extension that captures complete websites into visual blueprints, screenshots, sitemaps, CSS design tokens, fonts, layouts, and assets for AI coding assistants like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and Gemini.",
-
-              author: {
-                "@type": "Person",
-                name: "Zaki Sheriff",
-              },
-
-              creator: {
-                "@type": "Organization",
-                name: "The Atom",
-              },
-
-              publisher: {
-                "@type": "Organization",
-                name: "The Atom",
-              },
-
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-              },
-
-              softwareVersion: "1.0",
-
-              browserRequirements: "Google Chrome",
-
-              keywords: [
-                "WebForge",
-                "Website Capture",
-                "Website Blueprint",
-                "Website Screenshot",
-                "Website Scraper",
-                "Website Crawler",
-                "AI Coding",
-                "Claude Code",
-                "Cursor",
-                "Windsurf",
-                "GitHub Copilot",
-                "ChatGPT",
-                "Gemini",
-                "Chrome Extension",
-                "CSS Design Tokens",
-                "Frontend Development",
-              ],
-            }),
-          }}
-        />
+        <StructuredData />
       </head>
 
       <body>{children}</body>

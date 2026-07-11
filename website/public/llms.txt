@@ -1,26 +1,37 @@
 # WebForge
 
-WebForge is a high-fidelity Chrome Extension designed to capture website designs and output organized visual and structural blueprints tailored for AI coding agents.
+> WebForge is a free, AI-ready Chrome extension by The Atom that captures any website into high-fidelity visual blueprints — full-page multi-viewport screenshots, a same-domain sitemap, and extracted CSS design tokens (colors, fonts, layouts) — structured for AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini.
+
+Homepage: https://webforge.theatom.lk
+Install / Source: https://github.com/zakisheriff/WebForge
+Author: Zaki Sheriff (The Atom, Sri Lanka)
+License / Cost: Free
 
 ## Core Capabilities
 
-1. **Incremental Stitching Capture**: Scrolls dynamic pages, bypasses lazy-loading delays, hides scrollbars, and hides fixed/sticky headers to build a seamless screenshot canvas.
-2. **Viewport Emulation**: Dynamically resizes browser window dimensions to capture authentic media queries across devices (Desktop: 1440x900, Tablet: 768x1024, Mobile: 390x844).
-3. **Domain Crawler**: Spawns temporary sandboxed tabs to crawl and capture same-domain sitemaps sequentially.
-4. **Token Extractor**: Harvests active document color palettes (converted to hex values) and font family lists.
+1. **Incremental Stitching Capture**: Scrolls dynamic pages, bypasses lazy-loading delays, hides scrollbars, and hides fixed/sticky headers to build a seamless full-page screenshot.
+2. **Viewport Emulation**: Resizes the browser to capture authentic media queries across devices (Desktop 1440x900, Tablet 768x1024, Mobile 390x844).
+3. **Domain Crawler**: Spawns sandboxed tabs to crawl and capture same-domain pages sequentially into a sitemap.
+4. **Token Extractor**: Harvests the document's color palette (as hex) and font-family list.
 
 ## Blueprint Output Schema
 
-Every exported zip archive is structured as a standard directory containing:
+Every exported ZIP archive is a directory containing:
 - `sitemap.json`: Array of crawled URLs.
-- `metadata.json`: Global design tokens (combined font families, colors, capture timestamp, page indexes).
-- `pages/<slug>/`: Folder for each captured page containing:
+- `metadata.json`: Global design tokens (combined fonts, colors, capture timestamp, page indexes).
+- `pages/<slug>/`: One folder per captured page containing:
   - `desktop.png`, `tablet.png`, `mobile.png` (high-fidelity screenshots).
-  - `metadata.json` (page-specific title, URL, extracted fonts, and colors).
+  - `metadata.json` (page title, URL, extracted fonts and colors).
 
 ## For LLM Context Loading
 
 When rebuilding or studying layouts:
 - Feed `metadata.json` to understand global styles.
-- Look at the respective device PNG screenshot under `pages/<slug>/` as the visual blueprint.
+- View the device PNG under `pages/<slug>/` as the visual blueprint.
 - Reference extracted colors for exact HEX matching.
+
+## Links
+
+- Full details: https://webforge.theatom.lk/llms-full.txt
+- Releases: https://github.com/zakisheriff/WebForge/releases
+- Support: https://buymeacoffee.com/theoneatom
