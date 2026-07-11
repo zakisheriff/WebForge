@@ -193,7 +193,7 @@ export default function DashboardView() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <h1 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
-            <span style={{ color: 'var(--accent-color)' }}>Web</span>Forge Workspace
+            <span style={{ color: 'var(--accent-color)' }}>Web</span>Forge Workspace <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 400 }}>by The Atom</span>
           </h1>
         </div>
 

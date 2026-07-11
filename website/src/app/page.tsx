@@ -39,7 +39,12 @@ export default function Home() {
       <div className="navbar-container">
         <nav className="navbar">
           {/* Logo styled similar to A\ */}
-          <div className="nav-brand">WEBF\RGE</div>
+          <div className="nav-brand" style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            WEBF\RGE 
+            <span style={{ fontSize: '11px', opacity: 0.6, fontWeight: 'normal', textTransform: 'none', letterSpacing: 'normal' }}>
+              by The Atom
+            </span>
+          </div>
           
           {/* Desktop Menu */}
           <ul className="nav-menu-desktop">
@@ -193,7 +198,7 @@ export default function Home() {
         </div>
 
         <div className="footer-bottom">
-          <div>&copy; 2026 WebForge. Created by Zaki Sheriff.</div>
+          <div>&copy; 2026 WebForge by The Atom. Created by Zaki Sheriff.</div>
           <div className="social-links">
             <a href="https://github.com/zakisheriff" target="_blank" rel="noreferrer">GitHub</a>
           </div>

@@ -40,8 +40,8 @@ export default function PopupView() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ color: 'var(--accent-color)', fontWeight: 800 }}>W</span>ebForge
+          <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ color: 'var(--accent-color)', fontWeight: 800 }}>W</span>ebForge <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>by The Atom</span>
           </h2>
           <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-muted)' }}>AI-Ready Website Capture Engine</p>
         </div>
