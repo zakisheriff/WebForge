@@ -40,11 +40,8 @@ export default function Home() {
         <nav className="navbar">
           {/* Logo styled similar to A\ */}
           <div className="nav-brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '22px', height: '22px', borderRadius: '4px' }} />
-            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBF\RGE</span> 
-            <span style={{ fontSize: '11px', opacity: 0.6, fontWeight: 'normal', textTransform: 'none', letterSpacing: 'normal' }}>
-              by The Atom
-            </span>
+            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '44px', height: '44px', borderRadius: '4px' }} />
+            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBFORGE</span> 
           </div>
           
           {/* Desktop Menu */}
@@ -75,7 +72,7 @@ export default function Home() {
           <div className={`drawer-overlay ${isMenuClosing ? 'closing' : ''}`} onClick={closeMenu}></div>
           <div className={`drawer-content ${isMenuClosing ? 'closing' : ''}`}>
             <div className="drawer-header">
-              <div className="nav-brand">WEBF\RGE</div>
+              <div className="nav-brand">WEBFORGE</div>
               <button className="drawer-close-btn" onClick={closeMenu} aria-label="Close menu">&times;</button>
             </div>
             <ul className="drawer-links" style={{ marginTop: 0 }}>
@@ -180,8 +177,8 @@ export default function Home() {
       <footer className="footer">
         <div className="footer-inner">
           <div className="footer-logo" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '24px', height: '24px', borderRadius: '4px' }} />
-            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBF\RGE</span>
+            <img src="/Logo-WebForge.png" alt="WebForge Logo" style={{ width: '44px', height: '44px', borderRadius: '4px' }} />
+            <span style={{ fontWeight: 700, letterSpacing: '-0.5px' }}>WEBFORGE</span>
           </div>
           
           <div className="footer-col">
