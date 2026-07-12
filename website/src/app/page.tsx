@@ -33,6 +33,29 @@ export default function Home() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleHomeClick = () => {
+    closeMenu();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Reveal sections smoothly as they scroll into view
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>(".reveal");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       {/* Navigation Header */}
@@ -96,9 +119,10 @@ export default function Home() {
 
           {/* Mobile Menu Toggle Button */}
           <button
-            className="hamburger-btn"
-            onClick={() => setIsMenuOpen(true)}
-            aria-label="Open menu"
+            className={`hamburger-btn ${isMenuOpen ? "is-open" : ""}`}
+            onClick={() => (isMenuOpen ? closeMenu() : setIsMenuOpen(true))}
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
             <span></span>
             <span></span>
@@ -107,90 +131,75 @@ export default function Home() {
         </nav>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile floating menu card (morphs out of the hamburger) */}
       {(isMenuOpen || isMenuClosing) && (
         <>
           <div
-            className={`drawer-overlay ${isMenuClosing ? "closing" : ""}`}
+            className={`menu-scrim ${isMenuClosing ? "closing" : ""}`}
             onClick={closeMenu}
           ></div>
-          <div className={`drawer-content ${isMenuClosing ? "closing" : ""}`}>
-            <div className="drawer-header">
-              <div className="nav-brand">WebForge</div>
-              <button
-                className="drawer-close-btn"
-                onClick={closeMenu}
-                aria-label="Close menu"
-              >
-                &times;
-              </button>
-            </div>
-            <ul className="drawer-links" style={{ marginTop: 0 }}>
-              <li>
-                <a
-                  href="#features"
-                  onClick={() => handleLinkClick("#features")}
-                >
-                  How It Works
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#structure"
-                  onClick={() => handleLinkClick("#structure")}
-                >
-                  Blueprint Structure
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/zakisheriff/WebForge/releases"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={closeMenu}
-                >
-                  Releases
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://buymeacoffee.com/theoneatom"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={closeMenu}
-                >
-                  Buy Me a Coffee
-                </a>
-              </li>
-            </ul>
-
-            <div
-              className="drawer-footer"
-              style={{
-                borderTop: "1px solid var(--border-color)",
-                paddingTop: "20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-              }}
+          <div
+            className={`menu-card ${isMenuClosing ? "closing" : ""}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+          >
+            <button
+              className="menu-card-close"
+              onClick={closeMenu}
+              aria-label="Close menu"
             >
-              <a
-                href="https://github.com/zakisheriff/WebForge"
-                target="_blank"
-                rel="noreferrer"
-                className="btn-drawer-primary"
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
               >
-                Install WebForge Extension
+                <path d="M4 4l12 12M16 4L4 16" />
+              </svg>
+            </button>
+            <nav className="menu-card-links">
+              <a className="active" href="#top" onClick={handleHomeClick}>
+                Home
+              </a>
+              <a href="#features" onClick={() => handleLinkClick("#features")}>
+                How It Works
+              </a>
+              <a href="#structure" onClick={() => handleLinkClick("#structure")}>
+                Blueprint Structure
+              </a>
+              <a href="#faq" onClick={() => handleLinkClick("#faq")}>
+                FAQ
               </a>
               <a
-                href="https://github.com/zakisheriff"
+                href="https://github.com/zakisheriff/WebForge/releases"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-drawer-secondary"
+                onClick={closeMenu}
               >
-                Developer Profile
+                Releases
               </a>
-            </div>
+              <a
+                href="https://buymeacoffee.com/theoneatom"
+                target="_blank"
+                rel="noreferrer"
+                onClick={closeMenu}
+              >
+                Buy Me a Coffee
+              </a>
+            </nav>
+            <a
+              href="https://github.com/zakisheriff/WebForge"
+              target="_blank"
+              rel="noreferrer"
+              className="menu-card-cta"
+              onClick={closeMenu}
+            >
+              Install WebForge Extension
+            </a>
           </div>
         </>
       )}
@@ -210,7 +219,7 @@ export default function Home() {
 
       {/* Main Banner Container */}
       <section className="banner-container">
-        <div className="dark-banner">
+        <div className="dark-banner reveal">
           <h2 className="banner-title">
             Get WebForge Extension.
           </h2>
@@ -228,7 +237,7 @@ export default function Home() {
       {/* Output Package Structure Visualizer */}
       <section
         id="structure"
-        className="list-section"
+        className="list-section reveal"
         style={{
           borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
@@ -308,7 +317,7 @@ export default function Home() {
       {/* How It Works List Section */}
       <section
         id="features"
-        className="list-section"
+        className="list-section reveal"
         style={{
           borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
@@ -424,7 +433,7 @@ export default function Home() {
       {/* FAQ Section — mirrors FAQPage JSON-LD for AEO / answer engines */}
       <section
         id="faq"
-        className="list-section"
+        className="list-section reveal"
         style={{
           borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
@@ -503,7 +512,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer reveal">
         <div className="footer-inner">
           <div
             className="footer-logo"
