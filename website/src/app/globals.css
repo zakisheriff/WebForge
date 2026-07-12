@@ -1064,12 +1064,13 @@ a:hover {
 
 @media (max-width: 768px) {
   .capture {
-    margin: 30px 16px;
-    padding: 40px 20px;
-    border-radius: 32px;
+    margin: 12px 16px 40px;
+    padding: 30px 20px;
+    border-radius: 28px;
   }
   .capture-form {
     flex-direction: column;
+    margin-top: 16px;
   }
   .capture-btn {
     padding: 14px;
@@ -1079,7 +1080,7 @@ a:hover {
     gap: 24px;
   }
   .capture-title {
-    font-size: 28px;
+    font-size: 24px;
   }
   .capture-actions {
     flex-direction: column-reverse;
@@ -1135,10 +1136,11 @@ a:hover {
     gap: 40px;
   }
   .hero {
-    padding: 104px 6% 44px;
+    padding: 75px 6% 12px;
   }
   .hero-title {
-    font-size: 40px;
+    font-size: 30px;
+    line-height: 1.25;
   }
   .banner-title {
     font-size: 36px;
