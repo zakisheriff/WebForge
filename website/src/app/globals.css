@@ -904,30 +904,20 @@ a:hover {
 }
 
 .capture-upsell {
-  margin-top: 28px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 22px 24px;
+  margin-top: 18px;
+  text-align: center;
 }
 
 .capture-upsell-text {
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
 }
 
-.capture-upsell-text strong {
-  color: var(--text-primary);
-}
-
 .capture-upsell-link {
-  display: inline-block;
-  margin-top: 14px;
   color: var(--accent-color);
   font-weight: 600;
-  font-size: 14px;
 }
 
 @media (max-width: 768px) {

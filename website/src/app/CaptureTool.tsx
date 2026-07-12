@@ -225,19 +225,17 @@ export default function CaptureTool() {
 
       <div className="capture-upsell">
         <p className="capture-upsell-text">
-          <strong>Want the full picture?</strong> This web preview captures a
-          single page. The WebForge extension runs in your own browser to crawl
-          the entire domain, reach login-protected and bot-guarded pages, and
-          export pixel-perfect blueprints.
+          Preview captures one page.{" "}
+          <a
+            href="https://github.com/zakisheriff/WebForge"
+            target="_blank"
+            rel="noreferrer"
+            className="capture-upsell-link"
+          >
+            Get the extension →
+          </a>{" "}
+          to crawl entire sites.
         </p>
-        <a
-          href="https://github.com/zakisheriff/WebForge"
-          target="_blank"
-          rel="noreferrer"
-          className="capture-upsell-link"
-        >
-          Install the extension →
-        </a>
       </div>
     </section>
   );
