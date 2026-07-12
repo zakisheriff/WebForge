@@ -174,9 +174,46 @@ export async function POST(request: NextRequest) {
         return true;
       };
 
+      // Add a single image reference (resolving relative URLs, keeping data:).
+      const addImg = (raw: string) => {
+        if (!raw || !acceptSrc(raw)) return;
+        if (raw.startsWith("data:")) {
+          imageSet.add(raw);
+        } else {
+          try {
+            imageSet.add(new URL(raw, location.href).href);
+          } catch {}
+        }
+      };
+
+      const looksLikeImage = (u: string) =>
+        /\.(png|jpe?g|gif|webp|avif|svg|bmp|ico)(\?|#|$)/i.test(u);
+
+      // Pull every url(...) out of a CSS value — a background can list several,
+      // and a page may use multiple sprite sheets. In `strict` mode (scanning
+      // raw stylesheet rules) only image-looking urls pass, so @font-face src
+      // url()s and other assets aren't mistaken for images.
+      const addUrlsFrom = (cssText: string, strict = false) => {
+        if (!cssText || !cssText.includes("url(")) return;
+        const re = /url\(\s*["']?([^"')]+)["']?\s*\)/g;
+        let mm: RegExpExecArray | null;
+        while ((mm = re.exec(cssText))) {
+          const u = mm[1];
+          if (strict && !u.startsWith("data:") && !looksLikeImage(u)) continue;
+          addImg(u);
+        }
+      };
+
       const nodes = Array.from(document.querySelectorAll("*")).slice(0, 6000);
       for (const el of nodes) {
         const cs = getComputedStyle(el as Element);
+
+        // Background images: collect even from zero-area / hidden elements,
+        // since animation sprites are often parked on off-screen nodes.
+        if (cs.backgroundImage && cs.backgroundImage !== "none") {
+          addUrlsFrom(cs.backgroundImage);
+        }
+
         const rect = (el as Element).getBoundingClientRect();
         const area = Math.max(0, rect.width) * Math.max(0, rect.height);
         if (area <= 0) continue;
@@ -193,24 +230,25 @@ export async function POST(request: NextRequest) {
 
         const family = cs.fontFamily?.split(",")[0]?.replace(/["']/g, "").trim();
         if (family) bump(fontCount, family);
-
-        const bg = cs.backgroundImage;
-        if (bg && bg !== "none") {
-          const m = bg.match(/url\(["']?(.*?)["']?\)/);
-          if (m && m[1] && acceptSrc(m[1])) {
-            if (m[1].startsWith("data:")) {
-              imageSet.add(m[1]);
-            } else {
-              try {
-                imageSet.add(new URL(m[1], location.href).href);
-              } catch {}
-            }
-          }
-        }
       }
 
       for (const img of Array.from(document.images)) {
         if (acceptSrc(img.src)) imageSet.add(img.src);
+      }
+
+      // Also scan stylesheet rules — catches sprites referenced only in CSS
+      // (e.g. applied on :hover or toggled by JS) that no element paints yet.
+      for (const sheet of Array.from(document.styleSheets)) {
+        let rules: CSSRuleList | null = null;
+        try {
+          rules = sheet.cssRules; // throws for cross-origin sheets
+        } catch {
+          continue;
+        }
+        if (!rules) continue;
+        for (const rule of Array.from(rules)) {
+          addUrlsFrom(rule.cssText || "", true);
+        }
       }
 
       // Build the palette: most-prominent first, dropping shades that are
@@ -246,7 +284,14 @@ export async function POST(request: NextRequest) {
       return {
         colors: palette,
         fonts: topN(fontCount, 8),
-        images: Array.from(imageSet).slice(0, 40),
+        // Inline data-image sprites first — they're usually the distinctive
+        // artwork, and shouldn't get buried behind hosted assets.
+        images: Array.from(imageSet)
+          .sort(
+            (a, b) =>
+              (b.startsWith("data:") ? 1 : 0) - (a.startsWith("data:") ? 1 : 0),
+          )
+          .slice(0, 40),
       };
     });
 
