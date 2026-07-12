@@ -67,7 +67,7 @@ function normalizeUrl(raw: string): string | null {
 }
 
 export async function POST(request: NextRequest) {
-  let body: { url?: string };
+  let body: { url?: string; mode?: string };
   try {
     body = await request.json();
   } catch {
@@ -81,6 +81,14 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+
+  // "desktop" → just the 1440 shot; "all" → desktop, tablet & mobile.
+  // Design tokens (colors, fonts, images) are extracted either way.
+  const mode = body.mode === "desktop" ? "desktop" : "all";
+  const viewports =
+    mode === "desktop"
+      ? VIEWPORTS.filter((v) => v.key === "desktop")
+      : VIEWPORTS;
 
   let browser: Browser | null = null;
   try {
@@ -227,8 +235,8 @@ export async function POST(request: NextRequest) {
     result.fonts = extracted.fonts;
     result.images = extracted.images;
 
-    // Full-page screenshot per viewport.
-    for (const vp of VIEWPORTS) {
+    // Full-page screenshot per selected viewport.
+    for (const vp of viewports) {
       await page.setViewport({
         width: vp.width,
         height: vp.height,

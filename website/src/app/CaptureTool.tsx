@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 type ViewportKey = "desktop" | "tablet" | "mobile";
+type CaptureMode = "desktop" | "all";
 
 interface CaptureResult {
   url: string;
@@ -31,25 +32,24 @@ const VIEWPORT_WIDTHS: Record<ViewportKey, number> = {
 
 // Rotating captions shown while the capture runs — mirrors what the backend
 // is actually doing so the wait feels alive instead of a frozen spinner.
-const LOADING_STEPS = [
+const buildLoadingSteps = (mode: CaptureMode) => [
   "Rendering desktop · 1440",
-  "Rendering tablet · 768",
-  "Rendering mobile · 390",
+  ...(mode === "all"
+    ? ["Rendering tablet · 768", "Rendering mobile · 390"]
+    : []),
   "Extracting the colour palette",
   "Collecting typography",
   "Gathering images",
   "Packaging design tokens",
 ];
 
-function CaptureLoading() {
+function CaptureLoading({ mode }: { mode: CaptureMode }) {
+  const steps = buildLoadingSteps(mode);
   const [step, setStep] = useState(0);
   useEffect(() => {
-    const t = setInterval(
-      () => setStep((s) => (s + 1) % LOADING_STEPS.length),
-      1400,
-    );
+    const t = setInterval(() => setStep((s) => (s + 1) % steps.length), 1400);
     return () => clearInterval(t);
-  }, []);
+  }, [steps.length]);
 
   return (
     <div className="capture-loading" role="status" aria-live="polite">
@@ -76,7 +76,7 @@ function CaptureLoading() {
       </div>
       <div className="capture-loading-status">
         <span className="cl-spinner" />
-        <span className="cl-step">{LOADING_STEPS[step]}…</span>
+        <span className="cl-step">{steps[step]}…</span>
       </div>
     </div>
   );
@@ -85,6 +85,7 @@ function CaptureLoading() {
 export default function CaptureTool() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingMode, setLoadingMode] = useState<CaptureMode>("all");
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CaptureResult | null>(null);
   const [active, setActive] = useState<ViewportKey>("desktop");
@@ -101,9 +102,9 @@ export default function CaptureTool() {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox]);
 
-  const runCapture = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const runCapture = async (mode: CaptureMode) => {
     if (!url.trim() || loading) return;
+    setLoadingMode(mode);
     setLoading(true);
     setError(null);
     setResult(null);
@@ -111,7 +112,7 @@ export default function CaptureTool() {
       const res = await fetch("/api/capture", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, mode }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -181,7 +182,13 @@ export default function CaptureTool() {
         <h3 className="capture-title">Try WebForge on any URL</h3>
       </div>
 
-      <form className="capture-form" onSubmit={runCapture}>
+      <form
+        className="capture-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          runCapture("all");
+        }}
+      >
         <input
           type="text"
           className="capture-input"
@@ -191,12 +198,32 @@ export default function CaptureTool() {
           disabled={loading}
           aria-label="Website URL to capture"
         />
-        <button type="submit" className="capture-btn" disabled={loading}>
-          {loading ? "Capturing…" : "Capture"}
-        </button>
       </form>
 
-      {loading && <CaptureLoading />}
+      <div className="capture-modes">
+        <button
+          type="button"
+          className="capture-btn capture-btn-secondary"
+          onClick={() => runCapture("desktop")}
+          disabled={loading}
+        >
+          {loading && loadingMode === "desktop"
+            ? "Capturing…"
+            : "Capture desktop"}
+        </button>
+        <button
+          type="button"
+          className="capture-btn"
+          onClick={() => runCapture("all")}
+          disabled={loading}
+        >
+          {loading && loadingMode === "all"
+            ? "Capturing…"
+            : "Desktop · tablet · mobile"}
+        </button>
+      </div>
+
+      {loading && <CaptureLoading mode={loadingMode} />}
 
       {error && <div className="capture-error">{error}</div>}
 

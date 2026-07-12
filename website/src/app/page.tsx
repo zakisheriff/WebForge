@@ -510,28 +510,11 @@ export default function Home() {
             )}`}
             className="contact-card"
           >
-            <span className="contact-icon" aria-hidden="true">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M8 2l1.5 2.5M16 2l-1.5 2.5" />
-                <rect x="8" y="6" width="8" height="12" rx="4" />
-                <path d="M4 11h4M16 11h4M4 16h4M16 16h4M4 6l3 2M20 6l-3 2" />
-              </svg>
-            </span>
             <h4>Report a bug</h4>
             <p>
               Something broke or a capture came out wrong? Send the details and
               I’ll get it fixed.
             </p>
-            <span className="contact-cta">Report it →</span>
           </a>
 
           <a
@@ -540,28 +523,11 @@ export default function Home() {
             )}`}
             className="contact-card"
           >
-            <span className="contact-icon" aria-hidden="true">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M8 13l2.5 2.5a2 2 0 0 0 2.8 0L20 9" />
-                <path d="M2 9l3-3 5 3 4-2 3 2 4 1" />
-                <path d="M6 6v6M18 6v8" />
-              </svg>
-            </span>
             <h4>Partnerships & collabs</h4>
             <p>
               Building something WebForge could plug into, or want to work
               together? Let’s talk.
             </p>
-            <span className="contact-cta">Start a chat →</span>
           </a>
 
           <a
@@ -570,27 +536,11 @@ export default function Home() {
             )}`}
             className="contact-card"
           >
-            <span className="contact-icon" aria-hidden="true">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
-                <path d="M8 9h8M8 12h5" />
-              </svg>
-            </span>
             <h4>Everything else</h4>
             <p>
               Feedback, feature ideas, press, or a plain hello — the inbox is
               always open.
             </p>
-            <span className="contact-cta">Say hi →</span>
           </a>
         </div>
       </section>

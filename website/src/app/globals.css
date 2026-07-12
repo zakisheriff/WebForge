@@ -338,11 +338,12 @@ a:hover {
 
 .banner-container {
   --expand: 0;
-  /* Grows sideways as --expand goes 0 → 1 (driven by scroll in page.tsx). */
-  max-width: calc(940px + var(--expand) * 460px);
+  /* Grows sideways as --expand goes 0 → 1 (driven by scroll in page.tsx),
+     all the way to a full-bleed band that touches both window edges. */
+  max-width: calc(940px + var(--expand) * (100% - 940px));
   margin: 40px auto 100px;
-  padding: 0 6%;
-  will-change: max-width;
+  padding: 0 calc((1 - var(--expand)) * 6%);
+  will-change: max-width, padding;
 }
 
 .dark-banner {
@@ -360,8 +361,8 @@ a:hover {
   gap: 24px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-  /* Corners ease slightly tighter as the card widens. */
-  border-radius: calc(44px - var(--expand, 0) * 12px);
+  /* Corners flatten out as the card grows to a full-width band. */
+  border-radius: calc(44px - var(--expand, 0) * 44px);
 }
 
 .banner-title {
@@ -446,33 +447,22 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: 30px 28px;
+  gap: 10px;
+  padding: 28px 26px;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 16px;
   text-align: left;
   transition:
-    transform 0.22s ease,
-    border-color 0.22s ease,
-    box-shadow 0.22s ease;
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .contact-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--accent-color);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.1);
-}
-
-.contact-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(217, 107, 67, 0.12);
-  color: var(--accent-color);
+  background: rgba(217, 107, 67, 0.05);
 }
 
 .contact-card h4 {
@@ -487,19 +477,6 @@ a:hover {
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
-}
-
-.contact-cta {
-  margin-top: auto;
-  padding-top: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent-color);
-  transition: gap 0.2s ease;
-}
-
-.contact-card:hover .contact-cta {
-  color: #c65a34;
 }
 
 @media (max-width: 768px) {
@@ -984,6 +961,28 @@ a:hover {
 .capture-btn:disabled {
   opacity: 0.65;
   cursor: default;
+}
+
+.capture-modes {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.capture-modes .capture-btn {
+  flex: 1;
+  padding: 15px 20px;
+  border-radius: 14px;
+}
+
+.capture-btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--bg-color);
+}
+
+.capture-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ---- Lively capture loading state ---- */
@@ -1507,6 +1506,9 @@ a:hover {
   .capture-form {
     flex-direction: column;
     margin-top: 20px;
+  }
+  .capture-modes {
+    flex-direction: column;
   }
   .capture-btn {
     padding: 14px;
