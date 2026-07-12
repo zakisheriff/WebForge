@@ -219,7 +219,7 @@ export default function CaptureTool() {
         >
           {loading && loadingMode === "all"
             ? "Capturing…"
-            : "Desktop · tablet · mobile"}
+            : "Desktop · Tablet · Mobile"}
         </button>
       </div>
 

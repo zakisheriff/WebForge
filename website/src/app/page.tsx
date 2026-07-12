@@ -538,7 +538,7 @@ export default function Home() {
           >
             <h4>Everything else</h4>
             <p>
-              Feedback, feature ideas, press, or a plain hello — the inbox is
+              Feedback, feature ideas, press, or a plain hello. The inbox is
               always open.
             </p>
           </a>
