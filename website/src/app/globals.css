@@ -1634,12 +1634,14 @@ a:hover {
     font-size: 36px;
   }
   .banner-container {
-    margin: 30px 16px 60px;
-    padding: 0;
+    margin: 30px auto 60px;
+    padding: 0 calc((1 - var(--expand, 0)) * 16px);
+    max-width: 100%;
+    will-change: padding;
   }
   .dark-banner {
     padding: 60px 16px;
-    border-radius: 32px;
+    border-radius: calc(32px - var(--expand, 0) * 32px);
   }
   .banner-footer {
     flex-direction: column;
