@@ -1,57 +1,87 @@
 // WebForge Content Script
 
-// Helper: Convert RGB/RGBA to Hex
-function rgbToHex(rgb: string): string {
-  const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
-  if (!match) return rgb;
-  const r = parseInt(match[1], 10).toString(16).padStart(2, '0');
-  const g = parseInt(match[2], 10).toString(16).padStart(2, '0');
-  const b = parseInt(match[3], 10).toString(16).padStart(2, '0');
-  return `#${r}${g}${b}`.toUpperCase();
+// Helper: Convert RGB/RGBA to Hex. Returns null for fully transparent colors.
+function rgbToHex(rgb: string): string | null {
+  const match = rgb.match(/rgba?\(([^)]+)\)/i);
+  if (!match) return null;
+  const parts = match[1].split(',').map(s => parseFloat(s.trim()));
+  const [r, g, b, a = 1] = parts;
+  if (!Number.isFinite(r) || a === 0) return null;
+  const h = (n: number) =>
+    Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
+  return `#${h(r)}${h(g)}${h(b)}`.toUpperCase();
 }
 
-// Extract design tokens (fonts & colors)
+// Extract design tokens (fonts & colors).
+// Colors are weighted by the on-screen AREA they cover, not by element count,
+// so a page's true background + primary text surface first — instead of
+// whatever tag simply repeats most often. Near-identical shades are merged.
 function extractDesignTokens() {
-  const fonts = new Set<string>();
-  const colors = new Set<string>();
-  
-  // Look at unique elements to collect styles
-  const elements = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, p, span, button, a, div, section'));
-  
-  // Limit parsing to 300 elements for performance
-  const subset = elements.slice(0, 300);
-  
-  subset.forEach((el) => {
+  const fontCount = new Map<string, number>();
+  const colorWeight = new Map<string, number>();
+
+  const bump = (map: Map<string, number>, key: string, w: number) => {
+    if (!key || w <= 0) return;
+    map.set(key, (map.get(key) || 0) + w);
+  };
+
+  const elements = Array.from(document.querySelectorAll('*')).slice(0, 6000);
+
+  elements.forEach((el) => {
     const style = window.getComputedStyle(el);
-    
-    // Extract fonts
+    const rect = el.getBoundingClientRect();
+    const area = Math.max(0, rect.width) * Math.max(0, rect.height);
+    if (area <= 0) return;
+
+    // Fonts
     const fontFamily = style.fontFamily;
     if (fontFamily) {
-      fontFamily.split(',').forEach(font => {
-        const clean = font.replace(/['"]/g, '').trim();
-        if (clean && !['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy', 'inherit'].includes(clean)) {
-          fonts.add(clean);
-        }
-      });
+      const clean = fontFamily.split(',')[0].replace(/['"]/g, '').trim();
+      if (clean && !['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy', 'inherit'].includes(clean)) {
+        bump(fontCount, clean, 1);
+      }
     }
-    
-    // Extract text color
-    const color = style.color;
-    if (color && color !== 'rgba(0, 0, 0, 0)' && color !== 'transparent') {
-      colors.add(rgbToHex(color));
-    }
-    
-    // Extract background color
-    const bgColor = style.backgroundColor;
-    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-      colors.add(rgbToHex(bgColor));
+
+    // Background color weighted by the full box it paints.
+    const bgHex = rgbToHex(style.backgroundColor);
+    if (bgHex) bump(colorWeight, bgHex, area);
+
+    // Text color only where the element holds its own text, at a fraction of
+    // area so large empty containers don't dominate the palette.
+    const hasOwnText = Array.from(el.childNodes).some(
+      (n) => n.nodeType === 3 && (n.textContent || '').trim().length > 0,
+    );
+    if (hasOwnText) {
+      const textHex = rgbToHex(style.color);
+      if (textHex) bump(colorWeight, textHex, area * 0.4);
     }
   });
-  
-  return {
-    fonts: Array.from(fonts).slice(0, 8),
-    colors: Array.from(colors).slice(0, 12)
+
+  // Build the palette: most-prominent first, dropping shades that are
+  // visually within touching distance of one already chosen.
+  const hexToRgb = (hex: string) =>
+    [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const near = (a: string, b: string) => {
+    const A = hexToRgb(a);
+    const B = hexToRgb(b);
+    return Math.abs(A[0] - B[0]) + Math.abs(A[1] - B[1]) + Math.abs(A[2] - B[2]) < 22;
   };
+  const rankedColors = Array.from(colorWeight.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([k]) => k);
+  const colors: string[] = [];
+  for (const c of rankedColors) {
+    if (colors.some((p) => near(p, c))) continue;
+    colors.push(c);
+    if (colors.length >= 12) break;
+  }
+
+  const fonts = Array.from(fontCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([k]) => k);
+
+  return { fonts, colors };
 }
 
 // Discover same-domain links

@@ -1057,6 +1057,56 @@ a:hover {
 
 .capture-result {
   margin-top: 28px;
+  /* Develop out of the scanning skeleton: blur → sharp, fade + rise. */
+  animation: capture-morph 0.6s cubic-bezier(0.22, 0.7, 0.24, 1) both;
+}
+
+/* Stagger the inner pieces so it resolves rather than pops. */
+.capture-result .capture-tabs {
+  animation: capture-rise 0.5s ease 0.05s both;
+}
+.capture-result .capture-shot-wrap {
+  animation: capture-rise 0.55s ease 0.12s both;
+}
+.capture-result .capture-tokens {
+  animation: capture-rise 0.55s ease 0.2s both;
+}
+.capture-result .capture-actions {
+  animation: capture-rise 0.55s ease 0.28s both;
+}
+
+@keyframes capture-morph {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes capture-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capture-result,
+  .capture-result .capture-tabs,
+  .capture-result .capture-shot-wrap,
+  .capture-result .capture-tokens,
+  .capture-result .capture-actions {
+    animation: none;
+  }
 }
 
 .capture-tabs {

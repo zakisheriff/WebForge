@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 type ViewportKey = "desktop" | "tablet" | "mobile";
 
@@ -322,31 +323,34 @@ export default function CaptureTool() {
         </p>
       </div>
 
-      {lightbox && (
-        <div
-          className="capture-lightbox"
-          onClick={() => setLightbox(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Image preview"
-        >
-          <button
-            type="button"
-            className="capture-lightbox-close"
+      {lightbox &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="capture-lightbox"
             onClick={() => setLightbox(null)}
-            aria-label="Close preview"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image preview"
           >
-            ×
-          </button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="capture-lightbox-img"
-            src={lightbox}
-            alt="Full-size preview"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
+            <button
+              type="button"
+              className="capture-lightbox-close"
+              onClick={() => setLightbox(null)}
+              aria-label="Close preview"
+            >
+              ×
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="capture-lightbox-img"
+              src={lightbox}
+              alt="Full-size preview"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
