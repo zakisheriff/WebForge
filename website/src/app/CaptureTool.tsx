@@ -115,8 +115,7 @@ export default function CaptureTool() {
       <div className="capture-head">
         <h3 className="capture-title">Try WebForge on any URL</h3>
         <p className="capture-sub">
-          Paste a link to capture multi-viewport screenshots plus extracted
-          colors, fonts and images. A single-page taste of the full extension.
+          Paste a website link and capture it instantly.
         </p>
       </div>
 
