@@ -853,22 +853,48 @@ a:hover {
   border: 1px solid var(--border-color);
 }
 
-.capture-download {
+.capture-actions {
   margin-top: 26px;
-  width: 100%;
-  background: var(--text-primary);
-  color: var(--bg-color);
+  display: flex;
+  gap: 12px;
+}
+
+.capture-coffee {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 15px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.capture-coffee:hover {
+  background: var(--card-hover);
+  opacity: 1;
+}
+
+.capture-download {
+  flex: 1;
+  background: var(--accent-color);
+  color: #fff;
   border: none;
   border-radius: 14px;
   padding: 15px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .capture-download:hover:not(:disabled) {
-  opacity: 0.9;
+  background: #c65a34;
 }
 
 .capture-download:disabled {
@@ -916,6 +942,9 @@ a:hover {
   }
   .capture-title {
     font-size: 28px;
+  }
+  .capture-actions {
+    flex-direction: column-reverse;
   }
 }
 

@@ -207,13 +207,23 @@ export default function CaptureTool() {
             </div>
           </div>
 
-          <button
-            className="capture-download"
-            onClick={downloadZip}
-            disabled={zipping}
-          >
-            {zipping ? "Building ZIP…" : "Download ZIP package"}
-          </button>
+          <div className="capture-actions">
+            <a
+              href="https://buymeacoffee.com/theoneatom"
+              target="_blank"
+              rel="noreferrer"
+              className="capture-coffee"
+            >
+              ☕ Buy Me a Coffee
+            </a>
+            <button
+              className="capture-download"
+              onClick={downloadZip}
+              disabled={zipping}
+            >
+              {zipping ? "Building ZIP…" : "Download ZIP package"}
+            </button>
+          </div>
         </div>
       )}
 
