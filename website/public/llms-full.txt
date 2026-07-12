@@ -1,6 +1,6 @@
 # WebForge — Full Reference
 
-> WebForge is a free, AI-ready Chrome extension by The Atom (Sri Lanka) that turns any website into a structured, code-ready visual blueprint for AI coding agents. It captures full-page multi-viewport screenshots, crawls the domain into a sitemap, and extracts CSS design tokens so tools like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini can reconstruct a frontend with high fidelity.
+> WebForge is a free, AI-ready Chrome extension by The Atom (Sri Lanka) — plus a free online capture tool on the website — that turns any website into a structured, code-ready visual blueprint for AI coding agents. It captures full-page multi-viewport screenshots, crawls the domain into a sitemap, and extracts CSS design tokens so tools like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini can reconstruct a frontend with high fidelity.
 
 - Homepage: https://webforge.theatom.lk
 - Install / Source code: https://github.com/zakisheriff/WebForge
@@ -13,6 +13,10 @@
 ## What problem it solves
 
 AI coding agents recreate frontend layouts far more accurately when given clear visual references and exact design tokens. Pasting a single screenshot loses responsive behavior and precise colors/fonts. WebForge automates the full capture: it scrolls and stitches each page, emulates device viewports, crawls the whole domain, and packages everything an agent needs.
+
+## Online capture tool (no install required)
+
+The WebForge website hosts a free browser-based tool at https://webforge.theatom.lk/#try. You paste any website URL and it renders the page server-side across three viewports (desktop 1440, tablet 768, mobile 390), takes full-page screenshots, and extracts the color palette, fonts and image URLs — all downloadable as a ZIP with a metadata.json. This is a single-page preview of the extension: it captures one page per run and cannot crawl a whole domain or reach login/bot-protected pages. For full-domain crawling and pixel-perfect fidelity, install the Chrome extension.
 
 ## Capture modes
 
@@ -69,6 +73,7 @@ WebForge_Project/
 
 ## FAQ
 
+**Can I try it without installing?** Yes — the website has a free online tool (https://webforge.theatom.lk/#try) that captures any single page (multi-viewport screenshots + colors, fonts, images) with no install. The extension adds full-domain crawling and login/bot-protected pages.
 **Is WebForge free?** Yes, completely free; support via Buy Me a Coffee.
 **Which AI tools does it work with?** Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, Lovable, Bolt.new, v0, and any workflow accepting screenshots + tokens.
 **What browsers are supported?** Google Chrome and Chromium-based browsers.

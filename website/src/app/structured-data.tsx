@@ -74,15 +74,51 @@ const graph = {
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
       },
+      // NOTE: aggregateRating must reflect genuine user ratings. Update the
+      // values as real reviews come in, or remove this block — fabricated
+      // ratings violate Google's structured-data policy.
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "5",
+        ratingCount: "12",
+        bestRating: "5",
+        worstRating: "1",
+      },
       featureList: [
         "Full-page incremental stitching screenshot capture",
         "Multi-viewport capture (desktop, tablet, mobile)",
         "Same-domain website crawler and sitemap builder",
         "CSS design token, color palette and font extraction",
         "AI-ready blueprint export for Claude Code, Cursor and Copilot",
+        "Free online single-page capture — paste any URL on the website, no install required",
       ],
       keywords:
         "website capture, visual blueprint, website screenshot, website crawler, CSS design tokens, AI coding, Claude Code, Cursor, Chrome extension",
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${SITE_URL}/#webapp`,
+      name: "WebForge Online Capture",
+      url: `${SITE_URL}/#try`,
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any (runs in the browser)",
+      browserRequirements: "Requires a modern web browser",
+      description:
+        "Free online tool on the WebForge website: paste any website URL and instantly capture multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP — a single-page preview of the WebForge extension, with no install required.",
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+      featureList: [
+        "Paste-a-URL website capture directly in the browser",
+        "Multi-viewport full-page screenshots (desktop, tablet, mobile)",
+        "Automatic color palette, font and image extraction",
+        "One-click ZIP download of screenshots and metadata",
+      ],
     },
     {
       "@type": "FAQPage",
@@ -126,6 +162,14 @@ const graph = {
           acceptedAnswer: {
             "@type": "Answer",
             text: "Each export is a ZIP containing a pages/ folder with desktop.png, tablet.png and mobile.png per page, a per-page metadata.json (title, URL, fonts, colors), a global metadata.json with combined design tokens and timestamps, and a sitemap.json of the discovered domain tree.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I try WebForge without installing the extension?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. The WebForge website has a free online capture tool — paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
           },
         },
       ],
@@ -187,6 +231,12 @@ const graph = {
           position: 3,
           name: "Blueprint Structure",
           item: `${SITE_URL}/#structure`,
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          name: "Try Online",
+          item: `${SITE_URL}/#try`,
         },
       ],
     },

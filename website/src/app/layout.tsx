@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "WebForge is an AI-ready Chrome extension that captures complete websites into high-fidelity visual blueprints, full-page screenshots, sitemaps, CSS design tokens, fonts, colors, layouts, and assets for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, and modern AI coding workflows.",
+    "WebForge is an AI-ready Chrome extension — plus a free online capture tool — that turns any website into high-fidelity visual blueprints: full-page multi-viewport screenshots, sitemaps, CSS design tokens, fonts, colors, layouts, and assets for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, and modern AI coding workflows. Paste a URL to capture instantly online, or install the extension for full-site crawls.",
 
   keywords: [
     // Brand
@@ -60,6 +60,14 @@ export const metadata: Metadata = {
     "responsive website capture",
     "multi viewport capture",
     "desktop mobile tablet capture",
+    "online website screenshot",
+    "website screenshot online",
+    "paste url screenshot",
+    "url to screenshot",
+    "capture website online",
+    "free website capture tool",
+    "website screenshot generator",
+    "no install website capture",
     "CSS design token extractor",
     "CSS variable extractor",
     "CSS extractor",
@@ -196,7 +204,7 @@ export const metadata: Metadata = {
       "WebForge — AI Website Capture & Visual Blueprint Chrome Extension",
 
     description:
-      "Capture complete websites into AI-ready visual blueprints, responsive screenshots, sitemaps, CSS design tokens, fonts, colors, layouts, and assets for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and modern AI coding workflows.",
+      "Paste a URL to capture any website online — instant multi-viewport screenshots, colors, fonts and images — or install the extension for full-site crawls. AI-ready visual blueprints for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and modern AI coding workflows.",
 
     images: [
       {
@@ -215,7 +223,7 @@ export const metadata: Metadata = {
       "WebForge — AI Website Capture & Visual Blueprint Extension",
 
     description:
-      "Generate AI-ready website blueprints, screenshots, sitemaps, CSS variables, fonts, layouts, and design tokens for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, and other AI coding agents.",
+      "Paste a URL to capture any website online, or install the extension for full-site crawls. AI-ready blueprints, screenshots, sitemaps, CSS variables, fonts and design tokens for Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and other AI coding agents.",
 
     images: ["https://webforge.theatom.lk/og-image.png"],
   },

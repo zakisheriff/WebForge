@@ -1,6 +1,6 @@
 # WebForge
 
-> WebForge is a free, AI-ready Chrome extension by The Atom that captures any website into high-fidelity visual blueprints — full-page multi-viewport screenshots, a same-domain sitemap, and extracted CSS design tokens (colors, fonts, layouts) — structured for AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini.
+> WebForge is a free, AI-ready Chrome extension by The Atom — plus a free online capture tool on the website — that turns any website into high-fidelity visual blueprints: full-page multi-viewport screenshots, a same-domain sitemap, and extracted CSS design tokens (colors, fonts, layouts) — structured for AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini.
 
 Homepage: https://webforge.theatom.lk
 Install / Source: https://github.com/zakisheriff/WebForge
@@ -13,6 +13,10 @@ License / Cost: Free
 2. **Viewport Emulation**: Resizes the browser to capture authentic media queries across devices (Desktop 1440x900, Tablet 768x1024, Mobile 390x844).
 3. **Domain Crawler**: Spawns sandboxed tabs to crawl and capture same-domain pages sequentially into a sitemap.
 4. **Token Extractor**: Harvests the document's color palette (as hex) and font-family list.
+
+## Online Capture Tool (no install)
+
+The homepage hosts a free "Try WebForge on any URL" tool at https://webforge.theatom.lk/#try. Paste any website URL and it instantly renders the page across desktop (1440), tablet (768) and mobile (390) viewports, takes full-page screenshots, and extracts colors, fonts and image URLs — downloadable as a ZIP. The online tool captures a single page; the Chrome extension unlocks full-domain crawling, login/bot-protected pages, and pixel-perfect fidelity.
 
 ## Blueprint Output Schema
 

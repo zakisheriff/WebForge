@@ -14,6 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       images: [`${SITE_URL}/Logo-WebForge.png`],
     },
     {
+      url: `${SITE_URL}/#try`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/#features`,
       lastModified,
       changeFrequency: "monthly",

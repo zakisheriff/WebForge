@@ -147,6 +147,21 @@ npm run build
 
 ---
 
+## 🌐 Try It Online (No Install)
+
+The WebForge website hosts a free **"Try WebForge on any URL"** tool — [webforge.theatom.lk/#try](https://webforge.theatom.lk/#try).
+
+Paste any website link and it instantly:
+
+- Renders the page across **desktop (1440), tablet (768) and mobile (390)** viewports
+- Captures **full-page screenshots** of each
+- Extracts the **colors, fonts and images**
+- Lets you **download a ZIP** package (screenshots + `metadata.json`)
+
+It's powered by a headless-Chromium serverless route (`@sparticuz/chromium` on Vercel) and captures **one page** per run. Install the extension to unlock **full-domain crawling**, login/bot-protected pages, and pixel-perfect fidelity.
+
+---
+
 ## 🎯 Key Features
 
 ### Visual blueprint generation
