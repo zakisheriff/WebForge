@@ -159,6 +159,21 @@ export async function POST(request: NextRequest) {
         map.set(key, (map.get(key) || 0) + 1);
       };
 
+      // Accept normal image URLs and inline data-image URLs (e.g. pixel-art
+      // sprites), skipping 1×1 tracking pixels and anything too big to embed.
+      const MAX_DATA_URL = 1_500_000;
+      const acceptSrc = (s: string): boolean => {
+        if (!s) return false;
+        if (s.startsWith("data:")) {
+          return (
+            s.startsWith("data:image/") &&
+            s.length > 120 &&
+            s.length < MAX_DATA_URL
+          );
+        }
+        return true;
+      };
+
       const nodes = Array.from(document.querySelectorAll("*")).slice(0, 6000);
       for (const el of nodes) {
         const cs = getComputedStyle(el as Element);
@@ -182,16 +197,20 @@ export async function POST(request: NextRequest) {
         const bg = cs.backgroundImage;
         if (bg && bg !== "none") {
           const m = bg.match(/url\(["']?(.*?)["']?\)/);
-          if (m && m[1] && !m[1].startsWith("data:")) {
-            try {
-              imageSet.add(new URL(m[1], location.href).href);
-            } catch {}
+          if (m && m[1] && acceptSrc(m[1])) {
+            if (m[1].startsWith("data:")) {
+              imageSet.add(m[1]);
+            } else {
+              try {
+                imageSet.add(new URL(m[1], location.href).href);
+              } catch {}
+            }
           }
         }
       }
 
       for (const img of Array.from(document.images)) {
-        if (img.src && !img.src.startsWith("data:")) imageSet.add(img.src);
+        if (acceptSrc(img.src)) imageSet.add(img.src);
       }
 
       // Build the palette: most-prominent first, dropping shades that are
