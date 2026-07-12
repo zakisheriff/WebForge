@@ -105,7 +105,6 @@ export default function CaptureTool() {
   return (
     <section id="try" className="capture reveal">
       <div className="capture-head">
-        <span className="capture-tag">Live preview · runs on this site</span>
         <h3 className="capture-title">Try WebForge on any URL</h3>
         <p className="capture-sub">
           Paste a link and capture it right here — multi-viewport screenshots
@@ -211,10 +210,12 @@ export default function CaptureTool() {
       )}
 
       <div className="capture-upsell">
-        <strong>Want the full picture?</strong> This web preview captures a
-        single page. The WebForge extension runs in your own browser to crawl
-        the entire domain, reach login-protected and bot-guarded pages, and
-        export pixel-perfect blueprints — everything, unlocked.
+        <p className="capture-upsell-text">
+          <strong>Want the full picture?</strong> This web preview captures a
+          single page. The WebForge extension runs in your own browser to crawl
+          the entire domain, reach login-protected and bot-guarded pages, and
+          export pixel-perfect blueprints — everything, unlocked.
+        </p>
         <a
           href="https://github.com/zakisheriff/WebForge"
           target="_blank"
