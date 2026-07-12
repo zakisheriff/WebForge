@@ -336,37 +336,17 @@ a:hover {
   padding-top: 24px;
 }
 
-@keyframes expandBanner {
-  0% {
-    padding: 40px 28%;
-  }
-  100% {
-    padding: 40px 0%;
-  }
-}
-
-@keyframes flattenBanner {
-  0% {
-    border-radius: 80px;
-  }
-  100% {
-    border-radius: 0;
-  }
-}
-
 .banner-container {
-  width: 100%;
-  padding: 40px 28%;
-  animation: expandBanner linear both;
-  animation-timeline: view();
-  animation-range: entry 10% cover 45%;
+  max-width: 1000px;
+  margin: 40px auto 100px;
+  padding: 0 6%;
 }
 
 .dark-banner {
   background-color: var(--text-primary);
   color: var(--bg-color);
-  border-radius: 80px;
-  padding: 120px 40px;
+  border-radius: 40px;
+  padding: 100px 40px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -375,9 +355,8 @@ a:hover {
   align-items: center;
   justify-content: center;
   gap: 24px;
-  animation: flattenBanner linear both;
-  animation-timeline: view();
-  animation-range: entry 10% cover 40%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
 }
 
 .banner-title {
@@ -791,15 +770,21 @@ a:hover {
 }
 
 /* ---- Live capture tool ---- */
+/* ---- Live capture tool ---- */
 .capture {
   max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px 6% 40px;
+  margin: 60px auto 140px;
+  padding: 80px 8%;
+  background-color: var(--text-primary);
+  color: var(--bg-color);
+  border-radius: 48px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .capture-head {
   text-align: center;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .capture-tag {
@@ -816,15 +801,16 @@ a:hover {
 }
 
 .capture-title {
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 700;
   letter-spacing: -1px;
   line-height: 1.15;
+  color: var(--bg-color);
 }
 
 .capture-sub {
   font-size: 16px;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
   margin-top: 12px;
 }
@@ -837,19 +823,25 @@ a:hover {
 
 .capture-input {
   flex: 1;
-  background: #faf8f2;
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   padding: 15px 18px;
   font-size: 16px;
   font-family: var(--font-sans);
-  color: var(--text-primary);
+  color: var(--bg-color);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.capture-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .capture-input:focus {
   border-color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(217, 107, 67, 0.15);
 }
 
 .capture-btn {
@@ -877,18 +869,18 @@ a:hover {
 .capture-status {
   margin-top: 18px;
   font-size: 14px;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   padding: 14px 16px;
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 12px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .capture-error {
   margin-top: 18px;
   font-size: 14px;
-  color: #a23b1c;
-  background: rgba(217, 107, 67, 0.08);
+  color: #ff8b7b;
+  background: rgba(217, 107, 67, 0.12);
   border: 1px solid rgba(217, 107, 67, 0.3);
   border-radius: 12px;
   padding: 14px 16px;
@@ -909,29 +901,34 @@ a:hover {
   flex: 1;
   text-align: center;
   white-space: nowrap;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
+.capture-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
 .capture-tab.active {
-  background: var(--text-primary);
-  color: var(--bg-color);
-  border-color: var(--text-primary);
+  background: var(--bg-color);
+  color: var(--text-primary);
+  border-color: var(--bg-color);
 }
 
 .capture-shot-wrap {
   max-height: 560px;
   overflow-y: auto;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
-  background: #d9d5cb;
+  background: #111;
   padding: 16px;
   text-align: center;
 }
@@ -942,7 +939,7 @@ a:hover {
   height: auto;
   margin: 0 auto;
   border-radius: 6px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .capture-tokens {
@@ -955,7 +952,7 @@ a:hover {
 .token-block h4 {
   font-size: 14px;
   letter-spacing: 0;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.65);
   margin-bottom: 12px;
   font-weight: 600;
 }
@@ -970,7 +967,7 @@ a:hover {
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .font-list {
@@ -979,7 +976,7 @@ a:hover {
   flex-direction: column;
   gap: 8px;
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--bg-color);
 }
 
 .img-grid {
@@ -993,8 +990,8 @@ a:hover {
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 6px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .capture-actions {
@@ -1009,19 +1006,20 @@ a:hover {
   justify-content: center;
   gap: 8px;
   background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  color: var(--bg-color);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
   padding: 15px 22px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .capture-coffee:hover {
-  background: var(--card-hover);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.4);
   opacity: 1;
 }
 
@@ -1055,7 +1053,7 @@ a:hover {
 .capture-upsell-text {
   font-size: 14px;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.6);
   margin: 0;
 }
 
@@ -1065,6 +1063,11 @@ a:hover {
 }
 
 @media (max-width: 768px) {
+  .capture {
+    margin: 30px 16px;
+    padding: 40px 20px;
+    border-radius: 32px;
+  }
   .capture-form {
     flex-direction: column;
   }
@@ -1096,24 +1099,6 @@ a:hover {
   .list-section {
     grid-template-columns: 1fr;
     gap: 40px;
-  }
-}
-
-@keyframes expandBannerMobile {
-  0% {
-    padding: 20px 6%;
-  }
-  100% {
-    padding: 20px 0%;
-  }
-}
-
-@keyframes flattenBannerMobile {
-  0% {
-    border-radius: 40px;
-  }
-  100% {
-    border-radius: 0;
   }
 }
 
@@ -1159,17 +1144,12 @@ a:hover {
     font-size: 36px;
   }
   .banner-container {
-    padding: 20px 6%;
-    animation: expandBannerMobile linear both;
-    animation-timeline: view();
-    animation-range: entry 10% cover 40%;
+    margin: 30px 16px 60px;
+    padding: 0;
   }
   .dark-banner {
     padding: 60px 16px;
-    border-radius: 40px;
-    animation: flattenBannerMobile linear both;
-    animation-timeline: view();
-    animation-range: entry 10% cover 40%;
+    border-radius: 32px;
   }
   .banner-footer {
     flex-direction: column;

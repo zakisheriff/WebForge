@@ -7,9 +7,11 @@ import type { NextConfig } from "next";
 // - img-src allows https: + data: so captured third-party images and the
 //   base64 screenshot previews in the capture tool render.
 // - connect-src covers the same-origin /api/capture fetch and Vercel vitals.
-const csp = [
+const isProd = process.env.NODE_ENV === "production";
+
+const cspList = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"} https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
@@ -18,8 +20,13 @@ const csp = [
   "base-uri 'self'",
   "form-action 'self'",
   "object-src 'none'",
-  "upgrade-insecure-requests",
-].join("; ");
+];
+
+if (isProd) {
+  cspList.push("upgrade-insecure-requests");
+}
+
+const csp = cspList.join("; ");
 
 const securityHeaders = [
   {

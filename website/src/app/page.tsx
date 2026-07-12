@@ -162,22 +162,6 @@ export default function Home() {
       {/* Live capture tool — single-page taste of the extension */}
       <CaptureTool />
 
-      {/* Main Banner Container */}
-      <section className="banner-container">
-        <div className="dark-banner">
-          <h2 className="banner-title">
-            Get WebForge Extension.
-          </h2>
-          <a
-            href={REPO_URL}
-            onClick={(e) => handleComingSoon(e)}
-            className="btn-banner"
-          >
-            Install WebForge Extension
-          </a>
-        </div>
-      </section>
-
       {/* Output Package Structure Visualizer */}
       <section
         id="structure"
@@ -456,6 +440,22 @@ export default function Home() {
               </p>
             </details>
           ))}
+        </div>
+      </section>
+
+      {/* Main Banner Container */}
+      <section className="banner-container">
+        <div className="dark-banner">
+          <h2 className="banner-title">
+            Get WebForge Extension.
+          </h2>
+          <a
+            href={REPO_URL}
+            onClick={(e) => handleComingSoon(e)}
+            className="btn-banner"
+          >
+            Install WebForge Extension
+          </a>
         </div>
       </section>
 
