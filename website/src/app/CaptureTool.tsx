@@ -242,16 +242,16 @@ export default function CaptureTool() {
 
       <div className="capture-upsell">
         <p className="capture-upsell-text">
-          Preview captures one page.{" "}
+          Preview captures one page. Full-site crawls land in the{" "}
           <a
             href="https://github.com/zakisheriff/WebForge"
             target="_blank"
             rel="noreferrer"
             className="capture-upsell-link"
           >
-            Get the extension
-          </a>{" "}
-          to crawl entire sites.
+            extension — coming soon
+          </a>
+          .
         </p>
       </div>
     </section>

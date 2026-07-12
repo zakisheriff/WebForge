@@ -113,7 +113,7 @@ export default function Home() {
                 rel="noreferrer"
                 className="btn-nav-split"
               >
-                Install WebForge Extension
+                Extension — Coming Soon
               </a>
             </li>
           </ul>
@@ -199,7 +199,7 @@ export default function Home() {
               className="menu-card-cta"
               onClick={closeMenu}
             >
-              Install WebForge Extension
+              Extension — Coming Soon
             </a>
           </div>
         </>
@@ -220,7 +220,7 @@ export default function Home() {
       <section className="banner-container">
         <div className="dark-banner">
           <h2 className="banner-title">
-            Get WebForge Extension.
+            WebForge Extension — Coming Soon.
           </h2>
           <a
             href="https://github.com/zakisheriff/WebForge"
@@ -228,7 +228,7 @@ export default function Home() {
             rel="noreferrer"
             className="btn-banner"
           >
-            Install WebForge Extension
+            View on GitHub
           </a>
         </div>
       </section>
