@@ -121,6 +121,11 @@ export async function POST(request: NextRequest) {
     // Nudge lazy-loaded content into view before capturing.
     await autoScroll(page);
 
+    // Some artwork (e.g. character sprites) is only injected once you hover
+    // the element. Fire synthetic hover events so those assets load, then
+    // reset the state before we take the screenshots.
+    await primeHover(page);
+
     // Extract design tokens + images from the rendered DOM.
     const extracted = await page.evaluate(() => {
       // Weight colors by the on-screen AREA they cover, not by how many
@@ -299,6 +304,9 @@ export async function POST(request: NextRequest) {
     result.fonts = extracted.fonts;
     result.images = extracted.images;
 
+    // Clear any lingering hover state so the screenshots show the resting page.
+    await resetHover(page);
+
     // Full-page screenshot per selected viewport.
     for (const vp of viewports) {
       await page.setViewport({
@@ -364,4 +372,47 @@ async function autoScroll(page: import("puppeteer-core").Page): Promise<void> {
     });
   });
   await new Promise((r) => setTimeout(r, 300));
+}
+
+// Candidate selector for elements that tend to swap in artwork on hover.
+const HOVER_SELECTOR =
+  "a, button, img, svg, canvas, [role='button'], [class*='sprite'], " +
+  "[class*='char'], [class*='avatar'], [class*='hover'], [class*='pixel']";
+
+// Fire synthetic hover events across likely-interactive elements so any
+// JS-driven sprite swaps load their assets into the DOM.
+async function primeHover(page: import("puppeteer-core").Page): Promise<void> {
+  await page.evaluate((selector) => {
+    const els = Array.from(document.querySelectorAll(selector)).slice(0, 400);
+    const types = ["pointerover", "mouseover", "pointerenter", "mouseenter"];
+    for (const el of els) {
+      for (const t of types) {
+        try {
+          el.dispatchEvent(
+            new MouseEvent(t, { bubbles: true, cancelable: true }),
+          );
+        } catch {}
+      }
+    }
+  }, HOVER_SELECTOR);
+  // Let hover handlers run and their images decode.
+  await new Promise((r) => setTimeout(r, 500));
+}
+
+// Undo the hover priming so screenshots reflect the page at rest.
+async function resetHover(page: import("puppeteer-core").Page): Promise<void> {
+  await page.evaluate((selector) => {
+    const els = Array.from(document.querySelectorAll(selector)).slice(0, 400);
+    const types = ["pointerout", "mouseout", "pointerleave", "mouseleave"];
+    for (const el of els) {
+      for (const t of types) {
+        try {
+          el.dispatchEvent(
+            new MouseEvent(t, { bubbles: true, cancelable: true }),
+          );
+        } catch {}
+      }
+    }
+  }, HOVER_SELECTOR);
+  await new Promise((r) => setTimeout(r, 200));
 }
