@@ -866,14 +866,182 @@ a:hover {
   cursor: default;
 }
 
-.capture-status {
-  margin-top: 18px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  padding: 14px 16px;
+/* ---- Lively capture loading state ---- */
+.capture-loading {
+  margin-top: 22px;
+}
+
+.capture-loading-window {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0e0e0e;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.cl-chrome {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 16px;
   background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cl-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.cl-addr {
+  margin-left: 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.2px;
+}
+
+.cl-body {
+  position: relative;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 260px;
+  overflow: hidden;
+}
+
+.cl-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: cl-shimmer 1.6s ease-in-out infinite;
+}
+.cl-w80 { width: 80%; }
+.cl-w70 { width: 70%; }
+.cl-w60 { width: 60%; }
+.cl-w40 { width: 40%; }
+
+.cl-hero {
+  height: 96px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.11) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: cl-shimmer 1.6s ease-in-out infinite;
+}
+
+.cl-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.cl-card {
+  height: 60px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.11) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: cl-shimmer 1.6s ease-in-out infinite;
+}
+
+/* The scan beam sweeps top-to-bottom — the "capturing" feel from the extension. */
+.cl-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  top: -120px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(217, 107, 67, 0) 0%,
+    rgba(217, 107, 67, 0.18) 45%,
+    rgba(217, 107, 67, 0.45) 50%,
+    rgba(217, 107, 67, 0.18) 55%,
+    rgba(217, 107, 67, 0) 100%
+  );
+  animation: cl-scan 2.4s ease-in-out infinite;
+}
+
+.cl-scan::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 58px;
+  height: 2px;
+  background: rgba(217, 107, 67, 0.85);
+  box-shadow: 0 0 12px 2px rgba(217, 107, 67, 0.6);
+}
+
+@keyframes cl-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes cl-scan {
+  0% { top: -120px; }
+  100% { top: 100%; }
+}
+
+.capture-loading-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cl-spinner {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--accent-color);
+  animation: cl-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.cl-step {
+  animation: cl-fade 1.4s ease-in-out infinite;
+}
+
+@keyframes cl-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cl-fade {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cl-line,
+  .cl-hero,
+  .cl-card,
+  .cl-scan,
+  .cl-spinner,
+  .cl-step {
+    animation: none;
+  }
 }
 
 .capture-error {
@@ -982,16 +1150,114 @@ a:hover {
 .img-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
-.img-grid img {
-  width: 100%;
+.img-thumb {
+  position: relative;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background:
+    repeating-conic-gradient(
+        rgba(255, 255, 255, 0.05) 0% 25%,
+        rgba(255, 255, 255, 0.02) 0% 50%
+      )
+      50% / 16px 16px;
+  overflow: hidden;
+  cursor: pointer;
   aspect-ratio: 1;
-  object-fit: cover;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.img-thumb::after {
+  content: "⤢";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.img-thumb:hover,
+.img-thumb:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  outline: none;
+}
+
+.img-thumb:hover::after,
+.img-thumb:focus-visible::after {
+  opacity: 1;
+}
+
+/* ---- Full-size image viewer ---- */
+.capture-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vw;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(6px);
+  animation: cl-lightbox-in 0.18s ease;
+  cursor: zoom-out;
+}
+
+.capture-lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  cursor: default;
+  background: #fff;
+}
+
+.capture-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.capture-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@keyframes cl-lightbox-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .capture-actions {

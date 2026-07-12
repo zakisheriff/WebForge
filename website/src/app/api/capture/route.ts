@@ -115,26 +115,59 @@ export async function POST(request: NextRequest) {
 
     // Extract design tokens + images from the rendered DOM.
     const extracted = await page.evaluate(() => {
-      const colorCount = new Map<string, number>();
+      // Weight colors by the on-screen AREA they cover, not by how many
+      // elements use them. A page's true background + primary text surface
+      // first this way, instead of whatever tag simply repeats most often.
+      const colorWeight = new Map<string, number>();
       const fontCount = new Map<string, number>();
       const imageSet = new Set<string>();
 
+      // Normalise every colour to #rrggbb so near-identical shades collapse
+      // and swatches render cleanly. Fully transparent colours are dropped.
+      const toHex = (c: string): string | null => {
+        if (!c) return null;
+        const m = c.match(/rgba?\(([^)]+)\)/i);
+        if (!m) return null;
+        const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+        const [r, g, b, a = 1] = parts;
+        if (!Number.isFinite(r) || a === 0) return null;
+        const h = (n: number) =>
+          Math.max(0, Math.min(255, Math.round(n)))
+            .toString(16)
+            .padStart(2, "0");
+        return `#${h(r)}${h(g)}${h(b)}`;
+      };
+
+      const bumpWeight = (
+        map: Map<string, number>,
+        key: string | null,
+        w: number,
+      ) => {
+        if (!key || w <= 0) return;
+        map.set(key, (map.get(key) || 0) + w);
+      };
       const bump = (map: Map<string, number>, key: string) => {
         if (!key) return;
         map.set(key, (map.get(key) || 0) + 1);
       };
 
-      const isVisibleColor = (c: string) =>
-        c &&
-        c !== "rgba(0, 0, 0, 0)" &&
-        c !== "transparent" &&
-        !c.startsWith("rgba(0, 0, 0, 0)");
-
-      const nodes = Array.from(document.querySelectorAll("*")).slice(0, 4000);
+      const nodes = Array.from(document.querySelectorAll("*")).slice(0, 6000);
       for (const el of nodes) {
         const cs = getComputedStyle(el as Element);
-        if (isVisibleColor(cs.color)) bump(colorCount, cs.color);
-        if (isVisibleColor(cs.backgroundColor)) bump(colorCount, cs.backgroundColor);
+        const rect = (el as Element).getBoundingClientRect();
+        const area = Math.max(0, rect.width) * Math.max(0, rect.height);
+        if (area <= 0) continue;
+
+        // Background colour weighted by the full box it paints.
+        bumpWeight(colorWeight, toHex(cs.backgroundColor), area);
+
+        // Text colour only counts where the element holds its own text, and
+        // at a fraction of area so large empty containers don't dominate.
+        const hasOwnText = Array.from((el as Element).childNodes).some(
+          (n) => n.nodeType === 3 && (n.textContent || "").trim().length > 0,
+        );
+        if (hasOwnText) bumpWeight(colorWeight, toHex(cs.color), area * 0.4);
+
         const family = cs.fontFamily?.split(",")[0]?.replace(/["']/g, "").trim();
         if (family) bump(fontCount, family);
 
@@ -153,6 +186,30 @@ export async function POST(request: NextRequest) {
         if (img.src && !img.src.startsWith("data:")) imageSet.add(img.src);
       }
 
+      // Build the palette: most-prominent first, dropping shades that are
+      // visually within touching distance of one already chosen.
+      const hexToRgb = (hex: string) =>
+        [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      const near = (a: string, b: string) => {
+        const A = hexToRgb(a);
+        const B = hexToRgb(b);
+        return (
+          Math.abs(A[0] - B[0]) +
+            Math.abs(A[1] - B[1]) +
+            Math.abs(A[2] - B[2]) <
+          22
+        );
+      };
+      const ranked = Array.from(colorWeight.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([k]) => k);
+      const palette: string[] = [];
+      for (const c of ranked) {
+        if (palette.some((p) => near(p, c))) continue;
+        palette.push(c);
+        if (palette.length >= 10) break;
+      }
+
       const topN = (map: Map<string, number>, n: number) =>
         Array.from(map.entries())
           .sort((a, b) => b[1] - a[1])
@@ -160,7 +217,7 @@ export async function POST(request: NextRequest) {
           .map(([k]) => k);
 
       return {
-        colors: topN(colorCount, 12),
+        colors: palette,
         fonts: topN(fontCount, 8),
         images: Array.from(imageSet).slice(0, 40),
       };

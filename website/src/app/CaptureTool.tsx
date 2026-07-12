@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type ViewportKey = "desktop" | "tablet" | "mobile";
 
@@ -28,6 +28,59 @@ const VIEWPORT_WIDTHS: Record<ViewportKey, number> = {
   mobile: 390,
 };
 
+// Rotating captions shown while the capture runs — mirrors what the backend
+// is actually doing so the wait feels alive instead of a frozen spinner.
+const LOADING_STEPS = [
+  "Rendering desktop · 1440",
+  "Rendering tablet · 768",
+  "Rendering mobile · 390",
+  "Extracting the colour palette",
+  "Collecting typography",
+  "Gathering images",
+  "Packaging design tokens",
+];
+
+function CaptureLoading() {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const t = setInterval(
+      () => setStep((s) => (s + 1) % LOADING_STEPS.length),
+      1400,
+    );
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="capture-loading" role="status" aria-live="polite">
+      <div className="capture-loading-window">
+        <div className="cl-chrome">
+          <span className="cl-dot" />
+          <span className="cl-dot" />
+          <span className="cl-dot" />
+          <span className="cl-addr">scanning the page…</span>
+        </div>
+        <div className="cl-body">
+          <div className="cl-line cl-w80" />
+          <div className="cl-line cl-w60" />
+          <div className="cl-hero" />
+          <div className="cl-row">
+            <div className="cl-card" />
+            <div className="cl-card" />
+            <div className="cl-card" />
+          </div>
+          <div className="cl-line cl-w70" />
+          <div className="cl-line cl-w40" />
+          <div className="cl-scan" />
+        </div>
+      </div>
+      <div className="capture-loading-status">
+        <span className="cl-spinner" />
+        <span className="cl-step">{LOADING_STEPS[step]}…</span>
+      </div>
+    </div>
+  );
+}
+
 export default function CaptureTool() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -35,6 +88,17 @@ export default function CaptureTool() {
   const [result, setResult] = useState<CaptureResult | null>(null);
   const [active, setActive] = useState<ViewportKey>("desktop");
   const [zipping, setZipping] = useState(false);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
+  // Let Escape close the full-size image viewer.
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   const runCapture = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,12 +195,7 @@ export default function CaptureTool() {
         </button>
       </form>
 
-      {loading && (
-        <div className="capture-status">
-          Rendering across desktop, tablet & mobile and extracting design
-          tokens… this can take up to a minute.
-        </div>
-      )}
+      {loading && <CaptureLoading />}
 
       {error && <div className="capture-error">{error}</div>}
 
@@ -196,8 +255,16 @@ export default function CaptureTool() {
               <h4>Images · {result.images.length}</h4>
               <div className="img-grid">
                 {result.images.slice(0, 12).map((src, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={i} src={src} alt="" loading="lazy" />
+                  <button
+                    key={i}
+                    type="button"
+                    className="img-thumb"
+                    onClick={() => setLightbox(src)}
+                    aria-label="Open image full size"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt="" loading="lazy" />
+                  </button>
                 ))}
               </div>
             </div>
@@ -254,6 +321,32 @@ export default function CaptureTool() {
           .
         </p>
       </div>
+
+      {lightbox && (
+        <div
+          className="capture-lightbox"
+          onClick={() => setLightbox(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+        >
+          <button
+            type="button"
+            className="capture-lightbox-close"
+            onClick={() => setLightbox(null)}
+            aria-label="Close preview"
+          >
+            ×
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="capture-lightbox-img"
+            src={lightbox}
+            alt="Full-size preview"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </section>
   );
 }
