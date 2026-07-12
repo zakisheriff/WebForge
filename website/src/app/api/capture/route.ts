@@ -121,191 +121,28 @@ export async function POST(request: NextRequest) {
     // Nudge lazy-loaded content into view before capturing.
     await autoScroll(page);
 
-    // Some artwork (e.g. character sprites) is only injected once you hover
-    // the element. Fire synthetic hover events so those assets load, then
-    // reset the state before we take the screenshots.
+    // Extract tokens from the page at rest — this captures the default artwork
+    // (e.g. a character's standing pose), colours and fonts.
+    const rest = await page.evaluate(extractTokens);
+
+    // Some artwork only appears once you hover it — a run cycle, an alt frame.
+    // Hovering swaps those in (and can replace the resting art), so we prime
+    // hover, extract again purely for the extra images, then reset the page so
+    // the screenshots still show it at rest. Colours/fonts stay from `rest`.
     await primeHover(page);
-
-    // Extract design tokens + images from the rendered DOM.
-    const extracted = await page.evaluate(() => {
-      // Weight colors by the on-screen AREA they cover, not by how many
-      // elements use them. A page's true background + primary text surface
-      // first this way, instead of whatever tag simply repeats most often.
-      const colorWeight = new Map<string, number>();
-      const fontCount = new Map<string, number>();
-      const imageSet = new Set<string>();
-
-      // Normalise every colour to #rrggbb so near-identical shades collapse
-      // and swatches render cleanly. Fully transparent colours are dropped.
-      const toHex = (c: string): string | null => {
-        if (!c) return null;
-        const m = c.match(/rgba?\(([^)]+)\)/i);
-        if (!m) return null;
-        const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
-        const [r, g, b, a = 1] = parts;
-        if (!Number.isFinite(r) || a === 0) return null;
-        const h = (n: number) =>
-          Math.max(0, Math.min(255, Math.round(n)))
-            .toString(16)
-            .padStart(2, "0");
-        return `#${h(r)}${h(g)}${h(b)}`;
-      };
-
-      const bumpWeight = (
-        map: Map<string, number>,
-        key: string | null,
-        w: number,
-      ) => {
-        if (!key || w <= 0) return;
-        map.set(key, (map.get(key) || 0) + w);
-      };
-      const bump = (map: Map<string, number>, key: string) => {
-        if (!key) return;
-        map.set(key, (map.get(key) || 0) + 1);
-      };
-
-      // Accept normal image URLs and inline data-image URLs (e.g. pixel-art
-      // sprites), skipping 1×1 tracking pixels and anything too big to embed.
-      const MAX_DATA_URL = 1_500_000;
-      const acceptSrc = (s: string): boolean => {
-        if (!s) return false;
-        if (s.startsWith("data:")) {
-          return (
-            s.startsWith("data:image/") &&
-            s.length > 120 &&
-            s.length < MAX_DATA_URL
-          );
-        }
-        return true;
-      };
-
-      // Add a single image reference (resolving relative URLs, keeping data:).
-      const addImg = (raw: string) => {
-        if (!raw || !acceptSrc(raw)) return;
-        if (raw.startsWith("data:")) {
-          imageSet.add(raw);
-        } else {
-          try {
-            imageSet.add(new URL(raw, location.href).href);
-          } catch {}
-        }
-      };
-
-      const looksLikeImage = (u: string) =>
-        /\.(png|jpe?g|gif|webp|avif|svg|bmp|ico)(\?|#|$)/i.test(u);
-
-      // Pull every url(...) out of a CSS value — a background can list several,
-      // and a page may use multiple sprite sheets. In `strict` mode (scanning
-      // raw stylesheet rules) only image-looking urls pass, so @font-face src
-      // url()s and other assets aren't mistaken for images.
-      const addUrlsFrom = (cssText: string, strict = false) => {
-        if (!cssText || !cssText.includes("url(")) return;
-        const re = /url\(\s*["']?([^"')]+)["']?\s*\)/g;
-        let mm: RegExpExecArray | null;
-        while ((mm = re.exec(cssText))) {
-          const u = mm[1];
-          if (strict && !u.startsWith("data:") && !looksLikeImage(u)) continue;
-          addImg(u);
-        }
-      };
-
-      const nodes = Array.from(document.querySelectorAll("*")).slice(0, 6000);
-      for (const el of nodes) {
-        const cs = getComputedStyle(el as Element);
-
-        // Background images: collect even from zero-area / hidden elements,
-        // since animation sprites are often parked on off-screen nodes.
-        if (cs.backgroundImage && cs.backgroundImage !== "none") {
-          addUrlsFrom(cs.backgroundImage);
-        }
-
-        const rect = (el as Element).getBoundingClientRect();
-        const area = Math.max(0, rect.width) * Math.max(0, rect.height);
-        if (area <= 0) continue;
-
-        // Background colour weighted by the full box it paints.
-        bumpWeight(colorWeight, toHex(cs.backgroundColor), area);
-
-        // Text colour only counts where the element holds its own text, and
-        // at a fraction of area so large empty containers don't dominate.
-        const hasOwnText = Array.from((el as Element).childNodes).some(
-          (n) => n.nodeType === 3 && (n.textContent || "").trim().length > 0,
-        );
-        if (hasOwnText) bumpWeight(colorWeight, toHex(cs.color), area * 0.4);
-
-        const family = cs.fontFamily?.split(",")[0]?.replace(/["']/g, "").trim();
-        if (family) bump(fontCount, family);
-      }
-
-      for (const img of Array.from(document.images)) {
-        if (acceptSrc(img.src)) imageSet.add(img.src);
-      }
-
-      // Also scan stylesheet rules — catches sprites referenced only in CSS
-      // (e.g. applied on :hover or toggled by JS) that no element paints yet.
-      for (const sheet of Array.from(document.styleSheets)) {
-        let rules: CSSRuleList | null = null;
-        try {
-          rules = sheet.cssRules; // throws for cross-origin sheets
-        } catch {
-          continue;
-        }
-        if (!rules) continue;
-        for (const rule of Array.from(rules)) {
-          addUrlsFrom(rule.cssText || "", true);
-        }
-      }
-
-      // Build the palette: most-prominent first, dropping shades that are
-      // visually within touching distance of one already chosen.
-      const hexToRgb = (hex: string) =>
-        [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
-      const near = (a: string, b: string) => {
-        const A = hexToRgb(a);
-        const B = hexToRgb(b);
-        return (
-          Math.abs(A[0] - B[0]) +
-            Math.abs(A[1] - B[1]) +
-            Math.abs(A[2] - B[2]) <
-          22
-        );
-      };
-      const ranked = Array.from(colorWeight.entries())
-        .sort((a, b) => b[1] - a[1])
-        .map(([k]) => k);
-      const palette: string[] = [];
-      for (const c of ranked) {
-        if (palette.some((p) => near(p, c))) continue;
-        palette.push(c);
-        if (palette.length >= 10) break;
-      }
-
-      const topN = (map: Map<string, number>, n: number) =>
-        Array.from(map.entries())
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, n)
-          .map(([k]) => k);
-
-      return {
-        colors: palette,
-        fonts: topN(fontCount, 8),
-        // Inline data-image sprites first — they're usually the distinctive
-        // artwork, and shouldn't get buried behind hosted assets.
-        images: Array.from(imageSet)
-          .sort(
-            (a, b) =>
-              (b.startsWith("data:") ? 1 : 0) - (a.startsWith("data:") ? 1 : 0),
-          )
-          .slice(0, 40),
-      };
-    });
-
-    result.colors = extracted.colors;
-    result.fonts = extracted.fonts;
-    result.images = extracted.images;
-
-    // Clear any lingering hover state so the screenshots show the resting page.
+    const hovered = await page.evaluate(extractTokens);
     await resetHover(page);
+
+    result.colors = rest.colors;
+    result.fonts = rest.fonts;
+    // Union of both states keeps the default art AND the hover frames, with
+    // inline data-image sprites surfaced first.
+    result.images = Array.from(new Set([...rest.images, ...hovered.images]))
+      .sort(
+        (a, b) =>
+          (b.startsWith("data:") ? 1 : 0) - (a.startsWith("data:") ? 1 : 0),
+      )
+      .slice(0, 40);
 
     // Full-page screenshot per selected viewport.
     for (const vp of viewports) {
@@ -395,11 +232,10 @@ async function primeHover(page: import("puppeteer-core").Page): Promise<void> {
       }
     }
   }, HOVER_SELECTOR);
-  // Let hover handlers run and their images decode.
   await new Promise((r) => setTimeout(r, 500));
 }
 
-// Undo the hover priming so screenshots reflect the page at rest.
+// Undo the hover priming so the screenshots reflect the page at rest.
 async function resetHover(page: import("puppeteer-core").Page): Promise<void> {
   await page.evaluate((selector) => {
     const els = Array.from(document.querySelectorAll(selector)).slice(0, 400);
@@ -416,3 +252,161 @@ async function resetHover(page: import("puppeteer-core").Page): Promise<void> {
   }, HOVER_SELECTOR);
   await new Promise((r) => setTimeout(r, 200));
 }
+
+// Runs in the page: weights colours by rendered area, ranks fonts, and
+// harvests images from <img>, backgrounds and stylesheet rules. Returns a
+// prominence-ordered palette, top fonts, and a de-duplicated image list.
+function extractTokens() {
+  const colorWeight = new Map<string, number>();
+  const fontCount = new Map<string, number>();
+  const imageSet = new Set<string>();
+
+  const toHex = (c: string): string | null => {
+    if (!c) return null;
+    const m = c.match(/rgba?\(([^)]+)\)/i);
+    if (!m) return null;
+    const parts = m[1].split(",").map((s) => parseFloat(s.trim()));
+    const [r, g, b, a = 1] = parts;
+    if (!Number.isFinite(r) || a === 0) return null;
+    const h = (n: number) =>
+      Math.max(0, Math.min(255, Math.round(n)))
+        .toString(16)
+        .padStart(2, "0");
+    return `#${h(r)}${h(g)}${h(b)}`;
+  };
+
+  const bumpWeight = (
+    map: Map<string, number>,
+    key: string | null,
+    w: number,
+  ) => {
+    if (!key || w <= 0) return;
+    map.set(key, (map.get(key) || 0) + w);
+  };
+  const bump = (map: Map<string, number>, key: string) => {
+    if (!key) return;
+    map.set(key, (map.get(key) || 0) + 1);
+  };
+
+  // Accept normal image URLs and inline data-image URLs (pixel-art sprites,
+  // etc.). Raster data-images must clear a size floor so tiny spinners,
+  // blur-up placeholders and 1×1 pixels don't count as real artwork; small
+  // inline SVGs (often logos) are kept.
+  const MAX_DATA_URL = 1_500_000;
+  const MIN_RASTER_DATA_URL = 2500;
+  const acceptSrc = (s: string): boolean => {
+    if (!s) return false;
+    if (s.startsWith("data:")) {
+      if (!s.startsWith("data:image/")) return false;
+      if (s.length >= MAX_DATA_URL) return false;
+      const isSvg = s.startsWith("data:image/svg");
+      return s.length > (isSvg ? 120 : MIN_RASTER_DATA_URL);
+    }
+    return true;
+  };
+
+  const addImg = (raw: string) => {
+    if (!raw || !acceptSrc(raw)) return;
+    if (raw.startsWith("data:")) {
+      imageSet.add(raw);
+    } else {
+      try {
+        imageSet.add(new URL(raw, location.href).href);
+      } catch {}
+    }
+  };
+
+  const looksLikeImage = (u: string) =>
+    /\.(png|jpe?g|gif|webp|avif|svg|bmp|ico)(\?|#|$)/i.test(u);
+
+  const addUrlsFrom = (cssText: string, strict = false) => {
+    if (!cssText || !cssText.includes("url(")) return;
+    const re = /url\(\s*["']?([^"')]+)["']?\s*\)/g;
+    let mm: RegExpExecArray | null;
+    while ((mm = re.exec(cssText))) {
+      const u = mm[1];
+      if (strict && !u.startsWith("data:") && !looksLikeImage(u)) continue;
+      addImg(u);
+    }
+  };
+
+  const nodes = Array.from(document.querySelectorAll("*")).slice(0, 6000);
+  for (const el of nodes) {
+    const cs = getComputedStyle(el as Element);
+
+    // Background images: collect even from zero-area / hidden elements,
+    // since animation sprites are often parked on off-screen nodes.
+    if (cs.backgroundImage && cs.backgroundImage !== "none") {
+      addUrlsFrom(cs.backgroundImage);
+    }
+
+    const rect = (el as Element).getBoundingClientRect();
+    const area = Math.max(0, rect.width) * Math.max(0, rect.height);
+    if (area <= 0) continue;
+
+    bumpWeight(colorWeight, toHex(cs.backgroundColor), area);
+
+    const hasOwnText = Array.from((el as Element).childNodes).some(
+      (n) => n.nodeType === 3 && (n.textContent || "").trim().length > 0,
+    );
+    if (hasOwnText) bumpWeight(colorWeight, toHex(cs.color), area * 0.4);
+
+    const family = cs.fontFamily?.split(",")[0]?.replace(/["']/g, "").trim();
+    if (family) bump(fontCount, family);
+  }
+
+  for (const img of Array.from(document.images)) {
+    if (acceptSrc(img.src)) imageSet.add(img.src);
+  }
+
+  // Scan stylesheet rules — catches sprites referenced only in CSS.
+  for (const sheet of Array.from(document.styleSheets)) {
+    let rules: CSSRuleList | null = null;
+    try {
+      rules = sheet.cssRules; // throws for cross-origin sheets
+    } catch {
+      continue;
+    }
+    if (!rules) continue;
+    for (const rule of Array.from(rules)) {
+      addUrlsFrom(rule.cssText || "", true);
+    }
+  }
+
+  const hexToRgb = (hex: string) =>
+    [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const near = (a: string, b: string) => {
+    const A = hexToRgb(a);
+    const B = hexToRgb(b);
+    return (
+      Math.abs(A[0] - B[0]) + Math.abs(A[1] - B[1]) + Math.abs(A[2] - B[2]) < 22
+    );
+  };
+  const ranked = Array.from(colorWeight.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([k]) => k);
+  const palette: string[] = [];
+  for (const c of ranked) {
+    if (palette.some((p) => near(p, c))) continue;
+    palette.push(c);
+    if (palette.length >= 10) break;
+  }
+
+  const topN = (map: Map<string, number>, n: number) =>
+    Array.from(map.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([k]) => k);
+
+  return {
+    colors: palette,
+    fonts: topN(fontCount, 8),
+    images: Array.from(imageSet)
+      .sort(
+        (a, b) =>
+          (b.startsWith("data:") ? 1 : 0) - (a.startsWith("data:") ? 1 : 0),
+      )
+      .slice(0, 40),
+  };
+}
+
