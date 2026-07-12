@@ -132,7 +132,7 @@ export default function Home() {
                 onClick={(e) => handleComingSoon(e)}
                 className="btn-nav-split"
               >
-                Extension — Coming Soon
+                Install WebForge Extension
               </a>
             </li>
           </ul>
@@ -216,7 +216,7 @@ export default function Home() {
               className="menu-card-cta"
               onClick={(e) => handleComingSoon(e, true)}
             >
-              Extension — Coming Soon
+              Install WebForge Extension
             </a>
           </div>
         </>
@@ -260,11 +260,10 @@ export default function Home() {
                 <path d="M4 4l12 12M16 4L4 16" />
               </svg>
             </button>
-            <div className="modal-badge">Coming soon</div>
             <h3 className="modal-title">The WebForge extension is launching soon</h3>
             <p className="modal-text">
               It isn’t on the Chrome Web Store just yet. Meanwhile, try the live
-              capture tool on this page — or dig into the full source code on
+              capture tool on this page, or explore the full source code on
               GitHub.
             </p>
             <div className="modal-actions">
@@ -291,14 +290,14 @@ export default function Home() {
       <section className="banner-container">
         <div className="dark-banner">
           <h2 className="banner-title">
-            WebForge Extension — Coming Soon.
+            Get WebForge Extension.
           </h2>
           <a
             href={REPO_URL}
             onClick={(e) => handleComingSoon(e)}
             className="btn-banner"
           >
-            Get the Extension
+            Install WebForge Extension
           </a>
         </div>
       </section>
