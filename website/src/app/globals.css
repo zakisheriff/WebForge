@@ -1122,10 +1122,19 @@ a:hover {
     padding: 16px;
   }
   .nav-menu-desktop {
-    display: none;
+    display: flex;
+    gap: 16px;
   }
   .hamburger-btn {
-    display: block;
+    display: none;
+  }
+  @media (max-width: 480px) {
+    .nav-brand-text {
+      display: none;
+    }
+    .nav-menu-desktop {
+      gap: 12px;
+    }
   }
   .btn-banner {
     background-color: var(--accent-color);
