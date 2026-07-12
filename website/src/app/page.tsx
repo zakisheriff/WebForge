@@ -3,13 +3,17 @@
 import React, { useState, useEffect } from "react";
 import CaptureTool from "./CaptureTool";
 
+const REPO_URL = "https://github.com/zakisheriff/WebForge";
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMenuClosing, setIsMenuClosing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalClosing, setIsModalClosing] = useState(false);
 
-  // Prevent background scrolling when menu drawer is open
+  // Prevent background scrolling when the menu or modal is open
   useEffect(() => {
-    if (isMenuOpen) {
+    if (isMenuOpen || isModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -17,7 +21,23 @@ export default function Home() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isModalOpen]);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalClosing(true);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setIsModalClosing(false);
+    }, 260);
+  };
+
+  // Coming-soon CTA: open the modal instead of navigating away.
+  const handleComingSoon = (e: React.MouseEvent, alsoCloseMenu = false) => {
+    e.preventDefault();
+    if (alsoCloseMenu) closeMenu();
+    openModal();
+  };
 
   const closeMenu = () => {
     setIsMenuClosing(true);
@@ -108,9 +128,8 @@ export default function Home() {
             </li>
             <li>
               <a
-                href="https://github.com/zakisheriff/WebForge"
-                target="_blank"
-                rel="noreferrer"
+                href={REPO_URL}
+                onClick={(e) => handleComingSoon(e)}
                 className="btn-nav-split"
               >
                 Extension — Coming Soon
@@ -193,11 +212,9 @@ export default function Home() {
               </a>
             </nav>
             <a
-              href="https://github.com/zakisheriff/WebForge"
-              target="_blank"
-              rel="noreferrer"
+              href={REPO_URL}
               className="menu-card-cta"
-              onClick={closeMenu}
+              onClick={(e) => handleComingSoon(e, true)}
             >
               Extension — Coming Soon
             </a>
@@ -213,6 +230,60 @@ export default function Home() {
         </h1>
       </header>
 
+      {/* Coming-soon modal */}
+      {(isModalOpen || isModalClosing) && (
+        <div
+          className={`modal-scrim ${isModalClosing ? "closing" : ""}`}
+          onClick={closeModal}
+        >
+          <div
+            className={`modal-card ${isModalClosing ? "closing" : ""}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Extension coming soon"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="modal-close"
+              onClick={closeModal}
+              aria-label="Close"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 4l12 12M16 4L4 16" />
+              </svg>
+            </button>
+            <div className="modal-badge">Coming soon</div>
+            <h3 className="modal-title">The WebForge extension is launching soon</h3>
+            <p className="modal-text">
+              It isn’t on the Chrome Web Store just yet. Meanwhile, try the live
+              capture tool on this page — or dig into the full source code on
+              GitHub.
+            </p>
+            <div className="modal-actions">
+              <a
+                href={REPO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="modal-btn-primary"
+              >
+                View full code on GitHub
+              </a>
+              <button className="modal-btn-secondary" onClick={closeModal}>
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Live capture tool — single-page taste of the extension */}
       <CaptureTool />
 
@@ -223,12 +294,11 @@ export default function Home() {
             WebForge Extension — Coming Soon.
           </h2>
           <a
-            href="https://github.com/zakisheriff/WebForge"
-            target="_blank"
-            rel="noreferrer"
+            href={REPO_URL}
+            onClick={(e) => handleComingSoon(e)}
             className="btn-banner"
           >
-            View on GitHub
+            Get the Extension
           </a>
         </div>
       </section>

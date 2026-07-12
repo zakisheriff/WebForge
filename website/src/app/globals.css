@@ -649,6 +649,147 @@ a:hover {
   }
 }
 
+/* ---- Coming-soon modal ---- */
+.modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(20, 18, 14, 0.45);
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.28s ease forwards;
+}
+
+.modal-scrim.closing {
+  animation: fadeOut 0.24s ease forwards;
+}
+
+.modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: #f6f2e7;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+  padding: 34px 30px 30px;
+  box-shadow: 0 30px 80px rgba(30, 24, 16, 0.28);
+  text-align: center;
+  animation: modalIn 0.34s cubic-bezier(0.34, 1.4, 0.5, 1) forwards;
+}
+
+.modal-card.closing {
+  animation: modalOut 0.24s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 4px;
+  display: inline-flex;
+}
+
+.modal-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--accent-color);
+  background: rgba(217, 107, 67, 0.12);
+  border: 1px solid rgba(217, 107, 67, 0.28);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.modal-text {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-btn-primary {
+  background: var(--accent-color);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.modal-btn-primary:hover {
+  background: #c65a34;
+  opacity: 1;
+}
+
+.modal-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-btn-secondary:hover {
+  background: var(--card-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-scrim,
+  .modal-card {
+    animation: none !important;
+  }
+}
+
 /* ---- Live capture tool ---- */
 .capture {
   max-width: 1000px;
