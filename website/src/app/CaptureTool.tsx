@@ -91,12 +91,21 @@ export default function CaptureTool() {
   const [active, setActive] = useState<ViewportKey>("desktop");
   const [zipping, setZipping] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightboxClosing, setLightboxClosing] = useState(false);
+
+  const closeLightbox = () => {
+    setLightboxClosing(true);
+    setTimeout(() => {
+      setLightbox(null);
+      setLightboxClosing(false);
+    }, 220);
+  };
 
   // Let Escape close the full-size image viewer.
   useEffect(() => {
     if (!lightbox) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "Escape") closeLightbox();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -209,7 +218,7 @@ export default function CaptureTool() {
         >
           {loading && loadingMode === "desktop"
             ? "Capturing…"
-            : "Capture desktop"}
+            : "Capture Desktop"}
         </button>
         <button
           type="button"
@@ -354,8 +363,8 @@ export default function CaptureTool() {
         typeof document !== "undefined" &&
         createPortal(
           <div
-            className="capture-lightbox"
-            onClick={() => setLightbox(null)}
+            className={`capture-lightbox ${lightboxClosing ? "closing" : ""}`}
+            onClick={closeLightbox}
             role="dialog"
             aria-modal="true"
             aria-label="Image preview"
@@ -363,10 +372,21 @@ export default function CaptureTool() {
             <button
               type="button"
               className="capture-lightbox-close"
-              onClick={() => setLightbox(null)}
+              onClick={closeLightbox}
               aria-label="Close preview"
             >
-              ×
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
