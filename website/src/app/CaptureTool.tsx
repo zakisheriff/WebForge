@@ -114,9 +114,6 @@ export default function CaptureTool() {
     <section id="try" className="capture reveal">
       <div className="capture-head">
         <h3 className="capture-title">Try WebForge on any URL</h3>
-        <p className="capture-sub">
-          Paste a website link and capture it instantly.
-        </p>
       </div>
 
       <form className="capture-form" onSubmit={runCapture}>

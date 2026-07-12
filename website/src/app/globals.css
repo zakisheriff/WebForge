@@ -656,7 +656,8 @@ a:hover {
 }
 
 .capture-head {
-  max-width: 620px;
+  text-align: center;
+  margin-bottom: 4px;
 }
 
 .capture-tag {

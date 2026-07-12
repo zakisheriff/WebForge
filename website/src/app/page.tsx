@@ -588,7 +588,7 @@ export default function Home() {
         </div>
 
         <div className="footer-bottom">
-          <div>&copy; 2026 WebForge by The Atom. Created by Zaki Sheriff.</div>
+          <div>&copy; 2026 WebForge by The Atom.</div>
           <div className="social-links">
             <a
               href="https://github.com/zakisheriff"
