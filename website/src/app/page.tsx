@@ -444,7 +444,7 @@ export default function Home() {
       </section>
 
       {/* Main Banner Container */}
-      <section className="banner-container">
+      <section className="banner-container reveal">
         <div className="dark-banner">
           <h2 className="banner-title">
             Get WebForge Extension.
