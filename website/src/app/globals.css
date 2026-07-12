@@ -761,14 +761,16 @@ a:hover {
   display: flex;
   gap: 8px;
   margin-bottom: 14px;
-  flex-wrap: wrap;
 }
 
 .capture-tab {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  padding: 7px 15px;
+  padding: 8px 12px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-secondary);
@@ -809,9 +811,8 @@ a:hover {
 }
 
 .token-block h4 {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  letter-spacing: 0;
   color: var(--text-secondary);
   margin-bottom: 12px;
   font-weight: 600;
@@ -864,6 +865,7 @@ a:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   background: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
@@ -936,6 +938,10 @@ a:hover {
   }
   .capture-actions {
     flex-direction: column-reverse;
+  }
+  .capture-tab {
+    font-size: 12px;
+    padding: 8px 6px;
   }
 }
 
