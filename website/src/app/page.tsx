@@ -219,7 +219,7 @@ export default function Home() {
 
       {/* Main Banner Container */}
       <section className="banner-container">
-        <div className="dark-banner reveal">
+        <div className="dark-banner">
           <h2 className="banner-title">
             Get WebForge Extension.
           </h2>
