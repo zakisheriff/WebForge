@@ -32,7 +32,7 @@ async function launchBrowser(): Promise<Browser> {
   if (isServerless) {
     const chromium = (await import("@sparticuz/chromium")).default;
     return puppeteer.launch({
-      args: chromium.args,
+      args: [...chromium.args, "--disable-blink-features=AutomationControlled"],
       defaultViewport: null,
       executablePath: await chromium.executablePath(),
       headless: true,
@@ -51,7 +51,11 @@ async function launchBrowser(): Promise<Browser> {
   return puppeteer.launch({
     executablePath: localCandidates[0],
     headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-blink-features=AutomationControlled",
+    ],
   }) as unknown as Promise<Browser>;
 }
 
@@ -94,10 +98,22 @@ export async function POST(request: NextRequest) {
   try {
     browser = await launchBrowser();
     const page = await browser.newPage();
+
+    // Hide WebDriver flag and set headers to prevent bot-detection/Cloudflare blocks
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, "webdriver", {
+        get: () => false,
+      });
+    });
+
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-        "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
     );
+
+    await page.setExtraHTTPHeaders({
+      "Accept-Language": "en-US,en;q=0.9",
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    });
 
     const result: CaptureResult = {
       url: targetUrl,
@@ -111,10 +127,18 @@ export async function POST(request: NextRequest) {
 
     // Prime the page at desktop width, then reuse it for each viewport.
     await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
-    await page.goto(targetUrl, {
-      waitUntil: "networkidle2",
-      timeout: 30000,
-    });
+    
+    // Use load/domcontentloaded and catch timeouts to prevent 504 Gateway Timeouts
+    try {
+      await page.goto(targetUrl, {
+        waitUntil: "load",
+        timeout: 15000,
+      });
+    } catch (e) {
+      console.warn("Navigation timed out or failed, proceeding with current state:", e);
+      // Wait a moment for any initial content to settle/render
+      await new Promise((r) => setTimeout(r, 2000));
+    }
 
     result.title = (await page.title()) || targetUrl;
 
@@ -197,8 +221,9 @@ async function autoScroll(page: import("puppeteer-core").Page): Promise<void> {
       const timer = setInterval(() => {
         window.scrollBy(0, step);
         total += step;
+        const bodyHeight = document.body ? document.body.scrollHeight : 0;
         if (
-          total >= document.body.scrollHeight ||
+          total >= bodyHeight ||
           total >= maxScroll
         ) {
           clearInterval(timer);
