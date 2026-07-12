@@ -782,17 +782,22 @@ a:hover {
 }
 
 .capture-shot-wrap {
-  max-height: 520px;
+  max-height: 560px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
   border-radius: 14px;
-  background: #fff;
+  background: #d9d5cb;
+  padding: 16px;
+  text-align: center;
 }
 
 .capture-shot {
   display: block;
   width: 100%;
   height: auto;
+  margin: 0 auto;
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
 .capture-tokens {

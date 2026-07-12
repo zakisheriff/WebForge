@@ -20,6 +20,14 @@ const VIEWPORT_LABELS: Record<ViewportKey, string> = {
   mobile: "Mobile · 390",
 };
 
+// True device widths — display each shot at its real size so mobile/tablet
+// don't get stretched (and look zoomed) inside the wide preview panel.
+const VIEWPORT_WIDTHS: Record<ViewportKey, number> = {
+  desktop: 1440,
+  tablet: 768,
+  mobile: 390,
+};
+
 export default function CaptureTool() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -107,9 +115,8 @@ export default function CaptureTool() {
       <div className="capture-head">
         <h3 className="capture-title">Try WebForge on any URL</h3>
         <p className="capture-sub">
-          Paste a link and capture it right here — multi-viewport screenshots
-          plus extracted colors, fonts and images. A single-page taste of the
-          full extension.
+          Paste a link to capture multi-viewport screenshots plus extracted
+          colors, fonts and images. A single-page taste of the full extension.
         </p>
       </div>
 
@@ -158,6 +165,7 @@ export default function CaptureTool() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="capture-shot"
+                style={{ maxWidth: `${VIEWPORT_WIDTHS[active]}px` }}
                 src={result.screenshots[active]}
                 alt={`${active} screenshot of ${result.title}`}
               />
@@ -214,7 +222,7 @@ export default function CaptureTool() {
           <strong>Want the full picture?</strong> This web preview captures a
           single page. The WebForge extension runs in your own browser to crawl
           the entire domain, reach login-protected and bot-guarded pages, and
-          export pixel-perfect blueprints — everything, unlocked.
+          export pixel-perfect blueprints.
         </p>
         <a
           href="https://github.com/zakisheriff/WebForge"
