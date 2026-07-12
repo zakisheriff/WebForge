@@ -648,6 +648,267 @@ a:hover {
   }
 }
 
+/* ---- Live capture tool ---- */
+.capture {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 6% 40px;
+}
+
+.capture-head {
+  max-width: 620px;
+}
+
+.capture-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: var(--accent-color);
+  background: rgba(217, 107, 67, 0.1);
+  border: 1px solid rgba(217, 107, 67, 0.25);
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.capture-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.15;
+}
+
+.capture-sub {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+.capture-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.capture-input {
+  flex: 1;
+  background: #faf8f2;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 15px 18px;
+  font-size: 16px;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.capture-input:focus {
+  border-color: var(--accent-color);
+}
+
+.capture-btn {
+  background: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 0 28px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.capture-btn:hover:not(:disabled) {
+  background: #c65a34;
+}
+
+.capture-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.capture-status {
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.capture-error {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #a23b1c;
+  background: rgba(217, 107, 67, 0.08);
+  border: 1px solid rgba(217, 107, 67, 0.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  line-height: 1.5;
+}
+
+.capture-result {
+  margin-top: 28px;
+}
+
+.capture-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.capture-tab {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.capture-tab.active {
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border-color: var(--text-primary);
+}
+
+.capture-shot-wrap {
+  max-height: 520px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.capture-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.capture-tokens {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.token-block h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.font-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.img-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.img-grid img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.capture-download {
+  margin-top: 26px;
+  width: 100%;
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.capture-download:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.capture-download:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.capture-upsell {
+  margin-top: 28px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+
+.capture-upsell strong {
+  color: var(--text-primary);
+}
+
+.capture-upsell-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .capture-form {
+    flex-direction: column;
+  }
+  .capture-btn {
+    padding: 14px;
+  }
+  .capture-tokens {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .capture-title {
+    font-size: 28px;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .hero {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import CaptureTool from "./CaptureTool";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -216,6 +217,9 @@ export default function Home() {
           structured, code-ready design specification package.
         </div>
       </header>
+
+      {/* Live capture tool — single-page taste of the extension */}
+      <CaptureTool />
 
       {/* Main Banner Container */}
       <section className="banner-container">
