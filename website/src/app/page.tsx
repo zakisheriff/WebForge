@@ -211,11 +211,6 @@ export default function Home() {
           Web capture and <span>visual blueprints</span> that put clarity in AI
           context
         </h1>
-        <div className="hero-desc">
-          AI agents require clear visual references to recreate frontend layouts
-          accurately. WebForge scrolls, resizes, and compiles any page into a
-          structured, code-ready design specification package.
-        </div>
       </header>
 
       {/* Live capture tool — single-page taste of the extension */}
