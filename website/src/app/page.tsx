@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import CaptureTool from "./CaptureTool";
 
 const REPO_URL = "https://github.com/zakisheriff/WebForge";
+const CONTACT_EMAIL = "connect.theatom@gmail.com";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalClosing, setIsModalClosing] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   // Prevent background scrolling when the modal is open
   useEffect(() => {
@@ -52,6 +54,34 @@ export default function Home() {
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
+  }, []);
+
+  // Anthropic-style scroll expansion: the banner widens left & right as it
+  // scrolls up into view, driven by a 0→1 --expand CSS variable.
+  useEffect(() => {
+    const banner = bannerRef.current;
+    if (!banner) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = banner.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const start = vh; // top touching viewport bottom → collapsed
+      const end = vh * 0.35; // top near upper third → fully expanded
+      const p = (start - rect.top) / (start - end);
+      banner.style.setProperty("--expand", Math.max(0, Math.min(1, p)).toFixed(3));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   return (
@@ -443,8 +473,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Banner Container */}
-      <section className="banner-container reveal">
+      {/* Main Banner Container — expands left & right on scroll */}
+      <section ref={bannerRef} className="banner-container reveal">
         <div className="dark-banner">
           <h2 className="banner-title">
             Get WebForge Extension.
@@ -455,6 +485,112 @@ export default function Home() {
             className="btn-banner"
           >
             Install WebForge Extension
+          </a>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="contact-section reveal">
+        <div className="contact-head">
+          <h3 className="contact-title">Let’s connect</h3>
+          <p className="contact-sub">
+            Found a bug, want to partner, or just have a question? I read every
+            message that lands at{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="contact-inline-link">
+              {CONTACT_EMAIL}
+            </a>
+            .
+          </p>
+        </div>
+
+        <div className="contact-grid">
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+              "WebForge · Bug report",
+            )}`}
+            className="contact-card"
+          >
+            <span className="contact-icon" aria-hidden="true">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M8 2l1.5 2.5M16 2l-1.5 2.5" />
+                <rect x="8" y="6" width="8" height="12" rx="4" />
+                <path d="M4 11h4M16 11h4M4 16h4M16 16h4M4 6l3 2M20 6l-3 2" />
+              </svg>
+            </span>
+            <h4>Report a bug</h4>
+            <p>
+              Something broke or a capture came out wrong? Send the details and
+              I’ll get it fixed.
+            </p>
+            <span className="contact-cta">Report it →</span>
+          </a>
+
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+              "WebForge · Partnership",
+            )}`}
+            className="contact-card"
+          >
+            <span className="contact-icon" aria-hidden="true">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M8 13l2.5 2.5a2 2 0 0 0 2.8 0L20 9" />
+                <path d="M2 9l3-3 5 3 4-2 3 2 4 1" />
+                <path d="M6 6v6M18 6v8" />
+              </svg>
+            </span>
+            <h4>Partnerships & collabs</h4>
+            <p>
+              Building something WebForge could plug into, or want to work
+              together? Let’s talk.
+            </p>
+            <span className="contact-cta">Start a chat →</span>
+          </a>
+
+          <a
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+              "WebForge · General enquiry",
+            )}`}
+            className="contact-card"
+          >
+            <span className="contact-icon" aria-hidden="true">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
+                <path d="M8 9h8M8 12h5" />
+              </svg>
+            </span>
+            <h4>Everything else</h4>
+            <p>
+              Feedback, feature ideas, press, or a plain hello — the inbox is
+              always open.
+            </p>
+            <span className="contact-cta">Say hi →</span>
           </a>
         </div>
       </section>
@@ -516,7 +652,7 @@ export default function Home() {
                 </a>
               </li>
               <li>
-                <a href="mailto:zaki@theoneatom.com">Contact Support</a>
+                <a href={`mailto:${CONTACT_EMAIL}`}>Contact Support</a>
               </li>
               <li>
                 <a
