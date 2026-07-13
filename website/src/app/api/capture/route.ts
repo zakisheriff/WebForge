@@ -128,15 +128,35 @@ export async function POST(request: NextRequest) {
     // Prime the page at desktop width, then reuse it for each viewport.
     await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
     
-    // Use load/domcontentloaded and catch timeouts to prevent 504 Gateway Timeouts
+    // Navigate. Distinguish a slow-but-real page (timeout → proceed with
+    // whatever rendered, to avoid 504s on heavy sites) from a dead host
+    // (DNS/connection error → bail with a clear message instead of returning a
+    // blank white screenshot the user thinks is a broken capture).
     try {
       await page.goto(targetUrl, {
         waitUntil: "load",
         timeout: 15000,
       });
     } catch (e) {
-      console.warn("Navigation timed out or failed, proceeding with current state:", e);
-      // Wait a moment for any initial content to settle/render
+      const msg = e instanceof Error ? e.message : String(e);
+      const deadHost =
+        /ERR_NAME_NOT_RESOLVED|ERR_NAME_RESOLUTION_FAILED|ERR_CONNECTION_|ERR_ADDRESS_UNREACHABLE|ERR_INTERNET_DISCONNECTED|ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|ERR_CERT|ERR_SSL/i.test(
+          msg,
+        );
+      if (deadHost) {
+        await browser.close();
+        browser = null;
+        return Response.json(
+          {
+            error:
+              "We couldn't reach that site — check the URL is spelt right. " +
+              "That domain doesn't seem to exist or the server didn't respond.",
+          },
+          { status: 400 },
+        );
+      }
+      // Otherwise it was just slow (timeout): proceed with current state.
+      console.warn("Navigation slow, proceeding with current state:", msg);
       await new Promise((r) => setTimeout(r, 2000));
     }
 
