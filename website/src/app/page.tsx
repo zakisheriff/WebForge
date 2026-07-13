@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import CaptureTool from "./CaptureTool";
+import { POSTS } from "./blog/posts";
 
 const REPO_URL = "https://github.com/zakisheriff/WebForge";
 const CONTACT_EMAIL = "connect.theatom@gmail.com";
@@ -397,6 +398,15 @@ export default function Home() {
           {/* Navigation Menu */}
           <ul className="nav-menu-desktop">
             <li>
+              <a href="#about">About</a>
+            </li>
+            <li>
+              <a href="#features">How It Works</a>
+            </li>
+            <li>
+              <a href="/blog">Blog</a>
+            </li>
+            <li>
               <a
                 href="https://buymeacoffee.com/theoneatom"
                 target="_blank"
@@ -589,6 +599,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About WebForge — what it is, what it does, who it's for */}
+      <section id="about" className="about-section reveal">
+        <div className="about-intro">
+          <p className="section-eyebrow">About WebForge</p>
+          <h2 className="about-title">
+            A visual translator between live websites and AI coding agents.
+          </h2>
+          <p className="about-lead">
+            WebForge captures any website as an AI-ready visual blueprint: full
+            page screenshots across desktop, tablet and mobile, an area-weighted
+            colour palette, the fonts actually rendered, image assets, and a
+            crawled sitemap. Instead of describing a design to your agent, you
+            hand it the source of truth so it can rebuild the frontend without
+            drift.
+          </p>
+          <p className="about-lead">
+            It ships three ways from one capture engine: a free online tool on
+            this page, a Chrome extension for full domain crawls, and{" "}
+            <code className="about-code">webforge-theatom</code> packages on
+            PyPI and npm for scripts, notebooks and agent pipelines.
+          </p>
+        </div>
+
+        <div className="about-cards">
+          {[
+            {
+              t: "What it does",
+              d: "Turns a URL into a structured package of multi-viewport screenshots plus JSON design tokens — colours, fonts, images and sitemap.",
+            },
+            {
+              t: "Who it's for",
+              d: "Developers rebuilding, refactoring or studying sites with Claude Code, Cursor, Windsurf, Copilot, ChatGPT or Gemini.",
+            },
+            {
+              t: "Why it's different",
+              d: "Not one flat screenshot — real breakpoints, exact hex values and full-domain context an agent can actually build against.",
+            },
+          ].map((c) => (
+            <div key={c.t} className="about-card">
+              <h3>{c.t}</h3>
+              <p>{c.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Output Package Structure Visualizer */}
       <section
         id="structure"
@@ -668,119 +724,89 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works List Section */}
-      <section
-        id="features"
-        className="list-section reveal"
-        style={{
-          borderTop: "1px solid var(--border-color)",
-          paddingTop: "60px",
-        }}
-      >
-        <div className="list-section-left">
-          <h3>At WebForge, we build tools to serve AI-driven development.</h3>
+      {/* How It Works — numbered capture pipeline */}
+      <section id="features" className="how-section reveal">
+        <div className="how-head">
+          <p className="section-eyebrow">How It Works</p>
+          <h2 className="how-title">
+            From a live URL to an AI-ready blueprint in four steps.
+          </h2>
+          <p className="how-lead">
+            Every capture runs the same pipeline, whether you use the online
+            tool, the extension, or the Python and Node packages.
+          </p>
         </div>
-        <div
-          className="list-container"
-          style={{ display: "flex", flexDirection: "column" }}
-        >
-          <div
-            className="list-item"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border-color)",
-              borderTop: "1px solid var(--border-color)",
-            }}
-          >
-            <span style={{ fontSize: "15px", fontWeight: 500 }}>
-              Core Views on AI Contexts
-            </span>
-            <span
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "var(--text-secondary)",
-              }}
-            >
-              Workflow
-            </span>
-          </div>
-          <div
-            className="list-item"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border-color)",
-            }}
-          >
-            <span style={{ fontSize: "15px", fontWeight: 500 }}>
-              Structure and Sitemap Indexing
-            </span>
-            <span
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "var(--text-secondary)",
-              }}
-            >
-              Technical Specs
-            </span>
-          </div>
-          <div
-            className="list-item"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border-color)",
-            }}
-          >
-            <span style={{ fontSize: "15px", fontWeight: 500 }}>
-              Window Dimension Resizing Policy
-            </span>
-            <span
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "var(--text-secondary)",
-              }}
-            >
-              Documentation
-            </span>
-          </div>
-          <div
-            className="list-item"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border-color)",
-            }}
-          >
-            <span style={{ fontSize: "15px", fontWeight: 500 }}>
-              JSON Metadata Schemas
-            </span>
-            <span
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                color: "var(--text-secondary)",
-              }}
-            >
-              AI Input Specs
-            </span>
-          </div>
+
+        <ol className="how-steps">
+          {[
+            {
+              n: "01",
+              t: "Point it at a URL",
+              d: "Paste a link into the online tool, open the extension on any tab, or call capture() from your script. No scheme needed — an http fallback is built in.",
+            },
+            {
+              n: "02",
+              t: "Capture every viewport",
+              d: "WebForge scrolls the full page past lazy-loaded content, hides sticky headers, and stitches high-fidelity screenshots at desktop (1440), tablet (768) and mobile (390).",
+            },
+            {
+              n: "03",
+              t: "Extract the design tokens",
+              d: "It harvests an area-weighted colour palette as exact hex values, the fonts actually rendered, and image assets — the facts a vision model can't read off a picture.",
+            },
+            {
+              n: "04",
+              t: "Export the package",
+              d: "Screenshots, per-page metadata, a global token file and a crawled sitemap.json are bundled into a clean ZIP, ready to hand to your AI coding agent.",
+            },
+          ].map((s) => (
+            <li key={s.n} className="how-step">
+              <span className="how-step-n">{s.n}</span>
+              <div>
+                <h3>{s.t}</h3>
+                <p>{s.d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {/* What It Does — capability grid */}
+        <div className="what-head">
+          <p className="section-eyebrow">What It Does</p>
+          <h2 className="how-title">Everything an agent needs to rebuild a site.</h2>
+        </div>
+        <div className="what-grid">
+          {[
+            {
+              t: "Multi-viewport capture",
+              d: "Authentic desktop, tablet and mobile renders — real CSS breakpoints, not one arbitrary width.",
+            },
+            {
+              t: "Full-page stitching",
+              d: "Scrolls lazy-loaded content and hides fixed overlays for a seamless top-to-bottom screenshot.",
+            },
+            {
+              t: "Design-token extraction",
+              d: "Area-weighted colour palette in exact hex, plus the prominence-ordered font stack.",
+            },
+            {
+              t: "Domain crawler",
+              d: "Discovers and captures same-domain pages sequentially into a structured sitemap.",
+            },
+            {
+              t: "Structured export",
+              d: "A tidy ZIP of screenshots plus JSON metadata — designed for AI file tools, not just eyeballs.",
+            },
+            {
+              t: "Library + CLI",
+              d: "Same API on PyPI and npm for notebooks, scripts and agent pipelines.",
+            },
+          ].map((c) => (
+            <div key={c.t} className="what-card">
+              <h3>{c.t}</h3>
+              <p>{c.d}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -789,7 +815,6 @@ export default function Home() {
         id="faq"
         className="list-section reveal"
         style={{
-          borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
         }}
       >
@@ -836,6 +861,18 @@ export default function Home() {
               q: "Can I try WebForge without installing the extension?",
               a: "Yes. The WebForge website has a free online capture tool — paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
             },
+            {
+              q: "Is there a Python or Node package?",
+              a: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI — ideal for scripts, notebooks and AI agent pipelines.",
+            },
+            {
+              q: "How does WebForge help AI coding agents rebuild sites accurately?",
+              a: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens — exact hex colours and the real font stack — so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating colour drift and font guessing.",
+            },
+            {
+              q: "Does WebForge store or send my captured data anywhere?",
+              a: "No. The extension and packages run captures locally in your own browser or environment and export a ZIP to your machine. The free online tool captures a single page on-demand and returns the ZIP to you without retaining it.",
+            },
           ].map((item) => (
             <details
               key={item.q}
@@ -866,6 +903,38 @@ export default function Home() {
               </p>
             </details>
           ))}
+        </div>
+      </section>
+
+      {/* From the blog — links to /blog articles for SEO + engagement */}
+      <section id="blog" className="blog-teaser reveal">
+        <div className="blog-teaser-head">
+          <div>
+            <p className="section-eyebrow">From the blog</p>
+            <h2 className="how-title">Guides for capturing the web for AI.</h2>
+          </div>
+          <a href="/blog" className="blog-teaser-all">
+            All posts →
+          </a>
+        </div>
+        <div className="blog-teaser-grid">
+          {[...POSTS]
+            .sort((a, b) => (a.date < b.date ? 1 : -1))
+            .slice(0, 3)
+            .map((post) => (
+              <a
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="blog-teaser-card"
+              >
+                <div className="blog-teaser-meta">
+                  {post.readingMinutes} min read
+                </div>
+                <h3>{post.title}</h3>
+                <p>{post.description}</p>
+                <span className="blog-card-cta">Read post →</span>
+              </a>
+            ))}
         </div>
       </section>
 
@@ -972,6 +1041,30 @@ export default function Home() {
               </li>
               <li>
                 <a href="#structure">Blueprint Schema</a>
+              </li>
+              <li>
+                <a href="#about">About WebForge</a>
+              </li>
+              <li>
+                <a href="/blog">Blog</a>
+              </li>
+              <li>
+                <a
+                  href="https://pypi.org/project/webforge-theatom/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Python (PyPI)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.npmjs.com/package/webforge-theatom"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Node (npm)
+                </a>
               </li>
               <li>
                 <a

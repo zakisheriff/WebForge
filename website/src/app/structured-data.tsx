@@ -13,6 +13,8 @@
  *   - BreadcrumbList    → breadcrumb rich result
  */
 
+import { POSTS } from "./blog/posts";
+
 const SITE_URL = "https://webforge.theatom.lk";
 
 const graph = {
@@ -172,7 +174,56 @@ const graph = {
             text: "Yes. The WebForge website has a free online capture tool — paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
           },
         },
+        {
+          "@type": "Question",
+          name: "Is there a Python or Node package?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI — ideal for scripts, notebooks and AI agent pipelines.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How does WebForge help AI coding agents rebuild sites accurately?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens — exact hex colors and the real font stack — so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating color drift and font guessing.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does WebForge store or send my captured data anywhere?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No. The extension and packages run captures locally in your own browser or environment and export a ZIP to your machine. The free online tool captures a single page on-demand and returns the ZIP to you without retaining it.",
+          },
+        },
       ],
+    },
+    {
+      "@type": "Blog",
+      "@id": `${SITE_URL}/blog#blog`,
+      name: "WebForge Blog",
+      description:
+        "Guides on turning websites into AI-ready visual blueprints for coding agents — screenshot-to-code, design-token extraction and context packs for Claude Code, Cursor and Copilot.",
+      url: `${SITE_URL}/blog`,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+      inLanguage: "en",
+      blogPost: POSTS.map((post) => ({
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.description,
+        datePublished: post.date,
+        dateModified: post.date,
+        url: `${SITE_URL}/blog/${post.slug}`,
+        keywords: post.tags.join(", "),
+        author: { "@type": "Person", name: "Zaki Sheriff" },
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `${SITE_URL}/blog/${post.slug}`,
+        },
+      })),
     },
     {
       "@type": "HowTo",
@@ -237,6 +288,12 @@ const graph = {
           position: 4,
           name: "Try Online",
           item: `${SITE_URL}/#try`,
+        },
+        {
+          "@type": "ListItem",
+          position: 5,
+          name: "Blog",
+          item: `${SITE_URL}/blog`,
         },
       ],
     },

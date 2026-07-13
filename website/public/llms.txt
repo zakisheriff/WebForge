@@ -34,6 +34,19 @@ When rebuilding or studying layouts:
 - View the device PNG under `pages/<slug>/` as the visual blueprint.
 - Reference extracted colors for exact HEX matching.
 
+## Packages (Python + Node)
+
+The same capture engine ships as `webforge-theatom` on both PyPI and npm with an identical `capture()` / `crawl()` API and a `webforge` CLI, for scripts, notebooks and AI agent pipelines.
+- Python (PyPI): https://pypi.org/project/webforge-theatom/  →  `pip install webforge-theatom`
+- Node (npm): https://www.npmjs.com/package/webforge-theatom  →  `npm install webforge-theatom`
+
+## Blog
+
+Guides on capturing the web for AI coding agents: https://webforge.theatom.lk/blog
+- What is a website visual blueprint (and why AI coding agents need one): https://webforge.theatom.lk/blog/what-is-a-website-visual-blueprint
+- How to turn any website into a Claude Code or Cursor context pack: https://webforge.theatom.lk/blog/website-to-claude-code-context-pack
+- Screenshot-to-code, done right (multi-viewport capture + design tokens): https://webforge.theatom.lk/blog/screenshot-to-code-multi-viewport-design-tokens
+
 ## Links
 
 - Full details: https://webforge.theatom.lk/llms-full.txt
