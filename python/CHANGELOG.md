@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-13
+
+### Fixed
+- `capture()` / `crawl()` no longer crash with "Execution context was destroyed"
+  when a site redirects (apex/www or JS redirect) mid-capture. In-page passes
+  (auto-scroll, token extraction, hover priming) now tolerate a navigation,
+  wait for the page to re-settle, and retry once before continuing.
+
 ## [0.1.1] - 2026-07-13
 
 First public release on **PyPI** — `pip install webforge-theatom`.
@@ -33,6 +41,7 @@ Initial release — a Playwright-powered Python port of the WebForge capture eng
 - `webforge` command-line interface.
 - Unit test suite plus browser-gated integration tests.
 
-[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.1...HEAD
+[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.2...HEAD
+[0.1.2]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.2
 [0.1.1]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.1
 [0.1.0]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.0

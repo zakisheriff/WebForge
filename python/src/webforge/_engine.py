@@ -168,6 +168,42 @@ class _Session:
         except PlaywrightError:
             time.sleep(2.0)
 
+        # Some sites bounce to another URL (an apex/www or JS redirect) right
+        # after load. Let that settle so the in-page scripts below don't run
+        # against an execution context that's about to be destroyed.
+        try:
+            self.page.wait_for_load_state("load", timeout=5000)
+        except PlaywrightError:
+            pass
+
+    def _evaluate_safe(self, script, arg=None, *, default=None):
+        """Run ``page.evaluate`` but tolerate a mid-run navigation.
+
+        A redirect can destroy the JS execution context while our script is
+        running (Playwright: "Execution context was destroyed, most likely
+        because of a navigation"). We wait for the page to re-settle and retry
+        once; if it still can't run we return ``default``. These in-page passes
+        are best-effort, so a redirect must never crash a capture.
+        """
+        from playwright.sync_api import Error as PlaywrightError
+
+        for _ in range(2):
+            try:
+                if arg is None:
+                    return self.page.evaluate(script)
+                return self.page.evaluate(script, arg)
+            except PlaywrightError as exc:
+                msg = str(exc).lower()
+                if "execution context was destroyed" in msg or "navigation" in msg:
+                    try:
+                        self.page.wait_for_load_state("load", timeout=6000)
+                    except PlaywrightError:
+                        pass
+                    time.sleep(0.4)
+                    continue
+                raise
+        return default
+
     def title(self, fallback: str) -> str:
         try:
             return self.page.title() or fallback
@@ -176,7 +212,7 @@ class _Session:
 
     def auto_scroll(self) -> None:
         """Scroll to the bottom in steps to trigger lazy-loaded assets."""
-        self.page.evaluate(
+        self._evaluate_safe(
             """
             async () => {
               await new Promise((resolve) => {
@@ -201,10 +237,12 @@ class _Session:
 
     def extract_tokens(self) -> dict:
         """Run the bundled extractor in the page and return colours/fonts/images."""
-        return self.page.evaluate(_EXTRACT_JS)
+        return self._evaluate_safe(
+            _EXTRACT_JS, default={"colors": [], "fonts": [], "images": []}
+        )
 
     def _dispatch_hover(self, events: list[str]) -> None:
-        self.page.evaluate(
+        self._evaluate_safe(
             """
             ({ selector, types }) => {
               const els = Array.from(document.querySelectorAll(selector)).slice(0, 400);
