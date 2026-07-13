@@ -184,16 +184,9 @@ function CodeDemo() {
           type="button"
           onClick={handleCopy}
           aria-label={copied ? "Copied" : "Copy code"}
+          className={`copy-btn copy-btn-demo ${copied ? "copied" : ""}`}
           style={{
             marginLeft: "auto",
-            border: `1px solid ${CODE_THEME.border}`,
-            background: copied ? "var(--accent-color)" : "transparent",
-            color: "#c9c9c9",
-            borderRadius: "7px",
-            padding: "5px 12px",
-            fontSize: "12px",
-            fontWeight: 600,
-            cursor: "pointer",
           }}
         >
           {copied ? "Copied" : "Copy"}
@@ -274,21 +267,11 @@ function CommandBlock({ cmd }: { cmd: string }) {
         type="button"
         onClick={handleCopy}
         aria-label={copied ? "Copied" : "Copy command"}
+        className={`copy-btn copy-btn-cmd ${copied ? "copied" : ""}`}
         style={{
           position: "absolute",
           top: "8px",
           right: "8px",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          background: copied
-            ? "var(--accent-color)"
-            : "rgba(255, 255, 255, 0.08)",
-          color: "#e8e6df",
-          borderRadius: "7px",
-          padding: "5px 10px",
-          fontSize: "11px",
-          fontWeight: 600,
-          cursor: "pointer",
-          transition: "background 0.15s ease",
         }}
       >
         {copied ? "Copied" : "Copy"}
