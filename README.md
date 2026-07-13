@@ -12,6 +12,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![PyPI](https://img.shields.io/pypi/v/webforge-theatom?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI)
+![npm](https://img.shields.io/npm/v/webforge-theatom?style=for-the-badge&logo=npm&logoColor=white&label=npm)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <br />
@@ -163,38 +164,55 @@ It's powered by a headless-Chromium serverless route (`@sparticuz/chromium` on V
 
 ---
 
-## 🐍 Python Package
+## 📦 Packages (Python + Node)
 
-The WebForge capture engine is also available as a standalone **Python library + CLI**, published on PyPI as [`webforge-theatom`](https://pypi.org/project/webforge-theatom/) — a Playwright-powered port of the same engine for scripts, notebooks, and agent pipelines.
+The WebForge capture engine also ships as standalone **libraries + CLIs** — same API, published as **`webforge-theatom`** on both PyPI and npm — for scripts, notebooks, and agent pipelines.
+
+### Python — [`webforge-theatom` on PyPI](https://pypi.org/project/webforge-theatom/)
 
 ```bash
 pip install webforge-theatom
 playwright install chromium   # one-time browser download
 ```
 
-Use it from any Python file:
-
 ```python
 import webforge
 
-# Single page -> screenshots + colours + fonts + images
-result = webforge.capture("example.com")
+result = webforge.capture("anthropic.com")   # screenshots + colours + fonts + images
 print(result.colors, result.fonts)
-result.to_zip("example.zip")
+result.to_zip("anthropic.zip")
 
-# Whole domain
-site = webforge.crawl("example.com", max_pages=10)
+site = webforge.crawl("example.com", max_pages=10)   # whole domain
 site.to_zip("example-site.zip")
 ```
 
-…or from the terminal:
+Full docs: **[`python/README.md`](python/README.md)**.
+
+### Node — [`webforge-theatom` on npm](https://www.npmjs.com/package/webforge-theatom)
 
 ```bash
-webforge example.com                    # -> WebForge_example.com.zip
-webforge example.com --crawl --max 10   # crawl up to 10 pages
+npm install webforge-theatom
 ```
 
-Full docs, API reference, and configuration options live in **[`python/README.md`](python/README.md)**.
+```ts
+import { capture, crawl } from "webforge-theatom";
+
+const result = await capture("anthropic.com");
+console.log(result.colors, result.fonts);
+await result.toZip("anthropic.zip");
+
+const site = await crawl("example.com", { maxPages: 10 });
+await site.toZip("example-site.zip");
+```
+
+Both expose a `webforge` CLI:
+
+```bash
+webforge anthropic.com                    # -> WebForge_anthropic.com.zip
+webforge example.com --crawl --max 10     # crawl up to 10 pages
+```
+
+Full docs: **[`npm/README.md`](npm/README.md)**.
 
 ---
 

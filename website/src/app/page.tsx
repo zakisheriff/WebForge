@@ -192,6 +192,120 @@ export default function Home() {
       {/* Live capture tool — single-page taste of the extension */}
       <CaptureTool />
 
+      {/* Packages — install via pip / npm */}
+      <section
+        id="packages"
+        className="reveal"
+        style={{
+          borderTop: "1px solid var(--border-color)",
+          paddingTop: "60px",
+          marginTop: "60px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "0 20px",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+              color: "var(--text-primary)",
+              marginBottom: "10px",
+            }}
+          >
+            Prefer code? Install the package.
+          </h2>
+          <p
+            style={{
+              color: "var(--text-secondary)",
+              maxWidth: "580px",
+              margin: "0 auto 34px",
+              lineHeight: 1.6,
+            }}
+          >
+            The same capture engine as a library + CLI for your scripts,
+            notebooks, and AI agent pipelines — same API for Python and Node.
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gap: "18px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            }}
+          >
+            {[
+              {
+                label: "Python",
+                cmd: "pip install webforge-theatom",
+                href: "https://pypi.org/project/webforge-theatom/",
+                link: "PyPI",
+              },
+              {
+                label: "Node",
+                cmd: "npm install webforge-theatom",
+                href: "https://www.npmjs.com/package/webforge-theatom",
+                link: "npm",
+              },
+            ].map((p) => (
+              <div
+                key={p.label}
+                style={{
+                  background: "var(--card-bg)",
+                  border: "1px solid var(--border-color)",
+                  borderRadius: "14px",
+                  padding: "22px",
+                  textAlign: "left",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "12px",
+                  }}
+                >
+                  <strong style={{ color: "var(--text-primary)" }}>
+                    {p.label}
+                  </strong>
+                  <a
+                    href={p.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      color: "var(--accent-color)",
+                      fontSize: "13px",
+                      textDecoration: "none",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {p.link} ↗
+                  </a>
+                </div>
+                <pre
+                  style={{
+                    background: "#191919",
+                    color: "#e8e6df",
+                    borderRadius: "10px",
+                    padding: "12px 14px",
+                    overflowX: "auto",
+                    fontSize: "13px",
+                    margin: 0,
+                  }}
+                >
+                  <code>{p.cmd}</code>
+                </pre>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Output Package Structure Visualizer */}
       <section
         id="structure"
