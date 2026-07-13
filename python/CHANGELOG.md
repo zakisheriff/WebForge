@@ -1,0 +1,29 @@
+# Changelog
+
+All notable changes to the WebForge Python package (`webforge-theatom`) are
+documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.1.0] - 2026-07-13
+
+Initial release — a Playwright-powered Python port of the WebForge capture engine.
+
+### Added
+- `webforge.capture(url)` — screenshot a single page across desktop, tablet and
+  mobile viewports and extract its design tokens.
+- `webforge.crawl(url)` — breadth-first same-origin crawl capturing each page.
+- Area-weighted colour palette, ranked font list, and image-asset harvesting,
+  ported faithfully from the WebForge website capture route.
+- Hover priming so sprite / hover-only artwork loads before capture.
+- ZIP blueprint export (`.to_zip()`) mirroring the browser extension's
+  `WebForge_<domain>/` layout, plus `.save()` to a folder.
+- Result models: `CaptureResult`, `CapturedPage`, `CrawlResult`, `Viewport`.
+- Typed error hierarchy: `WebForgeError`, `InvalidURLError`,
+  `BrowserNotInstalledError`, `CaptureError`.
+- `webforge` command-line interface.
+- Unit test suite plus browser-gated integration tests.
+
+[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.0...HEAD
+[0.1.0]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.0
