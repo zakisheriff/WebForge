@@ -1,0 +1,76 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "webforge"
+dynamic = ["version"]
+description = "Capture a website's visual blueprint (screenshots + design tokens) for AI coding agents."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Zaki Sheriff" }]
+keywords = [
+    "screenshot",
+    "website-capture",
+    "design-tokens",
+    "playwright",
+    "web-scraping",
+    "ai",
+    "crawler",
+    "full-page-screenshot",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Multimedia :: Graphics :: Capture",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "playwright>=1.40",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.urls]
+Homepage = "https://webforge.theatom.lk"
+Repository = "https://github.com/zakisheriff/WebForge"
+Issues = "https://github.com/zakisheriff/WebForge/issues"
+
+[project.scripts]
+webforge = "webforge.cli:main"
+
+[tool.hatch.version]
+path = "src/webforge/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/webforge"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/webforge/_resources/extract_tokens.js" = "webforge/_resources/extract_tokens.js"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: end-to-end tests that launch a real browser (deselect with '-m \"not integration\"')",
+]
