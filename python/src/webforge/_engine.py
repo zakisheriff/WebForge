@@ -154,24 +154,48 @@ class _Session:
     # -- in-page routines --------------------------------------------------
 
     def goto(self, url: str, timeout: float) -> None:
-        """Navigate, tolerating slow pages the way the route does.
+        """Navigate to ``url``, tolerating slow and redirecting pages.
 
-        On timeout we don't fail: we pause briefly and capture the current
-        state, matching the "proceed with current state" behaviour that keeps
-        the hosted tool from returning gateway timeouts.
+        Slow sites are not treated as failures (we proceed with whatever
+        rendered). If the page truly never loads over https, we retry once over
+        http: some hosts answer only on port 80 and 301 to their real https
+        site (e.g. ``anthropic.ai`` → ``https://www.anthropic.com``), so the
+        http hop lands us on the site that actually works.
+        """
+        self.page.set_viewport_size({"width": 1440, "height": 900})
+
+        if self._try_navigate(url, timeout):
+            return
+        if url.lower().startswith("https://"):
+            http_url = "http://" + url[len("https://") :]
+            if self._try_navigate(http_url, timeout):
+                return
+
+        raise CaptureError(
+            f"Couldn't reach {url} — the page never loaded. Common causes:\n"
+            "  • The host is down or unreachable from your network "
+            "(a plain request times out too, so it isn't a WebForge issue).\n"
+            "  • The URL is a redirect alias that doesn't respond — try the "
+            "site's primary domain instead (e.g. 'anthropic.com', not "
+            "'anthropic.ai').\n"
+            "  • The site refuses automated connections — try headless=False, "
+            "or the WebForge browser extension (it runs in your real browser)."
+        )
+
+    def _try_navigate(self, url: str, timeout: float) -> bool:
+        """Navigate and settle redirects; return True if a real page loaded.
+
+        Follows client-side redirects ("Loading…" stubs, apex→www bounces) and
+        lets JS-rendered pages paint. Returns False if the browser parked on an
+        error page / about:blank (host unreachable, connection refused, etc.).
         """
         from playwright.sync_api import Error as PlaywrightError
 
-        self.page.set_viewport_size({"width": 1440, "height": 900})
         try:
             self.page.goto(url, wait_until="load", timeout=timeout * 1000)
         except PlaywrightError:
-            time.sleep(2.0)
+            time.sleep(1.5)
 
-        # Follow client-side redirects ("Loading…" stubs, apex→www bounces) and
-        # let JS-rendered pages paint before we scrape them. Wait for the network
-        # to go idle; if the URL bounces to a new location, wait again for that
-        # one to settle, up to a few rounds.
         for _ in range(3):
             prev = self.page.url
             try:
@@ -182,23 +206,10 @@ class _Session:
             if self.page.url == prev:
                 break
 
-        # If the browser never actually opened the page, Chromium parks on its
-        # internal error page (or stays on about:blank). That happens on a dead
-        # host, a refused/reset connection, or a site that stonewalls the
-        # headless client. Fail loudly instead of returning a blank screenshot
-        # with a misleading "Loading …" title.
         final = self.page.url or ""
-        if final.startswith("chrome-error") or final in ("about:blank", ""):
-            raise CaptureError(
-                f"Couldn't reach {url} — the page never loaded. Common causes:\n"
-                "  • The host is down or unreachable from your network "
-                "(a plain request times out too, so it isn't a WebForge issue).\n"
-                "  • The URL is a redirect alias that doesn't respond — try the "
-                "site's primary domain instead (e.g. 'anthropic.com', not "
-                "'anthropic.ai').\n"
-                "  • The site refuses automated connections — try headless=False, "
-                "or the WebForge browser extension (it runs in your real browser)."
-            )
+        return not (
+            final.startswith("chrome-error") or final in ("about:blank", "")
+        )
 
     def _evaluate_safe(self, script, arg=None, *, default=None):
         """Run ``page.evaluate`` but tolerate a mid-run navigation.

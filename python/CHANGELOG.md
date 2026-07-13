@@ -8,13 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.4] - 2026-07-13
 
+### Added
+- Automatic **http fallback**: if a bare domain won't load over https (some
+  hosts answer only on port 80 and 301 to their real https site, e.g.
+  `anthropic.ai` → `https://www.anthropic.com`), the capture now retries over
+  http and follows the redirect instead of failing.
+
 ### Fixed
-- When the browser can't actually open a page — a dead host, a refused/reset
+- When the browser genuinely can't open a page — a dead host, a refused/reset
   connection, or a site that stonewalls the headless client (it parks on
   `chrome-error://` / `about:blank`) — `capture()` / `crawl()` now raise a clear
   `CaptureError` instead of silently returning a blank screenshot with a
-  misleading "Loading …" title. The message suggests `headless=False` or the
-  browser extension.
+  misleading "Loading …" title. The message suggests trying the primary domain,
+  `headless=False`, or the browser extension.
 
 ## [0.1.3] - 2026-07-13
 
