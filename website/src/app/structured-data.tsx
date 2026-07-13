@@ -92,7 +92,7 @@ const graph = {
         "Same-domain website crawler and sitemap builder",
         "CSS design token, color palette and font extraction",
         "AI-ready blueprint export for Claude Code, Cursor and Copilot",
-        "Free online single-page capture — paste any URL on the website, no install required",
+        "Free online single-page capture: paste any URL on the website, no install required",
       ],
       keywords:
         "website capture, visual blueprint, website screenshot, website crawler, CSS design tokens, AI coding, Claude Code, Cursor, Chrome extension",
@@ -106,7 +106,7 @@ const graph = {
       operatingSystem: "Any (runs in the browser)",
       browserRequirements: "Requires a modern web browser",
       description:
-        "Free online tool on the WebForge website: paste any website URL and instantly capture multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP — a single-page preview of the WebForge extension, with no install required.",
+        "Free online tool on the WebForge website: paste any website URL and instantly capture multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP, a single-page preview of the WebForge extension, with no install required.",
       isPartOf: { "@id": `${SITE_URL}/#website` },
       publisher: { "@id": `${SITE_URL}/#organization` },
       offers: {
@@ -155,7 +155,7 @@ const graph = {
           name: "How is WebForge different from GoFullPage or a normal screenshot tool?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Unlike a plain screenshot extension, WebForge captures multiple viewports, crawls the whole domain, and exports a structured package containing screenshots plus JSON metadata of colors, fonts and sitemap — everything an AI agent needs to reconstruct the frontend code.",
+            text: "Unlike a plain screenshot extension, WebForge captures multiple viewports, crawls the whole domain, and exports a structured package containing screenshots plus JSON metadata of colors, fonts and sitemap: everything an AI agent needs to reconstruct the frontend code.",
           },
         },
         {
@@ -171,7 +171,7 @@ const graph = {
           name: "Can I try WebForge without installing the extension?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. The WebForge website has a free online capture tool — paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
+            text: "Yes. The WebForge website has a free online capture tool. Paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
           },
         },
         {
@@ -179,7 +179,7 @@ const graph = {
           name: "Is there a Python or Node package?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI — ideal for scripts, notebooks and AI agent pipelines.",
+            text: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI, ideal for scripts, notebooks and AI agent pipelines.",
           },
         },
         {
@@ -187,7 +187,7 @@ const graph = {
           name: "How does WebForge help AI coding agents rebuild sites accurately?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens — exact hex colors and the real font stack — so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating color drift and font guessing.",
+            text: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens (exact hex colors and the real font stack) so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating color drift and font guessing.",
           },
         },
         {
@@ -205,7 +205,7 @@ const graph = {
       "@id": `${SITE_URL}/blog#blog`,
       name: "WebForge Blog",
       description:
-        "Guides on turning websites into AI-ready visual blueprints for coding agents — screenshot-to-code, design-token extraction and context packs for Claude Code, Cursor and Copilot.",
+        "Guides on turning websites into AI-ready visual blueprints for coding agents: screenshot-to-code, design-token extraction and context packs for Claude Code, Cursor and Copilot.",
       url: `${SITE_URL}/blog`,
       publisher: { "@id": `${SITE_URL}/#organization` },
       inLanguage: "en",

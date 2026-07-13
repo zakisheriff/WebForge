@@ -398,15 +398,6 @@ export default function Home() {
           {/* Navigation Menu */}
           <ul className="nav-menu-desktop">
             <li>
-              <a href="#about">About</a>
-            </li>
-            <li>
-              <a href="#features">How It Works</a>
-            </li>
-            <li>
-              <a href="/blog">Blog</a>
-            </li>
-            <li>
               <a
                 href="https://buymeacoffee.com/theoneatom"
                 target="_blank"
@@ -600,12 +591,11 @@ export default function Home() {
       </section>
 
       {/* About WebForge — what it is, what it does, who it's for */}
-      <section id="about" className="about-section reveal">
-        <div className="about-intro">
-          <p className="section-eyebrow">About WebForge</p>
-          <h2 className="about-title">
-            A visual translator between live websites and AI coding agents.
-          </h2>
+      <section id="about" className="list-section reveal">
+        <div className="list-section-left">
+          <h3>A visual translator between live websites and AI coding agents.</h3>
+        </div>
+        <div className="about-body">
           <p className="about-lead">
             WebForge captures any website as an AI-ready visual blueprint: full
             page screenshots across desktop, tablet and mobile, an area-weighted
@@ -616,32 +606,32 @@ export default function Home() {
           </p>
           <p className="about-lead">
             It ships three ways from one capture engine: a free online tool on
-            this page, a Chrome extension for full domain crawls, and{" "}
+            this page, a Chrome extension for full domain crawls, and the{" "}
             <code className="about-code">webforge-theatom</code> packages on
             PyPI and npm for scripts, notebooks and agent pipelines.
           </p>
-        </div>
 
-        <div className="about-cards">
-          {[
-            {
-              t: "What it does",
-              d: "Turns a URL into a structured package of multi-viewport screenshots plus JSON design tokens — colours, fonts, images and sitemap.",
-            },
-            {
-              t: "Who it's for",
-              d: "Developers rebuilding, refactoring or studying sites with Claude Code, Cursor, Windsurf, Copilot, ChatGPT or Gemini.",
-            },
-            {
-              t: "Why it's different",
-              d: "Not one flat screenshot — real breakpoints, exact hex values and full-domain context an agent can actually build against.",
-            },
-          ].map((c) => (
-            <div key={c.t} className="about-card">
-              <h3>{c.t}</h3>
-              <p>{c.d}</p>
-            </div>
-          ))}
+          <div className="about-cards">
+            {[
+              {
+                t: "What it does",
+                d: "Turns a URL into a structured package of multi-viewport screenshots plus JSON design tokens: colours, fonts, images and sitemap.",
+              },
+              {
+                t: "Who it's for",
+                d: "Developers rebuilding, refactoring or studying sites with Claude Code, Cursor, Windsurf, Copilot, ChatGPT or Gemini.",
+              },
+              {
+                t: "Why it's different",
+                d: "Not one flat screenshot. Real breakpoints, exact hex values and full-domain context an agent can actually build against.",
+              },
+            ].map((c) => (
+              <div key={c.t} className="about-card">
+                <h4>{c.t}</h4>
+                <p>{c.d}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -725,24 +715,27 @@ export default function Home() {
       </section>
 
       {/* How It Works — numbered capture pipeline */}
-      <section id="features" className="how-section reveal">
-        <div className="how-head">
-          <p className="section-eyebrow">How It Works</p>
-          <h2 className="how-title">
-            From a live URL to an AI-ready blueprint in four steps.
-          </h2>
-          <p className="how-lead">
+      <section id="features" className="list-section reveal">
+        <div className="list-section-left">
+          <h3>From a live URL to an AI-ready blueprint in four steps.</h3>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "var(--text-secondary)",
+              marginTop: "12px",
+              lineHeight: "1.6",
+            }}
+          >
             Every capture runs the same pipeline, whether you use the online
             tool, the extension, or the Python and Node packages.
           </p>
         </div>
-
         <ol className="how-steps">
           {[
             {
               n: "01",
               t: "Point it at a URL",
-              d: "Paste a link into the online tool, open the extension on any tab, or call capture() from your script. No scheme needed — an http fallback is built in.",
+              d: "Paste a link into the online tool, open the extension on any tab, or call capture() from your script. No scheme needed, and an http fallback is built in.",
             },
             {
               n: "02",
@@ -752,7 +745,7 @@ export default function Home() {
             {
               n: "03",
               t: "Extract the design tokens",
-              d: "It harvests an area-weighted colour palette as exact hex values, the fonts actually rendered, and image assets — the facts a vision model can't read off a picture.",
+              d: "It harvests an area-weighted colour palette as exact hex values, the fonts actually rendered, and image assets: the facts a vision model cannot read off a picture.",
             },
             {
               n: "04",
@@ -763,23 +756,24 @@ export default function Home() {
             <li key={s.n} className="how-step">
               <span className="how-step-n">{s.n}</span>
               <div>
-                <h3>{s.t}</h3>
+                <h4>{s.t}</h4>
                 <p>{s.d}</p>
               </div>
             </li>
           ))}
         </ol>
+      </section>
 
-        {/* What It Does — capability grid */}
-        <div className="what-head">
-          <p className="section-eyebrow">What It Does</p>
-          <h2 className="how-title">Everything an agent needs to rebuild a site.</h2>
+      {/* What It Does — capability grid */}
+      <section className="list-section reveal">
+        <div className="list-section-left">
+          <h3>Everything an agent needs to rebuild a site.</h3>
         </div>
         <div className="what-grid">
           {[
             {
               t: "Multi-viewport capture",
-              d: "Authentic desktop, tablet and mobile renders — real CSS breakpoints, not one arbitrary width.",
+              d: "Authentic desktop, tablet and mobile renders at real CSS breakpoints, not one arbitrary width.",
             },
             {
               t: "Full-page stitching",
@@ -795,15 +789,15 @@ export default function Home() {
             },
             {
               t: "Structured export",
-              d: "A tidy ZIP of screenshots plus JSON metadata — designed for AI file tools, not just eyeballs.",
+              d: "A tidy ZIP of screenshots plus JSON metadata, designed for AI file tools, not just eyeballs.",
             },
             {
-              t: "Library + CLI",
+              t: "Library and CLI",
               d: "Same API on PyPI and npm for notebooks, scripts and agent pipelines.",
             },
           ].map((c) => (
             <div key={c.t} className="what-card">
-              <h3>{c.t}</h3>
+              <h4>{c.t}</h4>
               <p>{c.d}</p>
             </div>
           ))}
@@ -851,7 +845,7 @@ export default function Home() {
             },
             {
               q: "How is WebForge different from GoFullPage or a normal screenshot tool?",
-              a: "Unlike a plain screenshot extension, WebForge captures multiple viewports, crawls the whole domain, and exports a structured package containing screenshots plus JSON metadata of colors, fonts and sitemap — everything an AI agent needs to reconstruct the frontend code.",
+              a: "Unlike a plain screenshot extension, WebForge captures multiple viewports, crawls the whole domain, and exports a structured package containing screenshots plus JSON metadata of colors, fonts and sitemap: everything an AI agent needs to reconstruct the frontend code.",
             },
             {
               q: "What does the exported WebForge package contain?",
@@ -859,15 +853,15 @@ export default function Home() {
             },
             {
               q: "Can I try WebForge without installing the extension?",
-              a: "Yes. The WebForge website has a free online capture tool — paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
+              a: "Yes. The WebForge website has a free online capture tool. Paste any website URL and it instantly returns multi-viewport full-page screenshots (desktop, tablet, mobile) plus extracted colors, fonts and images, downloadable as a ZIP. The online tool captures a single page; installing the extension unlocks full-domain crawling, login and bot-protected pages, and pixel-perfect fidelity.",
             },
             {
               q: "Is there a Python or Node package?",
-              a: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI — ideal for scripts, notebooks and AI agent pipelines.",
+              a: "Yes. The same capture engine ships as webforge-theatom on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom), with an identical capture() and crawl() API plus a webforge CLI, ideal for scripts, notebooks and AI agent pipelines.",
             },
             {
               q: "How does WebForge help AI coding agents rebuild sites accurately?",
-              a: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens — exact hex colours and the real font stack — so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating colour drift and font guessing.",
+              a: "Vision models are good at layout and poor at precision. WebForge pairs real multi-viewport screenshots with machine-readable design tokens (exact hex colours and the real font stack) so the agent reasons about layout from the image and pulls exact values from the metadata, eliminating colour drift and font guessing.",
             },
             {
               q: "Does WebForge store or send my captured data anywhere?",
@@ -907,13 +901,14 @@ export default function Home() {
       </section>
 
       {/* From the blog — links to /blog articles for SEO + engagement */}
-      <section id="blog" className="blog-teaser reveal">
-        <div className="blog-teaser-head">
-          <div>
-            <p className="section-eyebrow">From the blog</p>
-            <h2 className="how-title">Guides for capturing the web for AI.</h2>
-          </div>
-          <a href="/blog" className="blog-teaser-all">
+      <section id="blog" className="list-section reveal">
+        <div className="list-section-left">
+          <h3>Guides for capturing the web for AI.</h3>
+          <a
+            href="/blog"
+            className="blog-teaser-all"
+            style={{ display: "inline-block", marginTop: "16px" }}
+          >
             All posts →
           </a>
         </div>
@@ -930,7 +925,7 @@ export default function Home() {
                 <div className="blog-teaser-meta">
                   {post.readingMinutes} min read
                 </div>
-                <h3>{post.title}</h3>
+                <h4>{post.title}</h4>
                 <p>{post.description}</p>
                 <span className="blog-card-cta">Read post →</span>
               </a>

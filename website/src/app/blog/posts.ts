@@ -2,7 +2,7 @@
  * Blog content, authored as structured data so each post renders as a real
  * page (SEO) and as Article JSON-LD (AEO / GEO). Add a new object here and it
  * automatically appears on /blog, gets a /blog/<slug> route, a sitemap entry
- * and Article structured data — no other file needs editing.
+ * and Article structured data. No other file needs editing.
  */
 
 export type Block =
@@ -28,14 +28,14 @@ export const POSTS: Post[] = [
     slug: "what-is-a-website-visual-blueprint",
     title: "What is a website visual blueprint (and why AI coding agents need one)",
     description:
-      "A visual blueprint is a structured capture of a website — multi-viewport screenshots plus design tokens — that gives AI coding agents the context they need to rebuild a page accurately.",
+      "A visual blueprint is a structured capture of a website (multi-viewport screenshots plus design tokens) that gives AI coding agents the context they need to rebuild a page accurately.",
     date: "2026-06-02",
     readingMinutes: 5,
     tags: ["AI coding", "visual blueprint", "design tokens"],
     body: [
       {
         type: "p",
-        text: "Ask an AI coding agent to “rebuild this landing page” from a single screenshot and you get something that looks roughly right and is wrong in every detail: the wrong greys, a font that is close but not the one, spacing that drifts a few pixels on every element. The model is not failing — it simply never had the source of truth. A website visual blueprint is that source of truth.",
+        text: "Ask an AI coding agent to “rebuild this landing page” from a single screenshot and you get something that looks roughly right and is wrong in every detail: the wrong greys, a font that is close but not the one, spacing that drifts a few pixels on every element. The model is not failing; it simply never had the source of truth. A website visual blueprint is that source of truth.",
       },
       { type: "h2", text: "A blueprint is more than a screenshot" },
       {
@@ -45,8 +45,8 @@ export const POSTS: Post[] = [
       {
         type: "ul",
         items: [
-          "Full-page screenshots across desktop, tablet and mobile — so the agent sees real CSS breakpoint behaviour, not one arbitrary width.",
-          "An area-weighted colour palette as exact hex values — no more guessing #f0eee6 from a JPEG.",
+          "Full-page screenshots across desktop, tablet and mobile, so the agent sees real CSS breakpoint behaviour, not one arbitrary width.",
+          "An area-weighted colour palette as exact hex values, so no more guessing #f0eee6 from a JPEG.",
           "The fonts actually rendered on the page, in prominence order.",
           "Image assets, as URLs and inline data-URIs.",
           "A sitemap of the crawled domain, so multi-page structure is explicit.",
@@ -65,7 +65,7 @@ export const POSTS: Post[] = [
       },
       {
         type: "p",
-        text: "Feed the global metadata.json first so the agent loads the palette and fonts, then the device PNG as the visual reference. That ordering — tokens before pixels — is what keeps the rebuild honest.",
+        text: "Feed the global metadata.json first so the agent loads the palette and fonts, then the device PNG as the visual reference. That ordering, tokens before pixels, is what keeps the rebuild honest.",
       },
       {
         type: "p",
@@ -84,7 +84,7 @@ export const POSTS: Post[] = [
     body: [
       {
         type: "p",
-        text: "The fastest way to get an AI agent to match a reference design is to stop describing it and start showing it — with structure. Here is the workflow we use to turn a live site into a context pack that Claude Code, Cursor, Windsurf or Copilot can actually build against.",
+        text: "The fastest way to get an AI agent to match a reference design is to stop describing it and start showing it, with structure. Here is the workflow we use to turn a live site into a context pack that Claude Code, Cursor, Windsurf or Copilot can actually build against.",
       },
       { type: "h2", text: "1. Capture the reference, not a screenshot" },
       {
@@ -99,7 +99,7 @@ export const POSTS: Post[] = [
       { type: "h2", text: "2. Unzip it into the repo you are working in" },
       {
         type: "p",
-        text: "Drop the package into a reference/ folder inside your project. Now the files live where the agent can read them with its normal file tools — no copy-pasting images into chat, no losing the metadata.",
+        text: "Drop the package into a reference/ folder inside your project. Now the files live where the agent can read them with its normal file tools, with no copy-pasting images into chat and no losing the metadata.",
       },
       { type: "h2", text: "3. Prompt with the tokens first" },
       {
@@ -109,7 +109,7 @@ export const POSTS: Post[] = [
       {
         type: "code",
         lang: "text",
-        text: "Read reference/metadata.json for the exact palette and fonts.\nThen use reference/pages/home/desktop.png as the visual target.\nRebuild the hero section in React + Tailwind, matching the hex\nvalues from metadata.json exactly — do not approximate colours.",
+        text: "Read reference/metadata.json for the exact palette and fonts.\nThen use reference/pages/home/desktop.png as the visual target.\nRebuild the hero section in React + Tailwind, matching the hex\nvalues from metadata.json exactly. Do not approximate colours.",
       },
       { type: "h2", text: "4. Iterate against the mobile capture" },
       {
@@ -128,7 +128,7 @@ export const POSTS: Post[] = [
       },
       {
         type: "p",
-        text: "The same package works with any agent that can read images and JSON — the point is giving it structured context instead of a lossy picture.",
+        text: "The same package works with any agent that can read images and JSON. The point is giving it structured context instead of a lossy picture.",
       },
     ],
   },
@@ -162,12 +162,12 @@ export const POSTS: Post[] = [
       { type: "h2", text: "Area-weighted colour, not a naive histogram" },
       {
         type: "p",
-        text: "A naive palette counts pixels and hands back near-duplicates of the background. An area-weighted palette ranks colours by how much meaningful surface they cover, so the accent that appears on one button still surfaces — which is exactly the colour an agent most needs and most often gets wrong.",
+        text: "A naive palette counts pixels and hands back near-duplicates of the background. An area-weighted palette ranks colours by how much meaningful surface they cover, so the accent that appears on one button still surfaces, which is exactly the colour an agent most needs and most often gets wrong.",
       },
       { type: "h2", text: "The result" },
       {
         type: "p",
-        text: "Give an agent three real renders and a token file and the output stops being “inspired by” the original and starts matching it. That is the whole point of screenshot-to-code — and it only works when the screenshot is actually a blueprint.",
+        text: "Give an agent three real renders and a token file and the output stops being “inspired by” the original and starts matching it. That is the whole point of screenshot-to-code, and it only works when the screenshot is actually a blueprint.",
       },
       {
         type: "p",

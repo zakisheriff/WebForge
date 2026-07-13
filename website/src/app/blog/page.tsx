@@ -5,14 +5,14 @@ import { POSTS } from "./posts";
 const SITE_URL = "https://webforge.theatom.lk";
 
 export const metadata: Metadata = {
-  title: "Blog — AI website capture, visual blueprints & context for coding agents",
+  title: "Blog: AI website capture, visual blueprints and context for coding agents",
   description:
     "Guides on turning websites into AI-ready visual blueprints: screenshot-to-code done right, design-token extraction, and context packs for Claude Code, Cursor and Copilot.",
   alternates: { canonical: `${SITE_URL}/blog` },
   openGraph: {
     type: "website",
     url: `${SITE_URL}/blog`,
-    title: "WebForge Blog — AI website capture & visual blueprints",
+    title: "WebForge Blog: AI website capture and visual blueprints",
     description:
       "Practical guides on capturing websites into AI-ready visual blueprints for modern coding agents.",
     images: [`${SITE_URL}/og-image.png`],
