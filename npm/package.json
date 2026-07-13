@@ -1,0 +1,53 @@
+{
+  "name": "webforge-theatom",
+  "version": "0.1.0",
+  "description": "Capture a website's visual blueprint (screenshots + design tokens) for AI coding agents.",
+  "keywords": [
+    "screenshot",
+    "website-capture",
+    "design-tokens",
+    "puppeteer",
+    "web-scraping",
+    "ai",
+    "crawler",
+    "full-page-screenshot"
+  ],
+  "author": "Zaki Sheriff",
+  "license": "MIT",
+  "homepage": "https://github.com/zakisheriff/WebForge",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakisheriff/WebForge.git",
+    "directory": "npm"
+  },
+  "bugs": {
+    "url": "https://github.com/zakisheriff/WebForge/issues"
+  },
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "webforge": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "puppeteer": "^24.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}
