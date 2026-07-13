@@ -421,8 +421,7 @@ export default function Home() {
       {/* Hero Section */}
       <header className="hero">
         <h1 className="hero-title">
-          Web capture and <span>visual blueprints</span> that put clarity in AI
-          context
+          Turn any website into an <span>AI-ready visual blueprint</span>
         </h1>
       </header>
 
