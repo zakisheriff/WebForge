@@ -182,6 +182,21 @@ class _Session:
             if self.page.url == prev:
                 break
 
+        # If the browser never actually opened the page, Chromium parks on its
+        # internal error page (or stays on about:blank). That happens on a dead
+        # host, a refused/reset connection, or a site that stonewalls the
+        # headless client. Fail loudly instead of returning a blank screenshot
+        # with a misleading "Loading …" title.
+        final = self.page.url or ""
+        if final.startswith("chrome-error") or final in ("about:blank", ""):
+            raise CaptureError(
+                f"Couldn't open {url}. The browser never loaded the page — the "
+                "host may be down, or the site is refusing automated/headless "
+                "connections from this network. Try headless=False, or capture "
+                "it with the WebForge browser extension (it runs in your real "
+                "browser, so sites like this work)."
+            )
+
     def _evaluate_safe(self, script, arg=None, *, default=None):
         """Run ``page.evaluate`` but tolerate a mid-run navigation.
 

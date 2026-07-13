@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-07-13
+
+### Fixed
+- When the browser can't actually open a page — a dead host, a refused/reset
+  connection, or a site that stonewalls the headless client (it parks on
+  `chrome-error://` / `about:blank`) — `capture()` / `crawl()` now raise a clear
+  `CaptureError` instead of silently returning a blank screenshot with a
+  misleading "Loading …" title. The message suggests `headless=False` or the
+  browser extension.
+
 ## [0.1.3] - 2026-07-13
 
 ### Fixed
@@ -54,7 +64,8 @@ Initial release — a Playwright-powered Python port of the WebForge capture eng
 - `webforge` command-line interface.
 - Unit test suite plus browser-gated integration tests.
 
-[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.3...HEAD
+[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.4...HEAD
+[0.1.4]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.4
 [0.1.3]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.3
 [0.1.2]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.2
 [0.1.1]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.1
