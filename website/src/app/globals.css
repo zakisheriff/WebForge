@@ -2109,3 +2109,74 @@ a:hover {
   color: #ffffff;
 }
 
+/* CodeDemo responsive styling */
+.code-demo-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #181818; /* CODE_THEME.bar */
+  border-bottom: 1px solid #2b2b2b; /* CODE_THEME.border */
+  padding: 0 14px;
+  height: 44px;
+}
+
+.code-demo-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.code-demo-tabs {
+  display: flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.code-demo-tab {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: #8a8a8a;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px 8px 0 0;
+  transition: color 0.15s ease;
+}
+
+.code-demo-tab.active {
+  background: #1e1e1e; /* CODE_THEME.bg */
+  color: #e8e6df;
+}
+
+.code-demo-pre {
+  padding: 20px 22px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .code-demo-header {
+    gap: 8px;
+    padding: 0 8px;
+  }
+  .code-demo-dots {
+    display: none; /* Hide dots on mobile to save space */
+  }
+  .code-demo-tabs {
+    margin-left: 0;
+  }
+  .code-demo-tab {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .code-demo-pre {
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+

@@ -131,18 +131,8 @@ function CodeDemo() {
       }}
     >
       {/* Window / tab bar */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-          background: CODE_THEME.bar,
-          borderBottom: `1px solid ${CODE_THEME.border}`,
-          padding: "0 14px",
-          height: "44px",
-        }}
-      >
-        <div style={{ display: "flex", gap: "8px" }}>
+      <div className="code-demo-header">
+        <div className="code-demo-dots">
           {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
             <span
               key={c}
@@ -155,7 +145,7 @@ function CodeDemo() {
             />
           ))}
         </div>
-        <div style={{ display: "flex", gap: "4px", marginLeft: "4px" }}>
+        <div className="code-demo-tabs">
           {tabs.map((t) => (
             <button
               key={t}
@@ -164,17 +154,7 @@ function CodeDemo() {
                 setActive(t);
                 setCopied(false);
               }}
-              style={{
-                border: "none",
-                cursor: "pointer",
-                background: active === t ? CODE_THEME.bg : "transparent",
-                color: active === t ? "#e8e6df" : "#8a8a8a",
-                fontFamily: "var(--font-mono)",
-                fontSize: "13px",
-                fontWeight: 500,
-                padding: "6px 14px",
-                borderRadius: "8px 8px 0 0",
-              }}
+              className={`code-demo-tab ${active === t ? "active" : ""}`}
             >
               {CODE_DEMOS[t].file}
             </button>
@@ -195,13 +175,9 @@ function CodeDemo() {
 
       {/* Code body */}
       <pre
+        className="code-demo-pre"
         style={{
           margin: 0,
-          padding: "20px 22px",
-          overflowX: "auto",
-          fontFamily: "var(--font-mono)",
-          fontSize: "16px",
-          lineHeight: 1.7,
           tabSize: 2,
         }}
       >
