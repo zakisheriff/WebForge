@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "webforge"
+name = "webforge-theatom"
 dynamic = ["version"]
 description = "Capture a website's visual blueprint (screenshots + design tokens) for AI coding agents."
 readme = "README.md"

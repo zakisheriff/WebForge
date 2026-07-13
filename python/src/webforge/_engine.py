@@ -111,7 +111,7 @@ class _Session:
         except ImportError as exc:  # pragma: no cover - import guard
             raise BrowserNotInstalledError(
                 "Playwright is not installed. Install it with:\n"
-                "    pip install 'webforge'\n"
+                "    pip install webforge-theatom\n"
                 "then download the browser binary:\n"
                 "    playwright install chromium"
             ) from exc

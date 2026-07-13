@@ -11,8 +11,13 @@ This is the Python port of the [WebForge Chrome extension](https://github.com/za
 ## Installation
 
 ```bash
-pip install webforge
+pip install webforge-theatom
 ```
+
+> The package installs as `webforge-theatom` but is imported as `webforge`:
+> ```python
+> import webforge
+> ```
 
 WebForge drives a real Chromium browser, so after installing the package you need Playwright's browser binary **once**:
 

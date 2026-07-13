@@ -18,7 +18,7 @@ class BrowserNotInstalledError(WebForgeError, RuntimeError):
 
     Fix with::
 
-        pip install webforge
+        pip install webforge-theatom
         playwright install chromium
     """
 
