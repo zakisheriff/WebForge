@@ -489,6 +489,7 @@ export default function Home() {
         style={{
           paddingTop: "60px",
           marginTop: "60px",
+          paddingBottom: "80px",
         }}
       >
         <div

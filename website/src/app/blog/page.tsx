@@ -57,7 +57,6 @@ export default function BlogIndex() {
       />
 
       <header className="blog-header">
-        <p className="blog-eyebrow">WebForge Blog</p>
         <h1 className="blog-h1">
           Capturing the web for AI coding agents
         </h1>
