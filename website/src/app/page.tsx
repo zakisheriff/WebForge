@@ -6,6 +6,296 @@ import CaptureTool from "./CaptureTool";
 const REPO_URL = "https://github.com/zakisheriff/WebForge";
 const CONTACT_EMAIL = "connect.theatom@gmail.com";
 
+/* ── IDE-style code demo ─────────────────────────────────────────── */
+
+const CODE_THEME = {
+  bg: "#1e1e1e",
+  bar: "#181818",
+  border: "#2b2b2b",
+  plain: "#d4d4d4",
+  comment: "#6a9955",
+  string: "#ce9178",
+  keyword: "#569cd6",
+  fn: "#dcdcaa",
+  number: "#b5cea8",
+  gutter: "#5a5a5a",
+};
+
+const HL_RE =
+  /(#.*$|\/\/.*$)|("[^"]*"|'[^']*')|\b(import|from|const|await|async|function|return|new|let|var|print)\b|\b([A-Za-z_]\w*)(?=\s*\()|\b(\d+)\b/g;
+
+function HighlightedLine({ line }: { line: string }) {
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  HL_RE.lastIndex = 0;
+  let i = 0;
+  while ((m = HL_RE.exec(line)) !== null) {
+    if (m.index > last) {
+      nodes.push(
+        <span key={`p${i}`} style={{ color: CODE_THEME.plain }}>
+          {line.slice(last, m.index)}
+        </span>,
+      );
+    }
+    const color = m[1]
+      ? CODE_THEME.comment
+      : m[2]
+        ? CODE_THEME.string
+        : m[3]
+          ? CODE_THEME.keyword
+          : m[4]
+            ? CODE_THEME.fn
+            : CODE_THEME.number;
+    nodes.push(
+      <span key={`t${i}`} style={{ color }}>
+        {m[0]}
+      </span>,
+    );
+    last = m.index + m[0].length;
+    i += 1;
+  }
+  if (last < line.length) {
+    nodes.push(
+      <span key="tail" style={{ color: CODE_THEME.plain }}>
+        {line.slice(last)}
+      </span>,
+    );
+  }
+  return <>{nodes.length ? nodes : " "}</>;
+}
+
+const CODE_DEMOS = {
+  Python: {
+    file: "capture.py",
+    lang: "python",
+    code: `import webforge
+
+# Capture one page across desktop, tablet & mobile
+result = webforge.capture("anthropic.com")
+
+print(result.colors)   # ['#f0eee6', '#141413', ...]
+print(result.fonts)    # ['Anthropic Sans', ...]
+print(result.images)   # image URLs + inline data-URIs
+
+# Crawl the whole domain, then save screenshots + tokens
+site = webforge.crawl("anthropic.com", max_pages=10)
+site.to_zip("anthropic.zip")`,
+  },
+  Node: {
+    file: "capture.js",
+    lang: "javascript",
+    code: `import { capture, crawl } from "webforge-theatom";
+
+// Capture one page across desktop, tablet & mobile
+const result = await capture("anthropic.com");
+
+console.log(result.colors);   // ['#f0eee6', '#141413', ...]
+console.log(result.fonts);    // ['Anthropic Sans', ...]
+console.log(result.images);   // image URLs + inline data-URIs
+
+// Crawl the whole domain, then save screenshots + tokens
+const site = await crawl("anthropic.com", { maxPages: 10 });
+await site.toZip("anthropic.zip");`,
+  },
+} as const;
+
+function CodeDemo() {
+  const tabs = Object.keys(CODE_DEMOS) as (keyof typeof CODE_DEMOS)[];
+  const [active, setActive] = useState<keyof typeof CODE_DEMOS>("Python");
+  const [copied, setCopied] = useState(false);
+  const demo = CODE_DEMOS[active];
+  const lines = demo.code.split("\n");
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(demo.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* clipboard unavailable — no-op */
+    }
+  };
+
+  return (
+    <div
+      style={{
+        marginTop: "40px",
+        borderRadius: "14px",
+        overflow: "hidden",
+        border: `1px solid ${CODE_THEME.border}`,
+        background: CODE_THEME.bg,
+        boxShadow: "0 24px 60px -30px rgba(0, 0, 0, 0.55)",
+        textAlign: "left",
+      }}
+    >
+      {/* Window / tab bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "16px",
+          background: CODE_THEME.bar,
+          borderBottom: `1px solid ${CODE_THEME.border}`,
+          padding: "0 14px",
+          height: "44px",
+        }}
+      >
+        <div style={{ display: "flex", gap: "8px" }}>
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+            <span
+              key={c}
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "50%",
+                background: c,
+              }}
+            />
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: "4px", marginLeft: "4px" }}>
+          {tabs.map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => {
+                setActive(t);
+                setCopied(false);
+              }}
+              style={{
+                border: "none",
+                cursor: "pointer",
+                background: active === t ? CODE_THEME.bg : "transparent",
+                color: active === t ? "#e8e6df" : "#8a8a8a",
+                fontFamily: "var(--font-mono)",
+                fontSize: "13px",
+                fontWeight: 500,
+                padding: "6px 14px",
+                borderRadius: "8px 8px 0 0",
+              }}
+            >
+              {CODE_DEMOS[t].file}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={handleCopy}
+          aria-label={copied ? "Copied" : "Copy code"}
+          style={{
+            marginLeft: "auto",
+            border: `1px solid ${CODE_THEME.border}`,
+            background: copied ? "var(--accent-color)" : "transparent",
+            color: "#c9c9c9",
+            borderRadius: "7px",
+            padding: "5px 12px",
+            fontSize: "12px",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+
+      {/* Code body */}
+      <pre
+        style={{
+          margin: 0,
+          padding: "20px 22px",
+          overflowX: "auto",
+          fontFamily: "var(--font-mono)",
+          fontSize: "16px",
+          lineHeight: 1.7,
+          tabSize: 2,
+        }}
+      >
+        <code style={{ fontFamily: "inherit" }}>
+          {lines.map((line, idx) => (
+            <div key={idx} style={{ display: "flex" }}>
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-block",
+                  width: "2.2em",
+                  flexShrink: 0,
+                  textAlign: "right",
+                  paddingRight: "1.2em",
+                  color: CODE_THEME.gutter,
+                  userSelect: "none",
+                }}
+              >
+                {idx + 1}
+              </span>
+              <span style={{ whiteSpace: "pre" }}>
+                <HighlightedLine line={line} />
+              </span>
+            </div>
+          ))}
+        </code>
+      </pre>
+    </div>
+  );
+}
+
+function CommandBlock({ cmd }: { cmd: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* clipboard unavailable — no-op */
+    }
+  };
+
+  return (
+    <div style={{ position: "relative" }}>
+      <pre
+        style={{
+          background: "#191919",
+          color: "#e8e6df",
+          borderRadius: "10px",
+          padding: "14px 56px 14px 16px",
+          overflowX: "auto",
+          fontSize: "13px",
+          lineHeight: 1.5,
+          margin: 0,
+          fontFamily: "var(--font-mono)",
+        }}
+      >
+        <code style={{ fontFamily: "inherit" }}>{cmd}</code>
+      </pre>
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={copied ? "Copied" : "Copy command"}
+        style={{
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+          border: "1px solid rgba(255, 255, 255, 0.18)",
+          background: copied
+            ? "var(--accent-color)"
+            : "rgba(255, 255, 255, 0.08)",
+          color: "#e8e6df",
+          borderRadius: "7px",
+          padding: "5px 10px",
+          fontSize: "11px",
+          fontWeight: 600,
+          cursor: "pointer",
+          transition: "background 0.15s ease",
+        }}
+      >
+        {copied ? "Copied" : "Copy"}
+      </button>
+    </div>
+  );
+}
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalClosing, setIsModalClosing] = useState(false);
@@ -197,7 +487,6 @@ export default function Home() {
         id="packages"
         className="reveal"
         style={{
-          borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
           marginTop: "60px",
         }}
@@ -212,10 +501,13 @@ export default function Home() {
         >
           <h2
             style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "clamp(1.6rem, 4vw, 2.2rem)",
+              fontFamily: "var(--font-sans)",
+              fontSize: "clamp(1.9rem, 4.5vw, 2.75rem)",
+              fontWeight: 800,
+              letterSpacing: "-1.5px",
+              lineHeight: 1.1,
               color: "var(--text-primary)",
-              marginBottom: "10px",
+              marginBottom: "12px",
             }}
           >
             Prefer code? Install the package.
@@ -228,13 +520,14 @@ export default function Home() {
               lineHeight: 1.6,
             }}
           >
-            The same capture engine as a library + CLI for your scripts,
-            notebooks, and AI agent pipelines — same API for Python and Node.
+            The same capture engine as a library and CLI for your scripts,
+            notebooks, and AI agent pipelines. One consistent API for both
+            Python and Node.
           </p>
           <div
             style={{
               display: "grid",
-              gap: "18px",
+              gap: "28px",
               gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
             }}
           >
@@ -287,22 +580,13 @@ export default function Home() {
                     {p.link} ↗
                   </a>
                 </div>
-                <pre
-                  style={{
-                    background: "#191919",
-                    color: "#e8e6df",
-                    borderRadius: "10px",
-                    padding: "12px 14px",
-                    overflowX: "auto",
-                    fontSize: "13px",
-                    margin: 0,
-                  }}
-                >
-                  <code>{p.cmd}</code>
-                </pre>
+                <CommandBlock cmd={p.cmd} />
               </div>
             ))}
           </div>
+
+          {/* Live code demo — same API in Python & Node */}
+          <CodeDemo />
         </div>
       </section>
 
@@ -311,7 +595,6 @@ export default function Home() {
         id="structure"
         className="list-section reveal"
         style={{
-          borderTop: "1px solid var(--border-color)",
           paddingTop: "60px",
         }}
       >
