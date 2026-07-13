@@ -190,11 +190,14 @@ class _Session:
         final = self.page.url or ""
         if final.startswith("chrome-error") or final in ("about:blank", ""):
             raise CaptureError(
-                f"Couldn't open {url}. The browser never loaded the page — the "
-                "host may be down, or the site is refusing automated/headless "
-                "connections from this network. Try headless=False, or capture "
-                "it with the WebForge browser extension (it runs in your real "
-                "browser, so sites like this work)."
+                f"Couldn't reach {url} — the page never loaded. Common causes:\n"
+                "  • The host is down or unreachable from your network "
+                "(a plain request times out too, so it isn't a WebForge issue).\n"
+                "  • The URL is a redirect alias that doesn't respond — try the "
+                "site's primary domain instead (e.g. 'anthropic.com', not "
+                "'anthropic.ai').\n"
+                "  • The site refuses automated connections — try headless=False, "
+                "or the WebForge browser extension (it runs in your real browser)."
             )
 
     def _evaluate_safe(self, script, arg=None, *, default=None):
