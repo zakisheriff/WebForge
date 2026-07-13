@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-07-13
+
+### Fixed
+- Follow client-side redirects and let JS-rendered pages paint before scraping.
+  `goto()` now waits for the network to go idle and re-settles if the URL bounces
+  (e.g. a "Loading…" redirect stub or an apex→www hop), so captures land on the
+  final page instead of an intermediate blank/loading screen.
+
+### Notes
+- Sites behind aggressive bot protection (e.g. Cloudflare challenges) may still
+  return a blank or challenge page in headless mode — a limitation shared by all
+  headless capture tools. Use the browser extension for those.
+
 ## [0.1.2] - 2026-07-13
 
 ### Fixed
@@ -41,7 +54,8 @@ Initial release — a Playwright-powered Python port of the WebForge capture eng
 - `webforge` command-line interface.
 - Unit test suite plus browser-gated integration tests.
 
-[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.2...HEAD
+[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.3...HEAD
+[0.1.3]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.3
 [0.1.2]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.2
 [0.1.1]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.1
 [0.1.0]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.0

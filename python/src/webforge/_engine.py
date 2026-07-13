@@ -168,13 +168,19 @@ class _Session:
         except PlaywrightError:
             time.sleep(2.0)
 
-        # Some sites bounce to another URL (an apex/www or JS redirect) right
-        # after load. Let that settle so the in-page scripts below don't run
-        # against an execution context that's about to be destroyed.
-        try:
-            self.page.wait_for_load_state("load", timeout=5000)
-        except PlaywrightError:
-            pass
+        # Follow client-side redirects ("Loading…" stubs, apex→www bounces) and
+        # let JS-rendered pages paint before we scrape them. Wait for the network
+        # to go idle; if the URL bounces to a new location, wait again for that
+        # one to settle, up to a few rounds.
+        for _ in range(3):
+            prev = self.page.url
+            try:
+                self.page.wait_for_load_state("networkidle", timeout=8000)
+            except PlaywrightError:
+                pass
+            time.sleep(0.6)
+            if self.page.url == prev:
+                break
 
     def _evaluate_safe(self, script, arg=None, *, default=None):
         """Run ``page.evaluate`` but tolerate a mid-run navigation.
