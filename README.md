@@ -28,6 +28,24 @@
 
 ---
 
+## 🔗 Links & Downloads
+
+| | Link | Install |
+| --- | --- | --- |
+| 🌐 **Website** | [webforge.theatom.lk](https://webforge.theatom.lk) | Try the free online capture tool |
+| 🐍 **Python (PyPI)** | [pypi.org/project/webforge-theatom](https://pypi.org/project/webforge-theatom/) | `pip install webforge-theatom` |
+| 📦 **Node (npm)** | [npmjs.com/package/webforge-theatom](https://www.npmjs.com/package/webforge-theatom) | `npm install webforge-theatom` |
+| 🧩 **Chrome Extension** | [Chrome Web Store](https://chromewebstore.google.com/) *(coming soon)* | Install from the store |
+| 💻 **Source** | [github.com/zakisheriff/WebForge](https://github.com/zakisheriff/WebForge) | `git clone` |
+
+<div align="center">
+
+[**🌐 Website**](https://webforge.theatom.lk) · [**🐍 PyPI**](https://pypi.org/project/webforge-theatom/) · [**📦 npm**](https://www.npmjs.com/package/webforge-theatom) · [**💻 GitHub**](https://github.com/zakisheriff/WebForge)
+
+</div>
+
+---
+
 ## 🌟 Vision
 
 WebForge's mission is to be:
@@ -151,7 +169,7 @@ npm run build
 
 ## 🌐 Try It Online (No Install)
 
-The WebForge website hosts a free **"Try WebForge on any URL"** tool — [webforge.theatom.lk/#try](https://webforge.theatom.lk/#try).
+The WebForge website hosts a free **"Try WebForge on any URL"** tool — [webforge.theatom.lk/#try](https://webforge.theatom.lk).
 
 Paste any website link and it instantly:
 
