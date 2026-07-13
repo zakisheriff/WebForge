@@ -11,6 +11,7 @@
 ![React](https://img.shields.io/badge/React-19.2-61dafb?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![PyPI](https://img.shields.io/pypi/v/webforge-theatom?style=for-the-badge&logo=pypi&logoColor=white&label=PyPI)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <br />
@@ -159,6 +160,41 @@ Paste any website link and it instantly:
 - Lets you **download a ZIP** package (screenshots + `metadata.json`)
 
 It's powered by a headless-Chromium serverless route (`@sparticuz/chromium` on Vercel) and captures **one page** per run. Install the extension to unlock **full-domain crawling**, login/bot-protected pages, and pixel-perfect fidelity.
+
+---
+
+## 🐍 Python Package
+
+The WebForge capture engine is also available as a standalone **Python library + CLI**, published on PyPI as [`webforge-theatom`](https://pypi.org/project/webforge-theatom/) — a Playwright-powered port of the same engine for scripts, notebooks, and agent pipelines.
+
+```bash
+pip install webforge-theatom
+playwright install chromium   # one-time browser download
+```
+
+Use it from any Python file:
+
+```python
+import webforge
+
+# Single page -> screenshots + colours + fonts + images
+result = webforge.capture("example.com")
+print(result.colors, result.fonts)
+result.to_zip("example.zip")
+
+# Whole domain
+site = webforge.crawl("example.com", max_pages=10)
+site.to_zip("example-site.zip")
+```
+
+…or from the terminal:
+
+```bash
+webforge example.com                    # -> WebForge_example.com.zip
+webforge example.com --crawl --max 10   # crawl up to 10 pages
+```
+
+Full docs, API reference, and configuration options live in **[`python/README.md`](python/README.md)**.
 
 ---
 

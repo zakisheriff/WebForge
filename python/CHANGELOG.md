@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-13
+
+First public release on **PyPI** — `pip install webforge-theatom`.
+
+### Changed
+- Published to PyPI (0.1.0 was validated on TestPyPI only). No API or behaviour
+  changes from 0.1.0.
+
 ## [0.1.0] - 2026-07-13
 
 Initial release — a Playwright-powered Python port of the WebForge capture engine.
@@ -25,5 +33,6 @@ Initial release — a Playwright-powered Python port of the WebForge capture eng
 - `webforge` command-line interface.
 - Unit test suite plus browser-gated integration tests.
 
-[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.0...HEAD
+[Unreleased]: https://github.com/zakisheriff/WebForge/compare/py-v0.1.1...HEAD
+[0.1.1]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.1
 [0.1.0]: https://github.com/zakisheriff/WebForge/releases/tag/py-v0.1.0

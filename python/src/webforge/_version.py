@@ -3,4 +3,4 @@
 ``pyproject.toml`` reads this dynamically, so bump the version here only.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
