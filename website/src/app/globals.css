@@ -1311,10 +1311,70 @@ a:hover {
 }
 
 .swatch {
+  position: relative;
   width: 34px;
   height: 34px;
+  padding: 0;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: transform 0.15s ease;
+}
+
+.swatch:hover,
+.swatch:focus-visible {
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Hex label bubble on hover/focus. */
+.swatch::after {
+  content: attr(data-hex);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #191919;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 3;
+}
+
+.swatch::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  border: 5px solid transparent;
+  border-top-color: #191919;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+  z-index: 3;
+}
+
+.swatch:hover::after,
+.swatch:focus-visible::after,
+.swatch:hover::before,
+.swatch:focus-visible::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .font-list {

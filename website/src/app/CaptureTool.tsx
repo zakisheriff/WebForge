@@ -74,6 +74,17 @@ export default function CaptureTool() {
   const [zipping, setZipping] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [lightboxClosing, setLightboxClosing] = useState(false);
+  const [copiedColor, setCopiedColor] = useState<number | null>(null);
+
+  const copyColor = async (hex: string, i: number) => {
+    try {
+      await navigator.clipboard.writeText(hex.toUpperCase());
+      setCopiedColor(i);
+      setTimeout(() => setCopiedColor((cur) => (cur === i ? null : cur)), 1200);
+    } catch {
+      // Clipboard blocked (e.g. insecure context) — nothing to do.
+    }
+  };
 
   const closeLightbox = () => {
     setLightboxClosing(true);
@@ -251,11 +262,15 @@ export default function CaptureTool() {
               <h4>Colors</h4>
               <div className="swatches">
                 {result.colors.map((c, i) => (
-                  <span
+                  <button
                     key={i}
+                    type="button"
                     className="swatch"
                     style={{ background: c }}
-                    title={c}
+                    data-hex={copiedColor === i ? "Copied!" : c.toUpperCase()}
+                    title={`Copy ${c.toUpperCase()}`}
+                    onClick={() => copyColor(c, i)}
+                    aria-label={`Copy hex ${c.toUpperCase()}`}
                   />
                 ))}
               </div>

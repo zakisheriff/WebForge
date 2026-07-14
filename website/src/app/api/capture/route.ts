@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
         return Response.json(
           {
             error:
-              "We couldn't reach that site — check the URL is spelt right. " +
+              "We couldn't reach that site, check the URL is spelt right. " +
               "That domain doesn't seem to exist or the server didn't respond.",
           },
           { status: 400 },
@@ -181,12 +181,17 @@ export async function POST(request: NextRequest) {
     result.fonts = rest.fonts;
     // Union of both states keeps the default art AND the hover frames, with
     // inline data-image sprites surfaced first.
-    result.images = Array.from(new Set([...rest.images, ...hovered.images]))
+    const collected = Array.from(new Set([...rest.images, ...hovered.images]))
       .sort(
         (a, b) =>
           (b.startsWith("data:") ? 1 : 0) - (a.startsWith("data:") ? 1 : 0),
       )
       .slice(0, 40);
+    // Hotlinked image URLs frequently 403 when loaded from our origin (referer
+    // / hotlink protection), showing up as broken thumbnails. Fetch them
+    // server-side with the site's own origin as referer and inline the bytes as
+    // data URLs, so the preview and the ZIP are fully self-contained.
+    result.images = await inlineImages(collected, targetUrl);
 
     // Full-page screenshot per selected viewport.
     for (const vp of viewports) {
@@ -229,6 +234,52 @@ export async function POST(request: NextRequest) {
       { status: 502 },
     );
   }
+}
+
+// Fetch each remote image server-side and inline it as a base64 data URL.
+// Using the target site's own origin as the Referer sidesteps the hotlink /
+// referer protection that makes these URLs 403 when a browser on our domain
+// tries to load them directly. Data URLs already work, so they pass through.
+async function inlineImages(urls: string[], pageUrl: string): Promise<string[]> {
+  const origin = new URL(pageUrl).origin;
+  const passthrough: string[] = [];
+  const toFetch: string[] = [];
+  for (const u of urls) {
+    if (u.startsWith("data:")) passthrough.push(u);
+    else toFetch.push(u);
+  }
+
+  const MAX_FETCH = 20; // cap work/time and response size
+  const MAX_BYTES = 1_500_000;
+  const fetched = await Promise.all(
+    toFetch.slice(0, MAX_FETCH).map(async (u): Promise<string | null> => {
+      try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        const res = await fetch(u, {
+          signal: ctrl.signal,
+          headers: {
+            Referer: origin,
+            "User-Agent":
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+            Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+          },
+        });
+        clearTimeout(timer);
+        if (!res.ok) return null;
+        const mime = (res.headers.get("content-type") || "").split(";")[0].trim();
+        if (!mime.startsWith("image/")) return null;
+        const buf = Buffer.from(await res.arrayBuffer());
+        if (buf.length === 0 || buf.length > MAX_BYTES) return null;
+        return `data:${mime};base64,${buf.toString("base64")}`;
+      } catch {
+        return null;
+      }
+    }),
+  );
+
+  // Drop images we couldn't inline rather than show broken thumbnails.
+  return [...passthrough, ...fetched.filter((x): x is string => x !== null)];
 }
 
 // Scroll to the bottom in steps to trigger lazy-loaded assets, capped for time.
