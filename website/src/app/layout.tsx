@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import StructuredData from "./structured-data";
+import SmoothScroll from "./SmoothScroll";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -244,6 +245,7 @@ export default function RootLayout({
       </head>
 
       <body>
+        <SmoothScroll />
         {children}
         <Analytics />
       </body>
