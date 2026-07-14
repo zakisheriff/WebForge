@@ -690,6 +690,28 @@ a:hover {
   }
 }
 
+/* ---- Lenis smooth scroll ---- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 /* ---- Scroll reveal (toggled by IntersectionObserver) ---- */
 .reveal {
   opacity: 0;
@@ -1126,10 +1148,17 @@ a:hover {
 .capture-loading-status {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  margin-top: 16px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-secondary);
+}
+
+.capture-loading-play {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 8px 0 16px;
 }
 
 .cl-spinner {

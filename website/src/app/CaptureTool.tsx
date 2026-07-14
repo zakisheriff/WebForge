@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Meowdoku from "./Meowdoku";
 
 type ViewportKey = "desktop" | "tablet" | "mobile";
 type CaptureMode = "desktop" | "all";
@@ -53,31 +54,12 @@ function CaptureLoading({ mode }: { mode: CaptureMode }) {
 
   return (
     <div className="capture-loading" role="status" aria-live="polite">
-      <div className="capture-loading-window">
-        <div className="cl-chrome">
-          <span className="cl-dot" />
-          <span className="cl-dot" />
-          <span className="cl-dot" />
-          <span className="cl-addr">scanning the page…</span>
-        </div>
-        <div className="cl-body">
-          <div className="cl-line cl-w80" />
-          <div className="cl-line cl-w60" />
-          <div className="cl-hero" />
-          <div className="cl-row">
-            <div className="cl-card" />
-            <div className="cl-card" />
-            <div className="cl-card" />
-          </div>
-          <div className="cl-line cl-w70" />
-          <div className="cl-line cl-w40" />
-          <div className="cl-scan" />
-        </div>
-      </div>
       <div className="capture-loading-status">
         <span className="cl-spinner" />
         <span className="cl-step">{steps[step]}…</span>
       </div>
+      <p className="capture-loading-play">This can take a moment. Play a round while you wait 🐾</p>
+      <Meowdoku />
     </div>
   );
 }
