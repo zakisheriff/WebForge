@@ -379,7 +379,7 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <header className="hero" data-depth="0.12">
+      <header className="hero">
         <h1 className="hero-title">
           Turn any website into an <span>AI-ready visual blueprint</span>
         </h1>
