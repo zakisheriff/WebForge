@@ -468,6 +468,16 @@ export default function Meowdoku() {
   const lastTap = useRef<{ r: number; c: number; t: number } | null>(null);
   const DOUBLE_TAP_MS = 400;
 
+  // Drag-to-paint: hold and drag across cells to smoothly stamp ✕ marks along
+  // the path. A press that never moves to another cell is treated as a tap.
+  const dragging = useRef(false);
+  const dragMoved = useRef(false);
+  const dragStart = useRef<Cell | null>(null);
+  const dragPainted = useRef<Set<string>>(new Set());
+  // "mark" stamps ✕ on empty cells; "erase" clears ✕ back to empty. Which one a
+  // drag does is decided by the cell it starts on (empty → mark, ✕ → erase).
+  const dragMode = useRef<"mark" | "erase">("mark");
+
   const startGame = (d: Difficulty) => {
     setDiff(d);
     setPhase("generating");
@@ -561,6 +571,72 @@ export default function Meowdoku() {
     }
   };
 
+  // Paint a cell while dragging. In "mark" mode empty cells become ✕; in "erase"
+  // mode ✕ cells become empty. Cats and locked cells are always left untouched.
+  // Functional update so rapid drags never clobber each other.
+  const paintMark = (r: number, c: number) => {
+    const key = `${r},${c}`;
+    if (dragPainted.current.has(key)) return;
+    dragPainted.current.add(key);
+    const from = dragMode.current === "mark" ? 0 : 1;
+    const to = dragMode.current === "mark" ? 1 : 0;
+    setBoard((prev) => {
+      if (!prev[r] || prev[r][c] !== from) return prev;
+      const nb = prev.map((row) => [...row]);
+      nb[r][c] = to;
+      return nb;
+    });
+  };
+
+  // Resolve the board cell under a pointer position via the DOM (works for
+  // both mouse and touch, where the pointer is implicitly captured).
+  const cellFromPoint = (x: number, y: number): Cell | null => {
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const cellEl = el?.closest<HTMLElement>("[data-mw-cell]");
+    if (!cellEl) return null;
+    const r = Number(cellEl.dataset.r);
+    const c = Number(cellEl.dataset.c);
+    if (Number.isNaN(r) || Number.isNaN(c)) return null;
+    return { r, c };
+  };
+
+  const onBoardPointerDown = (e: React.PointerEvent, r: number, c: number) => {
+    if (phase !== "play") return;
+    dragging.current = true;
+    dragMoved.current = false;
+    dragStart.current = { r, c };
+    dragPainted.current = new Set();
+    // Empty start → paint ✕; ✕ start → erase. (Cats/locked cells stay "mark",
+    // but paintMark ignores them anyway.)
+    dragMode.current = board[r]?.[c] === 1 ? "erase" : "mark";
+    // Do not capture: we want elementFromPoint to see the cells we drag over.
+    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+  };
+
+  const onBoardPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current) return;
+    const cell = cellFromPoint(e.clientX, e.clientY);
+    if (!cell) return;
+    const start = dragStart.current;
+    const isStart = start && cell.r === start.r && cell.c === start.c;
+    if (!dragMoved.current && !isStart && start) {
+      // First real movement → this is a drag, not a tap. Paint the origin too.
+      dragMoved.current = true;
+      paintMark(start.r, start.c);
+    }
+    if (dragMoved.current) paintMark(cell.r, cell.c);
+  };
+
+  const endDrag = () => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    const start = dragStart.current;
+    // A press that never crossed into another cell counts as a tap.
+    if (!dragMoved.current && start) onCellTap(start.r, start.c);
+    dragStart.current = null;
+    dragPainted.current = new Set();
+  };
+
   const reveal = () => {
     if (!puzzle || phase !== "play" || lives <= 1) return;
     const sol = findSolutionWithCats(puzzle.N, puzzle.regions, catsOnBoard(board)) || puzzle.queens;
@@ -635,9 +711,17 @@ export default function Meowdoku() {
         </div>
       </div>
 
+      <p className="mw-hint">
+        Click a box to mark it, double-click to reveal a cat. Drag to mark a whole row.
+      </p>
+
       <div
         className="mw-board"
         style={{ gridTemplateColumns: `repeat(${N}, 1fr)`, aspectRatio: "1 / 1" }}
+        onPointerMove={onBoardPointerMove}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        onPointerCancel={endDrag}
       >
         {board.map((row, r) =>
           row.map((cell, c) => {
@@ -649,9 +733,12 @@ export default function Meowdoku() {
               <button
                 key={`${r},${c}`}
                 type="button"
+                data-mw-cell
+                data-r={r}
+                data-c={c}
                 className={`mw-cell${done ? " mw-cell-done" : ""}${isWrong ? " mw-cell-wrong" : ""}`}
                 style={{ background: color }}
-                onClick={() => onCellTap(r, c)}
+                onPointerDown={(e) => onBoardPointerDown(e, r, c)}
                 aria-label={`Row ${r + 1}, column ${c + 1}`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -669,8 +756,7 @@ export default function Meowdoku() {
       </div>
 
       <div className="mw-actions">
-        <span className="mw-hint">Click a box to mark it, double-click to reveal a cat</span>
-        <button type="button" className="mw-chip" onClick={reveal} disabled={lives <= 1}>
+        <button type="button" className="mw-chip mw-reveal" onClick={reveal} disabled={lives <= 1}>
           Reveal a cat · costs a life
         </button>
       </div>
@@ -743,10 +829,23 @@ function MeowStyles() {
       .mw-mode-sub { font-size: 12px; color: var(--text-secondary, #595856); }
 
       .mw-promo {
-        display: block; margin-top: 14px; text-align: center; font-size: 12px; font-weight: 600;
-        color: var(--accent-color, #3fa34d); text-decoration: none;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        margin-top: 14px; padding: 11px 14px; border-radius: 12px;
+        background: #fff; border: 1.5px solid var(--border-color, #eadfd2);
+        font-size: 12.5px; font-weight: 700; color: var(--text-primary, #191919);
+        text-decoration: none; text-align: center; line-height: 1.3;
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.12s ease;
       }
-      .mw-promo:hover { text-decoration: underline; }
+      .mw-promo:hover {
+        transform: translateY(-1px);
+        border-color: var(--accent-color, #3fa34d);
+        background: var(--card-hover, #f4efe6);
+      }
+      .mw-promo::after {
+        content: "→"; font-weight: 800; color: var(--accent-color, #3fa34d);
+        transition: transform 0.15s ease;
+      }
+      .mw-promo:hover::after { transform: translateX(3px); }
 
       .mw-generating { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 0; color: var(--text-secondary, #595856); font-size: 13px; font-weight: 600; }
       .mw-spinner { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--border-color, #eadfd2); border-top-color: var(--accent-color, #3fa34d); animation: mw-spin 0.7s linear infinite; }
@@ -768,12 +867,12 @@ function MeowStyles() {
       .mw-chip:hover:not(:disabled) { border-color: var(--accent-color, #3fa34d); }
       .mw-chip:disabled { opacity: 0.4; cursor: not-allowed; }
 
-      .mw-board { display: grid; gap: 3px; width: 100%; user-select: none; }
+      .mw-board { display: grid; gap: 3px; width: 100%; user-select: none; touch-action: none; }
       .mw-cell {
         position: relative; border: none; padding: 0; margin: 0; cursor: pointer;
         border-radius: 20%; display: flex; align-items: center; justify-content: center;
         aspect-ratio: 1 / 1; transition: box-shadow 0.15s ease, transform 0.08s ease;
-        font-size: clamp(12px, 4vw, 22px);
+        font-size: clamp(12px, 4vw, 22px); touch-action: none;
       }
       .mw-cell:active { transform: scale(0.94); }
       .mw-cell-done { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.65); }
@@ -798,8 +897,12 @@ function MeowStyles() {
       .mw-x-bar:last-child { transform: translateY(-50%) rotate(-45deg); }
       .mw-x-wrong .mw-x-bar { background: #ff4d4d; }
 
-      .mw-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
-      .mw-hint { font-size: 11.5px; color: var(--text-secondary, #595856); }
+      .mw-hint {
+        font-size: 12px; line-height: 1.4; color: var(--text-secondary, #595856);
+        text-align: center; margin: 0 0 10px;
+      }
+      .mw-actions { display: flex; align-items: center; justify-content: center; margin-top: 12px; }
+      .mw-reveal { font-size: 13px; padding: 9px 16px; }
 
       .mw-overlay {
         position: absolute; inset: 0; border-radius: 20px;
