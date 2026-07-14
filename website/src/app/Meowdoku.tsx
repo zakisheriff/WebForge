@@ -22,8 +22,8 @@ const REGION_COLORS = [
   "#F5A97E", "#7093DB", "#D2DE6F", "#C592E0",
 ];
 
-const CAT_EMOJIS = ["🐱", "🐈", "😺", "😸", "😻", "😹", "😽", "🐈‍⬛", "🐯", "🦁"];
-const randomCat = () => CAT_EMOJIS[Math.floor(Math.random() * CAT_EMOJIS.length)];
+const CAT_SRC = "/cat.webp";
+const LIFE_SRC = "/life.webp";
 
 const LIVES_MAX = 3;
 
@@ -462,7 +462,6 @@ export default function Meowdoku() {
   const [diff, setDiff] = useState<Difficulty>("easy");
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
   const [board, setBoard] = useState<number[][]>([]); // 0 empty, 1 mark, 2 cat, 3 wrong, 4 auto-cross
-  const [placedCats, setPlacedCats] = useState<Record<string, string>>({});
   const [lives, setLives] = useState(LIVES_MAX);
   const [wrongCell, setWrongCell] = useState<Cell | null>(null);
 
@@ -482,7 +481,6 @@ export default function Meowdoku() {
       }
       setPuzzle(p);
       setBoard(Array.from({ length: p.N }, () => Array(p.N).fill(0)));
-      setPlacedCats({});
       setLives(LIVES_MAX);
       setWrongCell(null);
       setPhase("play");
@@ -493,7 +491,6 @@ export default function Meowdoku() {
     setPhase("menu");
     setPuzzle(null);
     setBoard([]);
-    setPlacedCats({});
   };
 
   const placedCount = useMemo(() => board.flat().filter((v) => v === 2).length, [board]);
@@ -549,7 +546,6 @@ export default function Meowdoku() {
       if (puzzle.regions[ri][ci] === reg && (ri !== r || ci !== c) && nb[ri][ci] === 0) nb[ri][ci] = 4;
     }
     setBoard(nb);
-    setPlacedCats((prev) => ({ ...prev, [`${r},${c}`]: prev[`${r},${c}`] || randomCat() }));
     if (isWinningBoard(nb, puzzle.regions)) setTimeout(() => setPhase("won"), 350);
   };
 
@@ -583,7 +579,8 @@ export default function Meowdoku() {
         <MeowStyles />
         <div className="mw-menu">
           <div className="mw-menu-head">
-            <span className="mw-mascot" aria-hidden>🐱</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="mw-mascot" src={CAT_SRC} alt="" />
             <div>
               <h4 className="mw-title">Meowdoku</h4>
               <p className="mw-sub">Play while we capture. One cat per row, column and colour.</p>
@@ -597,6 +594,9 @@ export default function Meowdoku() {
               </button>
             ))}
           </div>
+          <a className="mw-promo" href="https://pretend.theatom.lk" target="_blank" rel="noreferrer">
+            Get the full Meowdoku experience and more at pretend.theatom.lk
+          </a>
         </div>
       </div>
     );
@@ -629,7 +629,8 @@ export default function Meowdoku() {
         </div>
         <div className="mw-lives" aria-label={`${lives} lives left`}>
           {Array.from({ length: LIVES_MAX }).map((_, i) => (
-            <span key={i} className="mw-heart" style={{ opacity: i < lives ? 1 : 0.22 }}>❤️</span>
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} className="mw-life" src={LIFE_SRC} alt="" style={{ opacity: i < lives ? 1 : 0.22 }} />
           ))}
         </div>
       </div>
@@ -643,7 +644,6 @@ export default function Meowdoku() {
             const color = REGION_COLORS[puzzle.regions[r][c] % REGION_COLORS.length];
             const done = completedRegions.has(puzzle.regions[r][c]);
             const isWrong = wrongCell?.r === r && wrongCell?.c === c;
-            const catEmoji = placedCats[`${r},${c}`];
             const mark = cell === 1 || cell === 3 || cell === 4;
             return (
               <button
@@ -654,8 +654,14 @@ export default function Meowdoku() {
                 onClick={() => onCellTap(r, c)}
                 aria-label={`Row ${r + 1}, column ${c + 1}`}
               >
-                {cell === 2 && <span className="mw-cat">{catEmoji || "🐱"}</span>}
-                {mark && <span className={`mw-x${cell === 3 ? " mw-x-wrong" : ""}`}>✕</span>}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {cell === 2 && <img className="mw-cat" src={CAT_SRC} alt="cat" />}
+                {mark && (
+                  <span className={`mw-x${cell === 3 ? " mw-x-wrong" : ""}`} aria-hidden>
+                    <span className="mw-x-bar" />
+                    <span className="mw-x-bar" />
+                  </span>
+                )}
               </button>
             );
           }),
@@ -663,16 +669,17 @@ export default function Meowdoku() {
       </div>
 
       <div className="mw-actions">
-        <span className="mw-hint">Tap to mark ✕ · double-tap to place a cat</span>
+        <span className="mw-hint">Click a box to mark it, double-click to reveal a cat</span>
         <button type="button" className="mw-chip" onClick={reveal} disabled={lives <= 1}>
-          Reveal a cat · costs ❤️
+          Reveal a cat · costs a life
         </button>
       </div>
 
       {phase === "won" && (
         <div className="mw-overlay">
           <div className="mw-modal">
-            <span className="mw-mascot" aria-hidden>😺</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="mw-mascot" src={CAT_SRC} alt="" />
             <h4 className="mw-title">Solved!</h4>
             <p className="mw-sub">Nice — {DIFFICULTIES.find((d) => d.key === diff)!.label} cleared with {lives}/{LIVES_MAX} lives.</p>
             <div className="mw-modal-actions">
@@ -686,7 +693,8 @@ export default function Meowdoku() {
       {phase === "lost" && (
         <div className="mw-overlay">
           <div className="mw-modal">
-            <span className="mw-mascot" aria-hidden>🙀</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img className="mw-mascot mw-mascot-sad" src={CAT_SRC} alt="" />
             <h4 className="mw-title">Out of lives</h4>
             <p className="mw-sub">The cats got away. Try again?</p>
             <div className="mw-modal-actions">
@@ -719,7 +727,8 @@ function MeowStyles() {
       }
       .mw-title { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; margin: 0; color: var(--text-primary, #191919); }
       .mw-sub { font-size: 12.5px; margin: 2px 0 0; color: var(--text-secondary, #595856); line-height: 1.4; }
-      .mw-mascot { font-size: 34px; line-height: 1; }
+      .mw-mascot { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; }
+      .mw-mascot-sad { filter: grayscale(0.4); transform: rotate(-8deg); }
 
       .mw-menu-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
       .mw-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -733,6 +742,12 @@ function MeowStyles() {
       .mw-mode-label { font-size: 15px; font-weight: 800; color: var(--text-primary, #191919); }
       .mw-mode-sub { font-size: 12px; color: var(--text-secondary, #595856); }
 
+      .mw-promo {
+        display: block; margin-top: 14px; text-align: center; font-size: 12px; font-weight: 600;
+        color: var(--accent-color, #3fa34d); text-decoration: none;
+      }
+      .mw-promo:hover { text-decoration: underline; }
+
       .mw-generating { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px 0; color: var(--text-secondary, #595856); font-size: 13px; font-weight: 600; }
       .mw-spinner { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--border-color, #eadfd2); border-top-color: var(--accent-color, #3fa34d); animation: mw-spin 0.7s linear infinite; }
       @keyframes mw-spin { to { transform: rotate(360deg); } }
@@ -742,8 +757,8 @@ function MeowStyles() {
       .mw-progress-track { flex: 1; height: 8px; border-radius: 5px; background: var(--border-color, #eadfd2); overflow: hidden; }
       .mw-progress-fill { height: 100%; border-radius: 5px; background: var(--accent-color, #3fa34d); transition: width 0.25s ease; }
       .mw-progress-text { font-size: 13px; font-weight: 800; color: var(--accent-color, #3fa34d); min-width: 34px; }
-      .mw-lives { display: flex; gap: 2px; }
-      .mw-heart { font-size: 14px; }
+      .mw-lives { display: flex; gap: 3px; }
+      .mw-life { width: 20px; height: 20px; object-fit: contain; transition: opacity 0.2s ease; }
 
       .mw-chip {
         font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 999px; cursor: pointer;
@@ -764,10 +779,24 @@ function MeowStyles() {
       .mw-cell-done { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.65); }
       .mw-cell-wrong { animation: mw-shake 0.4s ease-in-out; }
       @keyframes mw-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-      .mw-cat { animation: mw-pop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+      .mw-cat {
+        width: 82%; height: 82%; object-fit: contain;
+        animation: mw-pop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      }
       @keyframes mw-pop { 0% { transform: scale(0.3); } 100% { transform: scale(1); } }
-      .mw-x { color: #fff; font-weight: 800; font-size: 0.7em; opacity: 0.9; }
-      .mw-x-wrong { color: #ff4d4d; opacity: 1; }
+
+      /* Big, bold, cute cross built from two rounded bars. */
+      .mw-x {
+        position: relative; width: 46%; height: 46%;
+        animation: mw-pop 0.18s ease-out;
+      }
+      .mw-x-bar {
+        position: absolute; top: 50%; left: 0; width: 100%; height: 22%;
+        min-height: 3.5px; border-radius: 999px; background: #fff;
+      }
+      .mw-x-bar:first-child { transform: translateY(-50%) rotate(45deg); }
+      .mw-x-bar:last-child { transform: translateY(-50%) rotate(-45deg); }
+      .mw-x-wrong .mw-x-bar { background: #ff4d4d; }
 
       .mw-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
       .mw-hint { font-size: 11.5px; color: var(--text-secondary, #595856); }

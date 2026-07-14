@@ -58,7 +58,7 @@ function CaptureLoading({ mode }: { mode: CaptureMode }) {
         <span className="cl-spinner" />
         <span className="cl-step">{steps[step]}…</span>
       </div>
-      <p className="capture-loading-play">This can take a moment. Play a round while you wait 🐾</p>
+      <p className="capture-loading-play">This can take a moment. Play a round while you wait.</p>
       <Meowdoku />
     </div>
   );
