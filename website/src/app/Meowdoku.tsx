@@ -761,6 +761,10 @@ export default function Meowdoku() {
         </button>
       </div>
 
+      <a className="mw-promo" href="https://pretend.theatom.lk" target="_blank" rel="noreferrer">
+        For the full experience, check out pretend.theatom.lk
+      </a>
+
       {phase === "won" && (
         <div className="mw-overlay">
           <div className="mw-modal">
