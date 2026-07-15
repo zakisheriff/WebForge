@@ -49,7 +49,7 @@ const graph = {
       url: SITE_URL,
       name: "WebForge",
       description:
-        "AI-ready Chrome extension that captures websites into visual blueprints, screenshots, sitemaps and CSS design tokens for AI coding agents.",
+        "AI-ready website capture suite available online, as a Chrome extension, and as Python/npm packages, turning websites into visual blueprints, screenshots, sitemaps and CSS design tokens for AI coding agents.",
       publisher: { "@id": `${SITE_URL}/#organization` },
       inLanguage: "en",
     },
@@ -96,6 +96,40 @@ const graph = {
       ],
       keywords:
         "website capture, visual blueprint, website screenshot, website crawler, CSS design tokens, AI coding, Claude Code, Cursor, Chrome extension",
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${SITE_URL}/#python-package`,
+      name: "webforge-theatom (Python Package)",
+      url: "https://pypi.org/project/webforge-theatom/",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Windows, macOS, Linux",
+      description: "Python port of the WebForge capture engine. Generate high-fidelity visual blueprints and CSS design tokens from any website in python scripts, notebooks, or via CLI command.",
+      downloadUrl: "https://pypi.org/project/webforge-theatom/",
+      author: { "@id": `${SITE_URL}/#organization` },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${SITE_URL}/#npm-package`,
+      name: "webforge-theatom (npm Package)",
+      url: "https://www.npmjs.com/package/webforge-theatom",
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Windows, macOS, Linux",
+      description: "Node.js port of the WebForge capture engine. Generate high-fidelity visual blueprints and CSS design tokens in JavaScript/TypeScript code or via CLI command.",
+      downloadUrl: "https://www.npmjs.com/package/webforge-theatom",
+      author: { "@id": `${SITE_URL}/#organization` },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock"
+      }
     },
     {
       "@type": "WebApplication",
