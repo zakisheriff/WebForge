@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://webforge.theatom.lk"),
 
   title: {
-    default: "WebForge: AI Website Capture & Visual Blueprint Chrome Extension",
+    default: "WebForge - AI Website Capture & Visual Blueprint Chrome Extension",
     template: "%s | WebForge",
   },
 
