@@ -1,6 +1,6 @@
 # WebForge
 
-> WebForge is a free, AI-ready Chrome extension by The Atom — plus a free online capture tool on the website — that turns any website into high-fidelity visual blueprints: full-page multi-viewport screenshots, a same-domain sitemap, and extracted CSS design tokens (colors, fonts, layouts) — structured for AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini.
+> WebForge is a free, AI-ready website capture suite available online, as a Chrome extension, and as Python/npm CLI packages. It turns any website into high-fidelity visual blueprints (multi-viewport screenshots, a same-domain sitemap, and extracted CSS design tokens, colors, fonts, layouts) structured for AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini.
 
 Homepage: https://webforge.theatom.lk
 Install / Source: https://github.com/zakisheriff/WebForge

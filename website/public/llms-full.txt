@@ -1,6 +1,6 @@
 # WebForge — Full Reference
 
-> WebForge is a free, AI-ready Chrome extension by The Atom (Sri Lanka) — plus a free online capture tool on the website — that turns any website into a structured, code-ready visual blueprint for AI coding agents. It captures full-page multi-viewport screenshots, crawls the domain into a sitemap, and extracts CSS design tokens so tools like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini can reconstruct a frontend with high fidelity.
+> WebForge is a free, AI-ready website capture suite available online, as a Chrome extension, and as Python/npm CLI packages. It turns any website into a structured, code-ready visual blueprint (multi-viewport screenshots, domain crawl sitemaps, and CSS design tokens) so AI coding agents like Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT and Gemini can reconstruct a frontend with high fidelity.
 
 - Homepage: https://webforge.theatom.lk
 - Install / Source code: https://github.com/zakisheriff/WebForge
@@ -8,7 +8,7 @@
 - Author: Zaki Sheriff — https://github.com/zakisheriff
 - Publisher: The Atom
 - Price: Free
-- Platform: Google Chrome / Chromium (Windows, macOS, Linux, ChromeOS)
+- Platform: Web (Online preview), Chrome Extension, Python Library (Playwright), npm Package (Puppeteer)
 
 ## What problem it solves
 
@@ -78,3 +78,4 @@ WebForge_Project/
 **Which AI tools does it work with?** Claude Code, Cursor, Windsurf, GitHub Copilot, ChatGPT, Gemini, Lovable, Bolt.new, v0, and any workflow accepting screenshots + tokens.
 **What browsers are supported?** Google Chrome and Chromium-based browsers.
 **Does it need an account or API key?** No.
+**Are there developer libraries available?** Yes! The core capture engine is available as the `webforge-theatom` package on both PyPI (pip install webforge-theatom) and npm (npm install webforge-theatom). It provides programmatic APIs (`capture()` and `crawl()`) and a CLI tool for automation.
